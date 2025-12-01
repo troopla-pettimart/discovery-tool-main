@@ -1,0 +1,99 @@
+# Docker Compose para Sunstone Platform
+# Este archivo permite desplegar la aplicación fácilmente con Docker
+
+version: '3.8'
+
+services:
+  # Servicio principal de la aplicación
+  sunstone-app:
+    build: .
+    container_name: sunstone-platform
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # Volumen para logs
+      - sunstone-logs:/var/log/nginx
+      # Volumen para certificados SSL (cuando los tengas)
+      - sunstone-ssl:/etc/nginx/ssl
+    networks:
+      - sunstone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Servicio opcional: Reverse proxy con Traefik para SSL automático
+  # Descomenta este servicio si quieres usar Traefik para SSL automático
+  # traefik:
+  #   image: traefik:v2.9
+  #   container_name: sunstone-traefik
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+  #     - traefik-certs:/acme
+  #   environment:
+  #     - TRAEFIK_API_INSECURE=true
+  #     - TRAEFIK_PROVIDERS_DOCKER=true
+  #     - TRAEFIC_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+  #     - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
+  #     - TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443
+  #     - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL=tu-email@example.com
+  #     - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_STORAGE=/acme/acme.json
+  #     - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_HTTPCHALLENGE=true
+  #     - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_HTTPCHALLENGE_ENTRYPOINT=web
+  #   networks:
+  #     - sunstone-network
+
+  # Servicio opcional: Base de datos (si decides agregar backend)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: sunstone-db
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_DB=sunstone
+  #     - POSTGRES_USER=sunstone
+  #     - POSTGRES_PASSWORD=tu-password-seguro
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   networks:
+  #     - sunstone-network
+
+  # Servicio opcional: Redis para caché
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: sunstone-redis
+  #   restart: unless-stopped
+  #   volumes:
+  #     - redis-data:/data
+  #   networks:
+  #     - sunstone-network
+
+volumes:
+  # Volúmenes para persistencia de datos
+  sunstone-logs:
+    driver: local
+  sunstone-ssl:
+    driver: local
+  # traefik-certs:
+  #   driver: local
+  # postgres-data:
+  #   driver: local
+  # redis-data:
+  #   driver: local
+
+networks:
+  sunstone-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discovery JTBD - Sunstone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
+        .jtbd-card { transition: all 0.3s ease; border-left: 4px solid #4f46e5; }
+        .jtbd-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .relevance-stars { color: #fbbf24; }
+        .suggestion-card { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); }
+        .drag-handle { cursor: grab; }
+        .drag-handle:active { cursor: grabbing; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-gem text-2xl text-indigo-600 mr-3"></i>
+                        <span class="text-xl font-bold text-gray-900">Sunstone</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Nueva sesión
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
+                        <i class="fas fa-download mr-2"></i>Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Project Sidebar -->
+        <div class="w-64 bg-white shadow-lg min-h-screen">
+            <div class="p-6">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">TechFlow Solutions</h3>
+                    <p class="text-sm text-gray-600">B2B SaaS • En Discovery</p>
+                </div>
+                <nav class="space-y-2">
+                    <a href="project.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-chart-pie mr-3"></i>
+                        <span>Overview</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 rounded-lg">
+                        <i class="fas fa-search mr-3"></i>
+                        <span class="font-medium">Discovery</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-chess mr-3"></i>
+                        <span>Estrategia</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-funnel-dollar mr-3"></i>
+                        <span>GTM & Funnels</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-tasks mr-3"></i>
+                        <span>Roadmap</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-file-alt mr-3"></i>
+                        <span>Reportes</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Discovery - Jobs to Be Done</h1>
+                        <p class="text-gray-600">Tus clientes "contratan" el producto para hacer un trabajo específico</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="saveJTBDData()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i>Guardar
+                        </button>
+                        <button onclick="completeJTBD()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-check mr-2"></i>Completar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- JTBD List -->
+                <div class="lg:col-span-3 space-y-6">
+                    <!-- Existing JTBD Cards -->
+                    <div id="jtbdList">
+                        <div class="jtbd-card bg-white rounded-lg shadow-md p-6 mb-4">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="drag-handle text-gray-400 hover:text-gray-600 mr-3">
+                                    <i class="fas fa-grip-vertical"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Ayudarme a cumplir mis objetivos de venta</h3>
+                                    <p class="text-gray-600 text-sm mb-3">Cuando soy un representante de ventas, quiero poder enfocarme en vender en lugar de tareas administrativas, para poder superar mis cuotas mensuales.</p>
+                                    <div class="flex items-center space-x-4">
+                                        <div>
+                                            <span class="text-sm text-gray-500">Audiencia:</span>
+                                            <span class="text-sm font-medium text-gray-700">Equipo de ventas</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">Relevancia:</span>
+                                            <div class="relevance-stars inline-block ml-1">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="jtbd-card bg-white rounded-lg shadow-md p-6 mb-4">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="drag-handle text-gray-400 hover:text-gray-600 mr-3">
+                                    <i class="fas fa-grip-vertical"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Reducir el tiempo en tareas administrativas</h3>
+                                    <p class="text-gray-600 text-sm mb-3">Cuando termino una llamada con un cliente, quiero que la información se registre automáticamente, para poder pasar rápidamente a la siguiente llamada.</p>
+                                    <div class="flex items-center space-x-4">
+                                        <div>
+                                            <span class="text-sm text-gray-500">Audiencia:</span>
+                                            <span class="text-sm font-medium text-gray-700">Representantes de ventas</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">Relevancia:</span>
+                                            <div class="relevance-stars inline-block ml-1">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="far fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="jtbd-card bg-white rounded-lg shadow-md p-6 mb-4">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="drag-handle text-gray-400 hover:text-gray-600 mr-3">
+                                    <i class="fas fa-grip-vertical"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Tener visibilidad clara del performance</h3>
+                                    <p class="text-gray-600 text-sm mb-3">Cuando soy manager de ventas, quiero ver en tiempo real el progreso de mi equipo, para poder tomar decisiones informadas y ajustar estrategias.</p>
+                                    <div class="flex items-center space-x-4">
+                                        <div>
+                                            <span class="text-sm text-gray-500">Audiencia:</span>
+                                            <span class="text-sm font-medium text-gray-700">Managers de ventas</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">Relevancia:</span>
+                                            <div class="relevance-stars inline-block ml-1">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="far fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add New JTBD -->
+                    <div class="bg-white rounded-lg shadow-md border-2 border-dashed border-gray-300 p-6">
+                        <div class="text-center">
+                            <i class="fas fa-plus-circle text-4xl text-gray-400 mb-3"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Agregar nuevo JTBD</h3>
+                            <p class="text-gray-600 text-sm mb-4">Define otro trabajo que tus clientes necesitan hacer</p>
+                            <button onclick="openNewJTBDModal()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>Nuevo JTBD
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suggestions Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-lg shadow-md sticky top-8">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">Sugerencias</h3>
+                            <p class="text-sm text-gray-600 mt-1">Patrones comunes en tu industria</p>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
+                                <h4 class="font-medium text-gray-900 mb-2">Evitar errores costosos</h4>
+                                <p class="text-sm text-gray-600">Cuando estoy bajo presión, quiero evitar cometer errores en la documentación, para no perder oportunidades de venta.</p>
+                                <div class="mt-2 text-xs text-gray-500">Común en B2B SaaS</div>
+                            </div>
+
+                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
+                                <h4 class="font-medium text-gray-900 mb-2">Mantenerme organizado</h4>
+                                <p class="text-sm text-gray-600">Cuando tengo múltiples clientes, quiero tener todo organizado, para no perder ninguna oportunidad.</p>
+                                <div class="mt-2 text-xs text-gray-500">Común en equipos pequeños</div>
+                            </div>
+
+                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
+                                <h4 class="font-medium text-gray-900 mb-2">Colaborar con mi equipo</h4>
+                                <p class="text-sm text-gray-600">Cuando trabajo en equipo, quiero compartir información fácilmente, para que todos estemos alineados.</p>
+                                <div class="mt-2 text-xs text-gray-500">Común en equipos distribuidos</div>
+                            </div>
+
+                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
+                                <h4 class="font-medium text-gray-900 mb-2">Aprender y mejorar</h4>
+                                <p class="text-sm text-gray-600">Cuando analizo mis resultados, quiero entender qué funciona, para mejorar mis técnicas de venta.</p>
+                                <div class="mt-2 text-xs text-gray-500">Común en equipos data-driven</div>
+                            </div>
+
+                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
+                                <h4 class="font-medium text-gray-900 mb-2">Cumplir con compliance</h4>
+                                <p class="text-sm text-gray-600">Cuando trabajo en industrias reguladas, quiero asegurar el cumplimiento, para evitar problemas legales.</p>
+                                <div class="mt-2 text-xs text-gray-500">Común en industrias reguladas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New JTBD Modal -->
+    <div id="newJTBDModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Nuevo JTBD</h2>
+                        <button onclick="closeNewJTBDModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Título del Job</label>
+                            <input type="text" id="jtbdTitle" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: Ayudarme a cumplir mis objetivos">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                            <textarea id="jtbdDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Cuando... quiero... para..."></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Audiencia</label>
+                                <select id="jtbdAudience" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option>Equipo de ventas</option>
+                                    <option>Representantes de ventas</option>
+                                    <option>Managers de ventas</option>
+                                    <option>Fundadores</option>
+                                    <option>Operaciones</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Relevancia (1-5)</label>
+                                <select id="jtbdRelevance" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option>1 - Muy baja</option>
+                                    <option>2 - Baja</option>
+                                    <option>3 - Media</option>
+                                    <option>4 - Alta</option>
+                                    <option>5 - Muy alta</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 mt-8">
+                        <button onclick="closeNewJTBDModal()" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                            Cancelar
+                        </button>
+                        <button id="addJTBDButton" onclick="saveNewJTBD()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                            Guardar JTBD
+                        </button>
+                        <button id="updateJTBDButton" onclick="updateJTBD()" style="display: none;" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Actualizar JTBD
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProject = null;
+        let jtbdData = [];
+
+        function persistCurrentProject() {
+            if (!currentProject) return;
+
+            localStorage.setItem('sunstone_current_project', JSON.stringify(currentProject));
+
+            const projects = JSON.parse(localStorage.getItem('sunstone_projects') || '[]');
+            const projectIndex = projects.findIndex(p => p.id === currentProject.id);
+            if (projectIndex !== -1) {
+                projects[projectIndex] = currentProject;
+                localStorage.setItem('sunstone_projects', JSON.stringify(projects));
+            }
+        }
+
+
+        function loadCurrentProject() {
+            const saved = localStorage.getItem('sunstone_current_project');
+            if (saved) {
+                currentProject = JSON.parse(saved);
+                if (currentProject.discovery && currentProject.discovery.jtbd) {
+                    jtbdData = currentProject.discovery.jtbd.data || [];
+                    renderJTBD();
+                }
+                
+                // Update project name in sidebar
+                const projectNameEl = document.getElementById('projectName');
+                const projectInfoEl = document.getElementById('projectInfo');
+                if (projectNameEl) projectNameEl.textContent = currentProject.name;
+                if (projectInfoEl) projectInfoEl.textContent = `${currentProject.modelType || 'SaaS'} • ${currentProject.status}`;
+            }
+        }
+
+        function saveJTBDData() {
+            if (!currentProject) return;
+
+            if (!currentProject.discovery) currentProject.discovery = {};
+            if (!currentProject.discovery.jtbd) {
+                currentProject.discovery.jtbd = { completed: false, data: [] };
+            }
+
+            currentProject.discovery.jtbd.data = jtbdData;
+
+            persistCurrentProject();
+        }
+
+
+        function renderJTBD() {
+            const jtbdList = document.getElementById('jtbdList');
+            jtbdList.innerHTML = '';
+            
+            jtbdData.forEach((jtbd, index) => {
+                const card = createJTBDCard(jtbd, index);
+                jtbdList.appendChild(card);
+            });
+        }
+
+        function createJTBDCard(jtbd, index) {
+            const card = document.createElement('div');
+            card.className = 'jtbd-card bg-white rounded-lg shadow-md p-6 mb-4';
+            
+            const stars = '★'.repeat(jtbd.relevance || 3) + '☆'.repeat(5 - (jtbd.relevance || 3));
+            
+            card.innerHTML = `
+                <div class="flex items-start justify-between mb-4">
+                    <div class="drag-handle text-gray-400 hover:text-gray-600 mr-3">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">${jtbd.title}</h3>
+                        <p class="text-gray-600 text-sm mb-3">${jtbd.description}</p>
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <span class="text-sm text-gray-500">Audiencia:</span>
+                                <span class="text-sm font-medium text-gray-700">${jtbd.audience}</span>
+                            </div>
+                            <div>
+                                <span class="text-sm text-gray-500">Relevancia:</span>
+                                <div class="relevance-stars inline-block ml-1">${stars}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="editJTBD(${index})" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteJTBD(${index})" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function openNewJTBDModal() {
+            // Clear form
+            document.getElementById('jtbdTitle').value = '';
+            document.getElementById('jtbdDescription').value = '';
+            document.getElementById('jtbdAudience').selectedIndex = 0;
+            document.getElementById('jtbdRelevance').selectedIndex = 3;
+            
+            // Hide edit button, show add button
+            document.getElementById('addJTBDButton').style.display = 'block';
+            document.getElementById('updateJTBDButton').style.display = 'none';
+            
+            document.getElementById('newJTBDModal').classList.remove('hidden');
+        }
+
+        function editJTBD(index) {
+            const jtbd = jtbdData[index];
+            
+            document.getElementById('jtbdTitle').value = jtbd.title;
+            document.getElementById('jtbdDescription').value = jtbd.description;
+            document.getElementById('jtbdAudience').value = jtbd.audience;
+            document.getElementById('jtbdRelevance').value = jtbd.relevance;
+            
+            // Show update button, hide add button
+            document.getElementById('addJTBDButton').style.display = 'none';
+            document.getElementById('updateJTBDButton').style.display = 'block';
+            
+            // Store current index
+            document.getElementById('updateJTBDButton').dataset.index = index;
+            
+            document.getElementById('newJTBDModal').classList.remove('hidden');
+        }
+
+        function closeNewJTBDModal() {
+            document.getElementById('newJTBDModal').classList.add('hidden');
+        }
+
+        function saveNewJTBD() {
+            const title = document.getElementById('jtbdTitle').value;
+            const description = document.getElementById('jtbdDescription').value;
+            const audience = document.getElementById('jtbdAudience').value;
+            const relevance = parseInt(document.getElementById('jtbdRelevance').value);
+
+            if (title && description) {
+                const newJTBD = {
+                    title,
+                    description,
+                    audience,
+                    relevance
+                };
+                
+                jtbdData.push(newJTBD);
+                saveJTBDData();
+                renderJTBD();
+                closeNewJTBDModal();
+                window.SunstoneUtils.showNotification('JTBD agregado exitosamente', 'success');
+            } else {
+                window.SunstoneUtils.showNotification('Por favor completa todos los campos requeridos', 'error');
+            }
+        }
+
+        function updateJTBD() {
+            const index = document.getElementById('updateJTBDButton').dataset.index;
+            const title = document.getElementById('jtbdTitle').value;
+            const description = document.getElementById('jtbdDescription').value;
+            const audience = document.getElementById('jtbdAudience').value;
+            const relevance = parseInt(document.getElementById('jtbdRelevance').value);
+
+            if (title && description) {
+                jtbdData[index] = {
+                    title,
+                    description,
+                    audience,
+                    relevance
+                };
+                
+                saveJTBDData();
+                renderJTBD();
+                closeNewJTBDModal();
+                window.SunstoneUtils.showNotification('JTBD actualizado exitosamente', 'success');
+            } else {
+                window.SunstoneUtils.showNotification('Por favor completa todos los campos requeridos', 'error');
+            }
+        }
+
+        function deleteJTBD(index) {
+            if (confirm('¿Estás seguro de que quieres eliminar este JTBD?')) {
+                jtbdData.splice(index, 1);
+                saveJTBDData();
+                renderJTBD();
+                window.SunstoneUtils.showNotification('JTBD eliminado exitosamente', 'success');
+            }
+        }
+
+        function completeJTBD() {
+            if (jtbdData.length === 0) {
+                window.SunstoneUtils.showNotification('Por favor agrega al menos un JTBD antes de completar', 'error');
+                return;
+            }
+            
+            if (currentProject) {
+                if (!currentProject.discovery) currentProject.discovery = {};
+                if (!currentProject.discovery.jtbd) {
+                    currentProject.discovery.jtbd = { data: jtbdData, completed: true };
+                } else {
+                    currentProject.discovery.jtbd.data = jtbdData;
+                    currentProject.discovery.jtbd.completed = true;
+                }
+
+                persistCurrentProject();
+            }
+
+            
+            window.SunstoneUtils.showNotification('JTBD completado exitosamente', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'project.html';
+            }, 1500);
+        }
+
+        function useSuggestion(element) {
+            const title = element.querySelector('h4').textContent;
+            const description = element.querySelector('p').textContent;
+            
+            document.getElementById('jtbdTitle').value = title;
+            document.getElementById('jtbdDescription').value = description;
+            
+            openNewJTBDModal();
+        }
+
+        function saveJTBDData() {
+            // Data is already saved when adding/updating JTBDs
+            window.SunstoneUtils.showNotification('Datos guardados exitosamente', 'success');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentProject();
+        });

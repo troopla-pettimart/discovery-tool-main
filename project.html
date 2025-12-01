@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Overview - Sunstone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
+        .module-card { transition: all 0.3s ease; border-left: 4px solid transparent; }
+        .module-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .module-card.completed { border-left-color: #10b981; }
+        .module-card.in-progress { border-left-color: #f59e0b; }
+        .module-card.pending { border-left-color: #6b7280; }
+        .timeline-item { position: relative; }
+        .timeline-item::before { content: ''; position: absolute; left: -8px; top: 8px; width: 16px; height: 16px; border-radius: 50%; background: #4f46e5; }
+        .timeline-item.completed::before { background: #10b981; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-gem text-2xl text-indigo-600 mr-3"></i>
+                        <span class="text-xl font-bold text-gray-900">Sunstone</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Nueva sesión
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
+                        <i class="fas fa-download mr-2"></i>Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Project Sidebar -->
+        <div class="w-64 bg-white shadow-lg min-h-screen">
+            <div class="p-6">
+                <div class="mb-6">
+                    <h3 id="projectName" class="text-lg font-semibold text-gray-900 mb-2">TechFlow Solutions</h3>
+                    <p id="projectInfo" class="text-sm text-gray-600">B2B SaaS • En Discovery</p>
+                </div>
+                <nav class="space-y-2">
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 rounded-lg">
+                        <i class="fas fa-chart-pie mr-3"></i>
+                        <span class="font-medium">Overview</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-search mr-3"></i>
+                        <span>Discovery</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-chess mr-3"></i>
+                        <span>Estrategia</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-funnel-dollar mr-3"></i>
+                        <span>GTM & Funnels</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-tasks mr-3"></i>
+                        <span>Roadmap</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-file-alt mr-3"></i>
+                        <span>Reportes</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Project Overview</h1>
+                <p class="text-gray-600">Vista general del trabajo estratégico</p>
+            </div>
+
+            <!-- Three Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Column 1: Resumen -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Resumen</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">Objetivo principal</h3>
+                            <p class="text-gray-600 text-sm">Encontrar Product-Market Fit y diseñar estrategia de Go-To-Market para equipos de ventas B2B</p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">Fase de la startup</h3>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                Pre-PMF
+                            </span>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">3 pains principales</h3>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Equipos de ventas no logran cuota</li>
+                                <li>• Procesos manuales ineficientes</li>
+                                <li>• Falta de visibilidad del pipeline</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">JTBD resumidos</h3>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• "Ayudarme a cumplir mis objetivos de venta"</li>
+                                <li>• "Reducir el tiempo en tareas administrativas"</li>
+                                <li>• "Tener visibilidad clara del performance"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Estado de módulos -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Estado de módulos</h2>
+                    
+                    <div class="space-y-4">
+                        <!-- Discovery Section -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-800 mb-3">Discovery</h3>
+                            <div class="space-y-2">
+                                <div class="module-card completed bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('intake')">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Intake básico</span>
+                                        <i class="fas fa-check text-green-600"></i>
+                                    </div>
+                                </div>
+                                <div class="module-card completed bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('jtbd')">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">JTBD</span>
+                                        <i class="fas fa-check text-green-600"></i>
+                                    </div>
+                                </div>
+                                <div class="module-card in-progress bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('tensiones')">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Tensiones</span>
+                                        <i class="fas fa-clock text-yellow-600"></i>
+                                    </div>
+                                </div>
+                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('audiencias')">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Audiencias</span>
+                                        <i class="fas fa-circle text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estrategia Section -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-800 mb-3">Estrategia</h3>
+                            <div class="space-y-2">
+                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('valor')">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Propuesta de valor</span>
+                                        <i class="fas fa-circle text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('narrativa')">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Narrativa</span>
+                                        <i class="fas fa-circle text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GTM Section -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-800 mb-3">GTM</h3>
+                            <div class="space-y-2">
+                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('funnels')">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Funnel por audiencia</span>
+                                        <i class="fas fa-circle text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('canales')">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Canales</span>
+                                        <i class="fas fa-circle text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 3: Timeline -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Timeline</h2>
+                    
+                    <div class="relative pl-6 border-l-2 border-gray-200">
+                        <div class="timeline-item completed mb-6">
+                            <div class="text-sm">
+                                <div class="font-medium text-gray-900">Discovery 1 - Intake</div>
+                                <div class="text-gray-600">Sesión de 90 minutos</div>
+                                <div class="text-xs text-gray-500">Hace 2 días</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item completed mb-6">
+                            <div class="text-sm">
+                                <div class="font-medium text-gray-900">Discovery 2 - JTBD</div>
+                                <div class="text-gray-600">Workshop de mapeo</div>
+                                <div class="text-xs text-gray-500">Hace 1 día</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item mb-6">
+                            <div class="text-sm">
+                                <div class="font-medium text-gray-900">Discovery 3 - Tensiones</div>
+                                <div class="text-gray-600">Matriz Push/Pull</div>
+                                <div class="text-xs text-gray-500">Hoy</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item mb-6 opacity-50">
+                            <div class="text-sm">
+                                <div class="font-medium text-gray-900">Entregable Discovery v1</div>
+                                <div class="text-gray-600">Documento consolidado</div>
+                                <div class="text-xs text-gray-500">Próxima semana</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item opacity-50">
+                            <div class="text-sm">
+                                <div class="font-medium text-gray-900">Kickoff Estrategia</div>
+                                <div class="text-gray-600">Sesión de alineación</div>
+                                <div class="text-xs text-gray-500">En 2 semanas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Acciones rápidas</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <button class="bg-indigo-600 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 transition-colors text-center">
+                        <i class="fas fa-plus mb-2 block"></i>
+                        <span class="text-sm">Nueva sesión</span>
+                    </button>
+                    <button class="bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors text-center">
+                        <i class="fas fa-clipboard-list mb-2 block"></i>
+                        <span class="text-sm">Completar tarea</span>
+                    </button>
+                    <button class="bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors text-center">
+                        <i class="fas fa-users mb-2 block"></i>
+                        <span class="text-sm">Invitar equipo</span>
+                    </button>
+                    <button class="bg-gray-600 text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-center">
+                        <i class="fas fa-file-pdf mb-2 block"></i>
+                        <span class="text-sm">Exportar PDF</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Project data management
+        let currentProject = null;
+
+        function loadCurrentProject() {
+            // Try to get current project from localStorage
+            const saved = localStorage.getItem('sunstone_current_project');
+            if (saved) {
+                currentProject = JSON.parse(saved);
+            } else {
+                // Fallback to first project
+                const projects = JSON.parse(localStorage.getItem('sunstone_projects') || '[]');
+                if (projects.length > 0) {
+                    currentProject = projects[0];
+                } else {
+                    // Default project
+                    currentProject = {
+                        name: 'TechFlow Solutions',
+                        industry: 'Tecnología/SaaS',
+                        modelType: 'SaaS',
+                        phase: 'Pre-PMF',
+                        region: 'España',
+                        objectives: ['pmf', 'gtm'],
+                        mainConcerns: 'Necesitamos encontrar PMF antes del próximo funding round',
+                        status: 'En Discovery',
+                        progress: 75,
+                        created: new Date()
+                    };
+                }
+            }
+            
+            updateProjectDisplay();
+        }
+
+        function updateProjectDisplay() {
+            if (!currentProject) return;
+
+            // Update project name and info
+            const projectNameEl = document.getElementById('projectName');
+            const projectInfoEl = document.getElementById('projectInfo');
+            const projectObjectiveEl = document.getElementById('projectObjective');
+            const projectPhaseEl = document.getElementById('projectPhase');
+
+            if (projectNameEl) projectNameEl.textContent = currentProject.name;
+            if (projectInfoEl) projectInfoEl.textContent = `${currentProject.modelType || 'SaaS'} • ${currentProject.status}`;
+            if (projectObjectiveEl) projectObjectiveEl.textContent = currentProject.mainConcerns || 'Definir objetivos del proyecto';
+            if (projectPhaseEl) projectPhaseEl.textContent = currentProject.phase || 'Pre-PMF';
+
+            // Update module status based on project data
+            updateModuleStatus();
+        }
+
+        function updateModuleStatus() {
+            if (!currentProject || !currentProject.discovery) return;
+
+            // Update Discovery modules
+            if (currentProject.discovery.intake && currentProject.discovery.intake.completed) {
+                const intakeCard = document.querySelector('[onclick*="intake"]');
+                if (intakeCard) {
+                    intakeCard.classList.add('completed');
+                    const icon = intakeCard.querySelector('.fa-clock, .fa-circle');
+                    if (icon) {
+                        icon.className = 'fas fa-check text-green-600';
+                    }
+                }
+            }
+
+            if (currentProject.discovery.jtbd && currentProject.discovery.jtbd.completed) {
+                const jtbdCard = document.querySelector('[onclick*="jtbd"]');
+                if (jtbdCard) {
+                    jtbdCard.classList.add('completed');
+                    const icon = jtbdCard.querySelector('.fa-clock, .fa-circle');
+                    if (icon) {
+                        icon.className = 'fas fa-check text-green-600';
+                    }
+                }
+            }
+
+            if (currentProject.discovery.tensiones && currentProject.discovery.tensiones.completed) {
+                const tensionesCard = document.querySelector('[onclick*="tensiones"]');
+                if (tensionesCard) {
+                    tensionesCard.classList.add('completed');
+                    const icon = tensionesCard.querySelector('.fa-clock, .fa-circle');
+                    if (icon) {
+                        icon.className = 'fas fa-check text-green-600';
+                    }
+                }
+            }
+
+            if (currentProject.discovery.audiencias && currentProject.discovery.audiencias.completed) {
+                const audienciasCard = document.querySelector('[onclick*="audiencias"]');
+                if (audienciasCard) {
+                    audienciasCard.classList.add('completed');
+                    const icon = audienciasCard.querySelector('.fa-clock, .fa-circle');
+                    if (icon) {
+                        icon.className = 'fas fa-check text-green-600';
+                    }
+                }
+            }
+
+            // Update Strategy modules
+            if (currentProject.strategy && currentProject.strategy.valor && currentProject.strategy.valor.completed) {
+                const valorCard = document.querySelector('[onclick*="valor"]');
+                if (valorCard) {
+                    valorCard.classList.add('completed');
+                    const icon = valorCard.querySelector('.fa-clock, .fa-circle');
+                    if (icon) {
+                        icon.className = 'fas fa-check text-green-600';
+                    }
+                }
+            }
+        }
+
+        function openModule(moduleName) {
+            const routes = {
+                'intake': 'discovery-intake.html',
+                'jtbd': 'discovery-jtbd.html',
+                'tensiones': 'discovery-tensiones.html',
+                'audiencias': 'discovery-audiencias.html',
+                'valor': 'strategy-valor.html',
+                'narrativa': 'strategy-narrativa.html',
+                'funnels': 'gtm-funnels.html',
+                'canales': 'gtm-canales.html'
+            };
+
+            if (routes[moduleName]) {
+                // Save current module to localStorage
+                localStorage.setItem('sunstone_current_module', moduleName);
+                window.SunstoneUtils.showNotification(`Abriendo módulo: ${moduleName}`, 'info');
+                setTimeout(() => {
+                    window.location.href = routes[moduleName];
+                }, 500);
+            }
+        }
+
+        // Add hover effects to module cards
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentProject();
+            
+            const moduleCards = document.querySelectorAll('.module-card');
+            moduleCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#f3f4f6';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '#f9fafb';
+                });
+            });
+        });
+        </script>
+    <!-- Load shared utilities (notifications, etc.) -->
+    <script src="main.js"></script>
+</body>
+</html>

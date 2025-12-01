@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap - Sunstone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
+        .kanban-column { min-height: 500px; }
+        .initiative-card { transition: all 0.3s ease; cursor: pointer; }
+        .initiative-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .impact-high { border-left: 4px solid #dc2626; }
+        .impact-medium { border-left: 4px solid #f59e0b; }
+        .impact-low { border-left: 4px solid #10b981; }
+        .complexity-high { background-color: #fef2f2; }
+        .complexity-medium { background-color: #fffbeb; }
+        .complexity-low { background-color: #f0fdf4; }
+        .timeline-view { display: none; }
+        .timeline-view.active { display: block; }
+        .kanban-view.active { display: block; }
+        .timeline-bar { height: 40px; background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%); border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-gem text-2xl text-indigo-600 mr-3"></i>
+                        <span class="text-xl font-bold text-gray-900">Sunstone</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Nueva sesión
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
+                        <i class="fas fa-download mr-2"></i>Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Project Sidebar -->
+        <div class="w-64 bg-white shadow-lg min-h-screen">
+            <div class="p-6">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">TechFlow Solutions</h3>
+                    <p class="text-sm text-gray-600">B2B SaaS • En Discovery</p>
+                </div>
+                <nav class="space-y-2">
+                    <a href="project.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-chart-pie mr-3"></i>
+                        <span>Overview</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-search mr-3"></i>
+                        <span>Discovery</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-chess mr-3"></i>
+                        <span>Estrategia</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-funnel-dollar mr-3"></i>
+                        <span>GTM & Funnels</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 rounded-lg">
+                        <i class="fas fa-tasks mr-3"></i>
+                        <span class="font-medium">Roadmap</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-file-alt mr-3"></i>
+                        <span>Reportes</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Roadmap</h1>
+                        <p class="text-gray-600">Priorización y calendario de iniciativas</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <!-- View Toggle -->
+                        <div class="flex bg-gray-100 rounded-lg p-1">
+                            <button id="kanbanToggle" onclick="toggleView('kanban')" class="px-4 py-2 rounded-md bg-white text-gray-900 shadow-sm">
+                                <i class="fas fa-columns mr-2"></i>Kanban
+                            </button>
+                            <button id="timelineToggle" onclick="toggleView('timeline')" class="px-4 py-2 rounded-md text-gray-600 hover:text-gray-900">
+                                <i class="fas fa-chart-line mr-2"></i>Timeline
+                            </button>
+                        </div>
+                        <button class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i>Guardar
+                        </button>
+                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-check mr-2"></i>Completar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kanban View -->
+            <div id="kanbanView" class="kanban-view active">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Column 1: Ahora (0-4 semanas) -->
+                    <div class="kanban-column bg-white rounded-lg shadow-md">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">Ahora</h3>
+                                    <p class="text-sm text-gray-600">0-4 semanas</p>
+                                </div>
+                                <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">3 iniciativas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 space-y-4" id="ahoraColumn">
+                            <div class="initiative-card impact-high complexity-low bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Rediseñar homepage de valor</h4>
+                                    <div class="flex space-x-1">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Basada en JTBD y propuesta de valor clarificada</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">High Impact</span>
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Low Complexity</span>
+                                    </div>
+                                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Estrategia</span>
+                                </div>
+                                <div class="text-xs text-gray-500">Asignado a: Martín • Due: 2 semanas</div>
+                            </div>
+
+                            <div class="initiative-card impact-medium complexity-medium bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Secuencia de emails para audiencias</h4>
+                                    <div class="flex space-x-1">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Nurture campaigns segmentadas por buyer personas</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Medium Impact</span>
+                                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Medium Complexity</span>
+                                    </div>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">GTM</span>
+                                </div>
+                                <div class="text-xs text-gray-500">Asignado a: Equipo • Due: 3 semanas</div>
+                            </div>
+
+                            <div class="initiative-card impact-high complexity-low bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Workshop con equipo de ventas</h4>
+                                    <div class="flex space-x-1">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Validar JTBD y tensiones con usuarios reales</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">High Impact</span>
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Low Complexity</span>
+                                    </div>
+                                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">Discovery</span>
+                                </div>
+                                <div class="text-xs text-gray-500">Asignado a: Martín • Due: 1 semana</div>
+                            </div>
+                        </div>
+
+                        <div class="p-6">
+                            <button onclick="addInitiative('ahora')" class="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-gray-400 hover:text-gray-600">
+                                <i class="fas fa-plus mr-2"></i>Agregar iniciativa
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Próximo (1-3 meses) -->
+                    <div class="kanban-column bg-white rounded-lg shadow-md">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">Próximo</h3>
+                                    <p class="text-sm text-gray-600">1-3 meses</p>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">4 iniciativas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 space-y-4" id="proximoColumn">
+                            <div class="initiative-card impact-high complexity-medium bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Integración con CRM principal</h4>
+                                    <div class="flex space-x-1">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Conectar con Salesforce y HubSpot bidireccionalmente</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">High Impact</span>
+                                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Medium Complexity</span>
+                                    </div>
+                                    <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Feature</span>
+                                </div>
+                                <div class="text-xs text-gray-500">Asignado a: Dev Team • Due: 2 meses</div>
+                            </div>
+
+                            <div class="initiative-card impact-medium complexity-high bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Desarrollar modelo predictivo</h4>
+                                    <div class="flex space-x-1">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">IA para predecir probabilidad de cierre y timing</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Medium Impact</span>
+                                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">High Complexity</span>
+                                    </div>
+                                    <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Feature</span>
+                                </div>
+                                <div class="text-xs text-gray-500">Asignado a: Data Team • Due: 3 meses</div>
+                            </div>
+
+                            <div class="initiative-card impact-medium complexity-low bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Campañas de retargeting</h4>
+                                    <div class="flex space-x-1">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Ads segmentadas para visitantes no convertidos</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Medium Impact</span>
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Low Complexity</span>
+                                    </div>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">GTM</span>
+                                </div>
+                                <div class="text-xs text-gray-500">Asignado a: Marketing • Due: 6 semanas</div>
+                            </div>
+
+                            <div class="initiative-card impact-low complexity-medium bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Programa de referidos</h4>
+                                    <div class="flex space-x-1">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Sistema para que clientes refieran nuevos leads</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Low Impact</span>
+                                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Medium Complexity</span>
+                                    </div>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">GTM</span>
+                                </div>
+                                <div class="text-xs text-gray-500">Asignado a: Growth • Due: 2 meses</div>
+                            </div>
+                        </div>
+
+                        <div class="p-6">
+                            <button onclick="addInitiative('proximo')" class="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-gray-400 hover:text-gray-600">
+                                <i class="fas fa-plus mr-2"></i>Agregar iniciativa
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Después (>3 meses) -->
+                    <div class="kanban-column bg-white rounded-lg shadow-md">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">Después</h3>
+                                    <p class="text-sm text-gray-600">+3 meses</p>
+                                </div>
+                                <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">2 iniciativas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 space-y-4" id="despuesColumn">
+                            <div class="initiative-card impact-high complexity-high bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Expansión internacional</h4>
+                                    <div class="flex space-x-1">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Adaptación para mercados europeos y asiáticos</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">High Impact</span>
+                                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">High Complexity</span>
+                                    </div>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Scale</span>
+                                </div>
+                                <div class="text-xs text-gray-500">Asignado a: Strategy • Due: Q2 2025</div>
+                            </div>
+
+                            <div class="initiative-card impact-medium complexity-high bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Plataforma white-label</h4>
+                                    <div class="flex space-x-1">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Versión personalizable para partners</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Medium Impact</span>
+                                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">High Complexity</span>
+                                    </div>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Scale</span>
+                                </div>
+                                <div class="text-xs text-gray-500">Asignado a: Product • Due: Q3 2025</div>
+                            </div>
+                        </div>
+
+                        <div class="p-6">
+                            <button onclick="addInitiative('despues')" class="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-gray-400 hover:text-gray-600">
+                                <i class="fas fa-plus mr-2"></i>Agregar iniciativa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline View -->
+            <div id="timelineView" class="timeline-view">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Timeline de Iniciativas</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Q1 2025 -->
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-3">Q1 2025</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-red-600 rounded-full mr-4"></div>
+                                    <div class="flex-1">
+                                        <div class="timeline-bar" style="width: 30%;"></div>
+                                        <div class="text-sm font-medium text-gray-900 mt-1">Rediseñar homepage de valor</div>
+                                        <div class="text-xs text-gray-500">Semanas 1-2</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-blue-600 rounded-full mr-4"></div>
+                                    <div class="flex-1">
+                                        <div class="timeline-bar" style="width: 45%;"></div>
+                                        <div class="text-sm font-medium text-gray-900 mt-1">Workshop con equipo de ventas</div>
+                                        <div class="text-xs text-gray-500">Semana 1</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-green-600 rounded-full mr-4"></div>
+                                    <div class="flex-1">
+                                        <div class="timeline-bar" style="width: 60%;"></div>
+                                        <div class="text-sm font-medium text-gray-900 mt-1">Secuencia de emails para audiencias</div>
+                                        <div class="text-xs text-gray-500">Semanas 2-4</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Q2 2025 -->
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-3">Q2 2025</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-purple-600 rounded-full mr-4"></div>
+                                    <div class="flex-1">
+                                        <div class="timeline-bar" style="width: 75%;"></div>
+                                        <div class="text-sm font-medium text-gray-900 mt-1">Integración con CRM principal</div>
+                                        <div class="text-xs text-gray-500">Meses 2-3</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-yellow-600 rounded-full mr-4"></div>
+                                    <div class="flex-1">
+                                        <div class="timeline-bar" style="width: 50%;"></div>
+                                        <div class="text-sm font-medium text-gray-900 mt-1">Desarrollar modelo predictivo</div>
+                                        <div class="text-xs text-gray-500">Meses 2-4</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-indigo-600 rounded-full mr-4"></div>
+                                    <div class="flex-1">
+                                        <div class="timeline-bar" style="width: 35%;"></div>
+                                        <div class="text-sm font-medium text-gray-900 mt-1">Expansión internacional</div>
+                                        <div class="text-xs text-gray-500">Mes 3</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Resumen del roadmap</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-red-600">3</div>
+                        <div class="text-sm text-gray-600">Iniciativas urgentes</div>
+                        <div class="text-xs text-gray-500">Ahora</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-yellow-600">4</div>
+                        <div class="text-sm text-gray-600">Iniciativas próximas</div>
+                        <div class="text-xs text-gray-500">1-3 meses</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-600">2</div>
+                        <div class="text-sm text-gray-600">Iniciativas futuras</div>
+                        <div class="text-xs text-gray-500">+3 meses</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-indigo-600">9</div>
+                        <div class="text-sm text-gray-600">Total iniciativas</div>
+                        <div class="text-xs text-gray-500">2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Initiative Modal -->
+    <div id="addInitiativeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Nueva Iniciativa</h2>
+                        <button onclick="closeAddInitiativeModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Título</label>
+                            <input type="text" id="initiativeTitle" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: Desarrollar nueva feature">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                            <textarea id="initiativeDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Describe la iniciativa..."></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Impacto</label>
+                                <select id="initiativeImpact" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option>High</option>
+                                    <option>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Complejidad</label>
+                                <select id="initiativeComplexity" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option>High</option>
+                                    <option>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
+                                <select id="initiativeCategory" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option>Discovery</option>
+                                    <option>Estrategia</option>
+                                    <option>GTM</option>
+                                    <option>Feature</option>
+                                    <option>Scale</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Asignado a</label>
+                                <input type="text" id="initiativeAssignee" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: Martín">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 mt-8">
+                        <button onclick="closeAddInitiativeModal()" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                            Cancelar
+                        </button>
+                        <button onclick="saveInitiative()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                            Guardar iniciativa
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class RoadmapApp {
+            constructor() {
+                this.currentProject = null;
+                this.data = {
+                    ahora: [],
+                    proximo: [],
+                    despues: []
+                };
+                this.currentColumn = '';
+                this.currentInitiativeId = null;
+            }
+
+            function persistProject(project) {
+                if (!project) return;
+
+                localStorage.setItem('sunstone_current_project', JSON.stringify(project));
+
+                const projects = JSON.parse(localStorage.getItem('sunstone_projects') || '[]');
+                const projectIndex = projects.findIndex(p => p.id === project.id);
+                if (projectIndex !== -1) {
+                    projects[projectIndex] = project;
+                    localStorage.setItem('sunstone_projects', JSON.stringify(projects));
+                }
+            }
+
+
+            loadData() {
+                const saved = localStorage.getItem('sunstone_current_project');
+                if (saved) {
+                    this.currentProject = JSON.parse(saved);
+                    if (this.currentProject.strategy && this.currentProject.strategy.roadmap) {
+                        this.data = this.currentProject.strategy.roadmap.data || {
+                            ahora: [],
+                            proximo: [],
+                            despues: []
+                        };
+                    } else {
+                        // Load default demo data for new projects
+                        this.loadDefaultData();
+                    }
+                }
+            }
+
+            loadDefaultData() {
+                this.data = {
+                    ahora: [
+                        {
+                            id: 'init1',
+                            title: 'Rediseñar homepage de valor',
+                            description: 'Crear nueva landing page que comunique claramente la propuesta de valor',
+                            impact: 'High',
+                            complexity: 'Medium',
+                            category: 'GTM',
+                            assignee: 'Marketing Team',
+                            duration: '2 semanas',
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 'init2',
+                            title: 'Workshop con equipo de ventas',
+                            description: 'Sesión de alineación sobre nuevos procesos y herramientas',
+                            impact: 'High',
+                            complexity: 'Low',
+                            category: 'Discovery',
+                            assignee: 'Sales Team',
+                            duration: '1 semana',
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 'init3',
+                            title: 'Secuencia de emails para audiencias',
+                            description: 'Automatización de emails segmentados para diferentes buyer personas',
+                            impact: 'Medium',
+                            complexity: 'High',
+                            category: 'GTM',
+                            assignee: 'Marketing Team',
+                            duration: '4 semanas',
+                            createdAt: new Date().toISOString()
+                        }
+                    ],
+                    proximo: [
+                        {
+                            id: 'init4',
+                            title: 'Integración con CRM principal',
+                            description: 'Conectar con Salesforce y HubSpot bidireccionalmente',
+                            impact: 'High',
+                            complexity: 'Medium',
+                            category: 'Feature',
+                            assignee: 'Dev Team',
+                            duration: '2 meses',
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 'init5',
+                            title: 'Desarrollar modelo predictivo',
+                            description: 'IA para predecir probabilidad de cierre y timing',
+                            impact: 'Medium',
+                            complexity: 'High',
+                            category: 'Feature',
+                            assignee: 'Data Team',
+                            duration: '3 meses',
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 'init6',
+                            title: 'Campañas de retargeting',
+                            description: 'Ads segmentadas para visitantes no convertidos',
+                            impact: 'Medium',
+                            complexity: 'Low',
+                            category: 'GTM',
+                            assignee: 'Marketing',
+                            duration: '6 semanas',
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 'init7',
+                            title: 'Programa de referidos',
+                            description: 'Sistema de recompensas para clientes que refieran',
+                            impact: 'Low',
+                            complexity: 'Medium',
+                            category: 'Scale',
+                            assignee: 'Growth Team',
+                            duration: '2 meses',
+                            createdAt: new Date().toISOString()
+                        }
+                    ],
+                    despues: [
+                        {
+                            id: 'init8',
+                            title: 'Expansión internacional',
+                            description: 'Lanzamiento en mercados europeos y asiáticos',
+                            impact: 'High',
+                            complexity: 'High',
+                            category: 'Scale',
+                            assignee: 'International Team',
+                            duration: '6 meses',
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 'init9',
+                            title: 'Mobile app nativa',
+                            description: 'Aplicación móvil para acceso en campo',
+                            impact: 'Medium',
+                            complexity: 'High',
+                            category: 'Feature',
+                            assignee: 'Mobile Team',
+                            duration: '4 meses',
+                            createdAt: new Date().toISOString()
+                        }
+                    ]
+                };
+            }
+
+            saveData() {
+                if (!this.currentProject) return;
+
+                if (!this.currentProject.strategy) this.currentProject.strategy = {};
+                if (!this.currentProject.strategy.roadmap) {
+                    this.currentProject.strategy.roadmap = { completed: false, data: [] };
+                }
+
+                this.currentProject.strategy.roadmap.data = this.data;
+
+                persistProject(this.currentProject);
+            }
+
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                    type === 'success' ? 'bg-green-500 text-white' :
+                    type === 'error' ? 'bg-red-500 text-white' :
+                    'bg-blue-500 text-white'
+                }`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+
+            toggleView(view) {
+                const kanbanView = document.getElementById('kanbanView');
+                const timelineView = document.getElementById('timelineView');
+                const kanbanToggle = document.getElementById('kanbanToggle');
+                const timelineToggle = document.getElementById('timelineToggle');
+
+                if (view === 'kanban') {
+                    kanbanView.classList.add('active');
+                    timelineView.classList.remove('active');
+                    kanbanToggle.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+                    kanbanToggle.classList.remove('text-gray-600');
+                    timelineToggle.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+                    timelineToggle.classList.add('text-gray-600');
+                } else {
+                    timelineView.classList.add('active');
+                    kanbanView.classList.remove('active');
+                    timelineToggle.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+                    timelineToggle.classList.remove('text-gray-600');
+                    kanbanToggle.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+                    kanbanToggle.classList.add('text-gray-600');
+                }
+            }
+
+            openAddInitiativeModal(column) {
+                this.currentColumn = column;
+                document.getElementById('addInitiativeModal').classList.remove('hidden');
+            }
+
+            closeAddInitiativeModal() {
+                document.getElementById('addInitiativeModal').classList.add('hidden');
+                // Clear form
+                document.getElementById('initiativeTitle').value = '';
+                document.getElementById('initiativeDescription').value = '';
+                document.getElementById('initiativeImpact').selectedIndex = 0;
+                document.getElementById('initiativeComplexity').selectedIndex = 1;
+                document.getElementById('initiativeCategory').selectedIndex = 0;
+                document.getElementById('initiativeAssignee').value = '';
+                this.currentColumn = '';
+            }
+
+            addInitiative() {
+                const title = document.getElementById('initiativeTitle').value.trim();
+                const description = document.getElementById('initiativeDescription').value.trim();
+                const impact = document.getElementById('initiativeImpact').value;
+                const complexity = document.getElementById('initiativeComplexity').value;
+                const category = document.getElementById('initiativeCategory').value;
+                const assignee = document.getElementById('initiativeAssignee').value.trim();
+
+                if (!title || !description) {
+                    this.showNotification('Por favor completa todos los campos requeridos', 'error');
+                    return;
+                }
+
+                const newInitiative = {
+                    id: Date.now().toString(),
+                    title,
+                    description,
+                    impact,
+                    complexity,
+                    category,
+                    assignee: assignee || 'Sin asignar',
+                    duration: 'Pendiente',
+                    createdAt: new Date().toISOString()
+                };
+
+                this.data[this.currentColumn].push(newInitiative);
+                this.saveData();
+                this.renderInitiatives();
+                this.closeAddInitiativeModal();
+                this.showNotification('Iniciativa agregada exitosamente', 'success');
+            }
+
+            editInitiative(column, id) {
+                const initiative = this.data[column].find(i => i.id === id);
+                if (!initiative) return;
+
+                // Fill form with existing data
+                document.getElementById('initiativeTitle').value = initiative.title;
+                document.getElementById('initiativeDescription').value = initiative.description;
+                document.getElementById('initiativeImpact').value = initiative.impact;
+                document.getElementById('initiativeComplexity').value = initiative.complexity;
+                document.getElementById('initiativeCategory').value = initiative.category;
+                document.getElementById('initiativeAssignee').value = initiative.assignee;
+
+                // Store current initiative for updating
+                this.currentInitiativeId = id;
+                this.currentColumn = column;
+                
+                // Change button text and functionality
+                const saveButton = document.querySelector('#addInitiativeModal button[onclick*="save"]');
+                if (saveButton) {
+                    saveButton.textContent = 'Actualizar iniciativa';
+                    saveButton.onclick = () => this.updateInitiative();
+                }
+
+                this.openAddInitiativeModal(column);
+            }
+
+            updateInitiative() {
+                const title = document.getElementById('initiativeTitle').value.trim();
+                const description = document.getElementById('initiativeDescription').value.trim();
+                const impact = document.getElementById('initiativeImpact').value;
+                const complexity = document.getElementById('initiativeComplexity').value;
+                const category = document.getElementById('initiativeCategory').value;
+                const assignee = document.getElementById('initiativeAssignee').value.trim();
+
+                if (!title || !description) {
+                    this.showNotification('Por favor completa todos los campos requeridos', 'error');
+                    return;
+                }
+
+                const initiativeIndex = this.data[this.currentColumn].findIndex(i => i.id === this.currentInitiativeId);
+                if (initiativeIndex !== -1) {
+                    this.data[this.currentColumn][initiativeIndex] = {
+                        ...this.data[this.currentColumn][initiativeIndex],
+                        title,
+                        description,
+                        impact,
+                        complexity,
+                        category,
+                        assignee: assignee || 'Sin asignar'
+                    };
+
+                    this.saveData();
+                    this.renderInitiatives();
+                    this.closeAddInitiativeModal();
+                    this.showNotification('Iniciativa actualizada exitosamente', 'success');
+                }
+
+                // Reset button
+                const saveButton = document.querySelector('#addInitiativeModal button[onclick*="save"]');
+                if (saveButton) {
+                    saveButton.textContent = 'Guardar iniciativa';
+                    saveButton.onclick = () => this.addInitiative();
+                }
+            }
+
+            deleteInitiative(column, id) {
+                if (confirm('¿Estás seguro de eliminar esta iniciativa?')) {
+                    this.data[column] = this.data[column].filter(i => i.id !== id);
+                    this.saveData();
+                    this.renderInitiatives();
+                    this.showNotification('Iniciativa eliminada', 'info');
+                }
+            }
+
+            moveInitiative(column, id, newColumn) {
+                const initiative = this.data[column].find(i => i.id === id);
+                if (!initiative) return;
+
+                // Remove from old column
+                this.data[column] = this.data[column].filter(i => i.id !== id);
+                // Add to new column
+                this.data[newColumn].push(initiative);
+
+                this.saveData();
+                this.renderInitiatives();
+                this.showNotification('Iniciativa movida exitosamente', 'success');
+            }
+
+            createInitiativeCard(initiative, column) {
+                const impactClass = initiative.impact.toLowerCase() === 'high' ? 'impact-high' : 
+                                  initiative.impact.toLowerCase() === 'medium' ? 'impact-medium' : 'impact-low';
+                const complexityClass = initiative.complexity.toLowerCase() === 'high' ? 'complexity-high' : 
+                                      initiative.complexity.toLowerCase() === 'medium' ? 'complexity-medium' : 'complexity-low';
+                
+                const impactColor = initiative.impact.toLowerCase() === 'high' ? 'bg-red-100 text-red-800' : 
+                                  initiative.impact.toLowerCase() === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800';
+                const complexityColor = initiative.complexity.toLowerCase() === 'high' ? 'bg-red-100 text-red-800' : 
+                                      initiative.complexity.toLowerCase() === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800';
+                const categoryColor = initiative.category === 'Discovery' ? 'bg-indigo-100 text-indigo-800' :
+                                    initiative.category === 'Estrategia' ? 'bg-blue-100 text-blue-800' :
+                                    initiative.category === 'GTM' ? 'bg-purple-100 text-purple-800' :
+                                    initiative.category === 'Feature' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
+
+                const card = document.createElement('div');
+                card.className = `initiative-card ${impactClass} ${complexityClass} bg-gray-50 p-4 rounded-lg`;
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-3">
+                        <h4 class="font-medium text-gray-900">${initiative.title}</h4>
+                        <div class="flex space-x-1">
+                            <button onclick="roadmapApp.editInitiative('${column}', '${initiative.id}')" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="roadmapApp.deleteInitiative('${column}', '${initiative.id}')" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <div class="relative group">
+                                <button class="text-gray-600 hover:text-gray-800">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden group-hover:block z-10">
+                                    <div class="py-1">
+                                        <button onclick="roadmapApp.moveInitiative('${column}', '${initiative.id}', 'ahora')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mover a Ahora</button>
+                                        <button onclick="roadmapApp.moveInitiative('${column}', '${initiative.id}', 'proximo')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mover a Próximo</button>
+                                        <button onclick="roadmapApp.moveInitiative('${column}', '${initiative.id}', 'despues')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mover a Después</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">${initiative.description}</p>
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex space-x-2">
+                            <span class="text-xs ${impactColor} px-2 py-1 rounded">${initiative.impact} Impact</span>
+                            <span class="text-xs ${complexityColor} px-2 py-1 rounded">${initiative.complexity} Complexity</span>
+                        </div>
+                        <span class="text-xs ${categoryColor} px-2 py-1 rounded">${initiative.category}</span>
+                    </div>
+                    <div class="text-xs text-gray-500">Asignado a: ${initiative.assignee} • Due: ${initiative.duration}</div>
+                `;
+
+                return card;
+            }
+
+            renderInitiatives() {
+                // Clear all columns
+                document.getElementById('ahoraColumn').innerHTML = '';
+                document.getElementById('proximoColumn').innerHTML = '';
+                document.getElementById('despuesColumn').innerHTML = '';
+
+                // Render initiatives in each column
+                this.data.ahora.forEach(initiative => {
+                    const card = this.createInitiativeCard(initiative, 'ahora');
+                    document.getElementById('ahoraColumn').appendChild(card);
+                });
+
+                this.data.proximo.forEach(initiative => {
+                    const card = this.createInitiativeCard(initiative, 'proximo');
+                    document.getElementById('proximoColumn').appendChild(card);
+                });
+
+                this.data.despues.forEach(initiative => {
+                    const card = this.createInitiativeCard(initiative, 'despues');
+                    document.getElementById('despuesColumn').appendChild(card);
+                });
+
+                this.updateSummaryStats();
+            }
+
+            updateSummaryStats() {
+                const ahoraCount = this.data.ahora.length;
+                const proximoCount = this.data.proximo.length;
+                const despuesCount = this.data.despues.length;
+                const totalCount = ahoraCount + proximoCount + despuesCount;
+
+                // Update column counts
+                document.querySelector('#ahoraColumn').previousElementSibling.querySelector('span').textContent = `${ahoraCount} iniciativas`;
+                document.querySelector('#proximoColumn').previousElementSibling.querySelector('span').textContent = `${proximoCount} iniciativas`;
+                document.querySelector('#despuesColumn').previousElementSibling.querySelector('span').textContent = `${despuesCount} iniciativas`;
+
+                // Update summary stats
+                const statsElements = document.querySelectorAll('.text-2xl.font-bold');
+                if (statsElements.length >= 4) {
+                    statsElements[0].textContent = ahoraCount;
+                    statsElements[1].textContent = proximoCount;
+                    statsElements[2].textContent = despuesCount;
+                    statsElements[3].textContent = totalCount;
+                }
+            }
+
+            // Initialize app
+            init() {
+                this.loadData();
+                this.renderInitiatives();
+                this.setupEventListeners();
+            }
+
+            // Setup event listeners
+            setupEventListeners() {
+                // View toggle buttons
+                document.getElementById('kanbanToggle').addEventListener('click', () => this.toggleView('kanban'));
+                document.getElementById('timelineToggle').addEventListener('click', () => this.toggleView('timeline'));
+
+                // Modal close button
+                document.querySelector('#addInitiativeModal button[onclick*="close"]').onclick = () => this.closeAddInitiativeModal();
+
+                // Modal save button
+                const saveButton = document.querySelector('#addInitiativeModal button[onclick*="save"]');
+                if (saveButton) {
+                    saveButton.onclick = () => this.addInitiative();
+                }
+
+                // Click outside modal to close
+                document.getElementById('addInitiativeModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('addInitiativeModal')) {
+                        this.closeAddInitiativeModal();
+                    }
+                });
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.roadmapApp = new RoadmapApp();
+            roadmapApp.init();
+        });
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>

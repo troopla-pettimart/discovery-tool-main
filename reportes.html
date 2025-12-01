@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - Sunstone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
+        .report-section { transition: all 0.3s ease; }
+        .report-section:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .section-card { border-left: 4px solid #4f46e5; }
+        .preview-content { max-height: 200px; overflow-y: auto; }
+        .export-button { transition: all 0.3s ease; }
+        .export-button:hover { transform: translateY(-1px); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-gem text-2xl text-indigo-600 mr-3"></i>
+                        <span class="text-xl font-bold text-gray-900">Sunstone</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Nueva sesión
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
+                        <i class="fas fa-download mr-2"></i>Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Project Sidebar -->
+        <div class="w-64 bg-white shadow-lg min-h-screen">
+            <div class="p-6">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">TechFlow Solutions</h3>
+                    <p class="text-sm text-gray-600">B2B SaaS • En Discovery</p>
+                </div>
+                <nav class="space-y-2">
+                    <a href="project.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-chart-pie mr-3"></i>
+                        <span>Overview</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-search mr-3"></i>
+                        <span>Discovery</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-chess mr-3"></i>
+                        <span>Estrategia</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-funnel-dollar mr-3"></i>
+                        <span>GTM & Funnels</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-tasks mr-3"></i>
+                        <span>Roadmap</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 rounded-lg">
+                        <i class="fas fa-file-alt mr-3"></i>
+                        <span class="font-medium">Reportes</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Reportes</h1>
+                        <p class="text-gray-600">Genera documentos consolidados del proyecto</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="exportAll()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-file-pdf mr-2"></i>Exportar todo
+                        </button>
+                        <button onclick="shareReport()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-share mr-2"></i>Compartir
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Sections -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Column: Report Builder -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Constructor de reporte</h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Resumen Ejecutivo -->
+                            <div class="report-section section-card bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" checked class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3">
+                                        <h4 class="font-medium text-gray-900">Resumen ejecutivo</h4>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-600">Síntesis del proyecto, objetivos y hallazgos clave</p>
+                            </div>
+
+                            <!-- Contexto & Diagnóstico -->
+                            <div class="report-section section-card bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" checked class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3">
+                                        <h4 class="font-medium text-gray-900">Contexto & diagnóstico</h4>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-600">Información recolectada durante el intake y análisis inicial</p>
+                            </div>
+
+                            <!-- JTBD & Tensiones -->
+                            <div class="report-section section-card bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" checked class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3">
+                                        <h4 class="font-medium text-gray-900">JTBD & tensiones</h4>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-600">Jobs to Be Done identificados y matriz de tensiones</p>
+                            </div>
+
+                            <!-- Audiencias -->
+                            <div class="report-section section-card bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" checked class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3">
+                                        <h4 class="font-medium text-gray-900">Audiencias</h4>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-600">Buyer personas definidas y clusters de audiencia</p>
+                            </div>
+
+                            <!-- Propuesta de Valor -->
+                            <div class="report-section section-card bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" checked class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3">
+                                        <h4 class="font-medium text-gray-900">Propuesta de valor</h4>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-600">Valor, diferenciales y features del producto</p>
+                            </div>
+
+                            <!-- Narrativa -->
+                            <div class="report-section section-card bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3">
+                                        <h4 class="font-medium text-gray-900">Narrativa</h4>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-600">Historia de marca y mensajes clave</p>
+                            </div>
+
+                            <!-- GTM & Funnels -->
+                            <div class="report-section section-card bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3">
+                                        <h4 class="font-medium text-gray-900">GTM & Funnels</h4>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-600">Estrategia de Go-To-Market y funnels por audiencia</p>
+                            </div>
+
+                            <!-- Roadmap -->
+                            <div class="report-section section-card bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3">
+                                        <h4 class="font-medium text-gray-900">Roadmap</h4>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-600">Priorización y timeline de iniciativas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Options -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Opciones de exportación</h3>
+                        
+                        <div class="space-y-3">
+                            <button onclick="exportToPDF()" class="export-button w-full flex items-center justify-center px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                                <i class="fas fa-file-pdf mr-3"></i>
+                                Exportar como PDF
+                            </button>
+                            
+                            <button onclick="exportToNotion()" class="export-button w-full flex items-center justify-center px-4 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900">
+                                <i class="fas fa-book-open mr-3"></i>
+                                Exportar a Notion
+                            </button>
+                            
+                            <button onclick="exportToSlides()" class="export-button w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                <i class="fas fa-presentation mr-3"></i>
+                                Exportar a Google Slides
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Preview -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Vista previa</h3>
+                        
+                        <div class="preview-content space-y-4">
+                            <!-- Resumen Ejecutivo Preview -->
+                            <div class="border-l-4 border-indigo-600 pl-4">
+                                <h4 class="font-medium text-gray-900 mb-2">Resumen Ejecutivo</h4>
+                                <div class="text-sm text-gray-600 space-y-2">
+                                    <p><strong>Proyecto:</strong> TechFlow Solutions - Discovery & Estrategia</p>
+                                    <p><strong>Objetivo:</strong> Encontrar Product-Market Fit y diseñar GTM</p>
+                                    <p><strong>Fase:</strong> Pre-PMF</p>
+                                    <p><strong>Equipo:</strong> 5-10 personas en ventas</p>
+                                </div>
+                            </div>
+
+                            <!-- Contexto Preview -->
+                            <div class="border-l-4 border-blue-600 pl-4">
+                                <h4 class="font-medium text-gray-900 mb-2">Contexto & Diagnóstico</h4>
+                                <div class="text-sm text-gray-600 space-y-1">
+                                    <p>• Equipos de ventas pierden 60% del tiempo en tareas administrativas</p>
+                                    <p>• Procesos manuales ineficientes causan pérdida de oportunidades</p>
+                                    <p>• Falta de visibilidad del pipeline en tiempo real</p>
+                                    <p>• Necesidad de integración con sistemas existentes</p>
+                                </div>
+                            </div>
+
+                            <!-- JTBD Preview -->
+                            <div class="border-l-4 border-green-600 pl-4">
+                                <h4 class="font-medium text-gray-900 mb-2">Jobs to Be Done</h4>
+                                <div class="text-sm text-gray-600 space-y-1">
+                                    <p>1. <strong>Ayudarme a cumplir mis objetivos de venta</strong></p>
+                                    <p>2. <strong>Reducir el tiempo en tareas administrativas</strong></p>
+                                    <p>3. <strong>Tener visibilidad clara del performance</strong></p>
+                                </div>
+                            </div>
+
+                            <!-- Audiencias Preview -->
+                            <div class="border-l-4 border-purple-600 pl-4">
+                                <h4 class="font-medium text-gray-900 mb-2">Audiencias Principales</h4>
+                                <div class="text-sm text-gray-600 space-y-1">
+                                    <p>• <strong>Sarah Chen</strong> - Sales Manager (Decisor)</p>
+                                    <p>• <strong>Mike Rodriguez</strong> - Sales Rep (Usuario)</p>
+                                    <p>• <strong>David Thompson</strong> - VP Sales (Decisor)</p>
+                                    <p>• <strong>Lisa Park</strong> - Sales Operations (Influenciador)</p>
+                                </div>
+                            </div>
+
+                            <!-- Propuesta de Valor Preview -->
+                            <div class="border-l-4 border-red-600 pl-4">
+                                <h4 class="font-medium text-gray-900 mb-2">Propuesta de Valor</h4>
+                                <div class="text-sm text-gray-600 space-y-2">
+                                    <p><strong>Valor:</strong> Aumentar productividad, mejorar conversión, visibilidad real</p>
+                                    <p><strong>Diferenciales:</strong> IA conversacional, integración zero-touch, modelo predictivo</p>
+                                    <p><strong>Features:</strong> Transcripción automática, CRM bidireccional, scoring de leads</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Report Summary -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Resumen del reporte</h3>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Secciones incluidas:</span>
+                                <span class="text-sm font-medium text-gray-900">5 de 8</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Páginas estimadas:</span>
+                                <span class="text-sm font-medium text-gray-900">~25 páginas</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Módulos completados:</span>
+                                <span class="text-sm font-medium text-green-600">Discovery: 100%</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Próximo entregable:</span>
+                                <span class="text-sm font-medium text-gray-900">Estrategia v1</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <div class="flex items-start">
+                                <i class="fas fa-lightbulb text-yellow-600 mr-2 mt-1 text-sm"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Sugerencia</p>
+                                    <p class="text-xs text-gray-600">Considera incluir la narrativa para un reporte más completo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Success Modal -->
+    <div id="exportModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-md w-full">
+                <div class="p-6 text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">¡Exportación exitosa!</h3>
+                    <p class="text-gray-600 mb-6">Tu reporte ha sido generado y está listo para descargar.</p>
+                    <div class="flex space-x-3">
+                        <button onclick="closeExportModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                            Cerrar
+                        </button>
+                        <button onclick="downloadReport()" class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                            Descargar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ReportesApp {
+            constructor() {
+                this.currentProject = null;
+                this.selectedSections = new Set();
+                this.reportData = {};
+            }
+
+            loadData() {
+                const saved = localStorage.getItem('sunstone_current_project');
+                if (saved) {
+                    this.currentProject = JSON.parse(saved);
+                    this.loadReportData();
+                }
+            }
+
+            loadReportData() {
+                // Collect data from all modules
+                this.reportData = {
+                    project: {
+                        name: this.currentProject?.name || 'Proyecto sin nombre',
+                        modelType: this.currentProject?.modelType || 'SaaS',
+                        status: this.currentProject?.status || 'En Discovery',
+                        createdAt: this.currentProject?.createdAt || new Date().toISOString()
+                    },
+                    discovery: {
+                        intake: this.currentProject?.discovery?.intake?.data || {},
+                        jtbd: this.currentProject?.discovery?.jtbd?.data || [],
+                        tensiones: this.currentProject?.discovery?.tensiones?.data || [],
+                        audiencias: this.currentProject?.discovery?.audiencias?.data || []
+                    },
+                    strategy: {
+                        valor: this.currentProject?.strategy?.valor?.data || {}
+                    },
+                    roadmap: this.currentProject?.strategy?.roadmap?.data || {}
+                };
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                    type === 'success' ? 'bg-green-500 text-white' :
+                    type === 'error' ? 'bg-red-500 text-white' :
+                    'bg-blue-500 text-white'
+                }`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+
+            toggleSection(sectionId) {
+                if (this.selectedSections.has(sectionId)) {
+                    this.selectedSections.delete(sectionId);
+                } else {
+                    this.selectedSections.add(sectionId);
+                }
+                this.updatePreview();
+                this.updateSummary();
+            }
+
+            updatePreview() {
+                const previewContent = document.getElementById('previewContent');
+                if (!previewContent) return;
+
+                let content = `
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-gray-900 mb-3">${this.reportData.project.name}</h4>
+                        <p class="text-sm text-gray-600 mb-4">Modelo: ${this.reportData.project.modelType} • Estado: ${this.reportData.project.status}</p>
+                    </div>
+                `;
+
+                // Add selected sections to preview
+                if (this.selectedSections.has('intake')) {
+                    const intakeData = this.reportData.discovery.intake;
+                    content += `
+                        <div class="mb-4">
+                            <h5 class="font-medium text-gray-800 mb-2">Información General</h5>
+                            <p class="text-sm text-gray-600">${intakeData.companyName || 'Sin datos'}</p>
+                            <p class="text-sm text-gray-600">${intakeData.industry || 'Sin industria'}</p>
+                        </div>
+                    `;
+                }
+
+                if (this.selectedSections.has('jtbd')) {
+                    const jtbdData = this.reportData.discovery.jtbd;
+                    content += `
+                        <div class="mb-4">
+                            <h5 class="font-medium text-gray-800 mb-2">Jobs to be Done</h5>
+                            <p class="text-sm text-gray-600">${jtbdData.length || 0} jobs identificados</p>
+                        </div>
+                    `;
+                }
+
+                if (this.selectedSections.has('valor')) {
+                    const valorData = this.reportData.strategy.valor;
+                    content += `
+                        <div class="mb-4">
+                            <h5 class="font-medium text-gray-800 mb-2">Propuesta de Valor</h5>
+                            <p class="text-sm text-gray-600">${valorData.valor?.length || 0} valores identificados</p>
+                            <p class="text-sm text-gray-600">${valorData.diferencial?.length || 0} diferenciales</p>
+                            <p class="text-sm text-gray-600">${valorData.features?.length || 0} features</p>
+                        </div>
+                    `;
+                }
+
+                if (this.selectedSections.has('roadmap')) {
+                    const roadmapData = this.reportData.roadmap;
+                    const totalInitiatives = (roadmapData.ahora?.length || 0) + 
+                                           (roadmapData.proximo?.length || 0) + 
+                                           (roadmapData.despues?.length || 0);
+                    content += `
+                        <div class="mb-4">
+                            <h5 class="font-medium text-gray-800 mb-2">Roadmap</h5>
+                            <p class="text-sm text-gray-600">${totalInitiatives} iniciativas planificadas</p>
+                        </div>
+                    `;
+                }
+
+                previewContent.innerHTML = content;
+            }
+
+            updateSummary() {
+                const checkedCount = this.selectedSections.size;
+                const totalCount = 8; // Total sections available
+                
+                // Update summary stats
+                const summaryElements = document.querySelectorAll('.space-y-3 .flex');
+                if (summaryElements.length >= 4) {
+                    summaryElements[0].querySelector('span:last-child').textContent = `${checkedCount} de ${totalCount}`;
+                    summaryElements[1].querySelector('span:last-child').textContent = `~${checkedCount * 5} páginas`;
+                    
+                    const completedModules = this.calculateCompletedModules();
+                    summaryElements[2].querySelector('span:last-child').textContent = completedModules;
+                }
+
+                // Update suggestion
+                this.updateSuggestion();
+            }
+
+            calculateCompletedModules() {
+                let completed = 0;
+                let total = 0;
+
+                // Discovery modules
+                if (this.reportData.discovery.intake && Object.keys(this.reportData.discovery.intake).length > 0) completed++;
+                if (this.reportData.discovery.jtbd && this.reportData.discovery.jtbd.length > 0) completed++;
+                if (this.reportData.discovery.tensiones && this.reportData.discovery.tensiones.length > 0) completed++;
+                if (this.reportData.discovery.audiencias && this.reportData.discovery.audiencias.length > 0) completed++;
+                total += 4;
+
+                // Strategy modules
+                if (this.reportData.strategy.valor && 
+                    (this.reportData.strategy.valor.valor?.length > 0 || 
+                     this.reportData.strategy.valor.diferencial?.length > 0)) completed++;
+                total++;
+
+                // Roadmap
+                if (this.reportData.roadmap && 
+                    (this.reportData.roadmap.ahora?.length > 0 || 
+                     this.reportData.roadmap.proximo?.length > 0)) completed++;
+                total++;
+
+                return `Discovery: ${Math.round((completed/total)*100)}%`;
+            }
+
+            updateSuggestion() {
+                const suggestionElement = document.querySelector('.bg-yellow-50 .text-xs');
+                if (!suggestionElement) return;
+
+                if (this.selectedSections.has('valor') && !this.selectedSections.has('narrativa')) {
+                    suggestionElement.textContent = 'Considera incluir la narrativa para un reporte más completo';
+                } else if (this.selectedSections.has('jtbd') && !this.selectedSections.has('gtm')) {
+                    suggestionElement.textContent = 'Las JTBD pueden ayudar a definir mejor la estrategia GTM';
+                } else {
+                    suggestionElement.textContent = 'Tu reporte está bien estructurado';
+                }
+            }
+
+            generateReport() {
+                if (this.selectedSections.size === 0) {
+                    this.showNotification('Selecciona al menos una sección para exportar', 'error');
+                    return;
+                }
+
+                this.showNotification(`Generando reporte con ${this.selectedSections.size} secciones...`, 'info');
+
+                // Simulate report generation
+                setTimeout(() => {
+                    document.getElementById('exportModal').classList.remove('hidden');
+                }, 2000);
+            }
+
+            exportToPDF() {
+                this.showNotification('Generando PDF...', 'info');
+                
+                setTimeout(() => {
+                    document.getElementById('exportModal').classList.remove('hidden');
+                }, 2000);
+            }
+
+            exportToNotion() {
+                this.showNotification('Exportando a Notion...', 'info');
+                
+                setTimeout(() => {
+                    this.showNotification('Exportado a Notion exitosamente', 'success');
+                }, 2000);
+            }
+
+            exportToSlides() {
+                this.showNotification('Exportando a Google Slides...', 'info');
+                
+                setTimeout(() => {
+                    this.showNotification('Exportado a Slides exitosamente', 'success');
+                }, 2000);
+            }
+
+            shareReport() {
+                // Generate shareable link
+                const shareData = {
+                    project: this.currentProject?.id,
+                    sections: Array.from(this.selectedSections),
+                    timestamp: new Date().toISOString()
+                };
+                
+                const shareLink = `${window.location.origin}/reportes.html?share=${btoa(JSON.stringify(shareData))}`;
+                
+                // Copy to clipboard
+                navigator.clipboard.writeText(shareLink).then(() => {
+                    this.showNotification('Enlace de compartir copiado al portapapeles', 'success');
+                }).catch(() => {
+                    this.showNotification('No se pudo copiar el enlace', 'error');
+                });
+            }
+
+            closeExportModal() {
+                document.getElementById('exportModal').classList.add('hidden');
+            }
+
+            downloadReport() {
+                this.showNotification('Descarga iniciada', 'success');
+                this.closeExportModal();
+            }
+
+            // Initialize app
+            init() {
+                this.loadData();
+                this.updatePreview();
+                this.setupEventListeners();
+            }
+
+            // Setup event listeners
+            setupEventListeners() {
+                // Section checkboxes
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', (e) => {
+                        const sectionId = e.target.closest('.report-section')?.querySelector('h4')?.textContent.toLowerCase().replace(/\s+/g, '-');
+                        if (sectionId) {
+                            this.toggleSection(sectionId);
+                        }
+                    });
+                });
+
+                // Export buttons
+                document.querySelector('button[onclick*="exportAll"]').onclick = () => this.generateReport();
+                document.querySelector('button[onclick*="PDF"]').onclick = () => this.exportToPDF();
+                document.querySelector('button[onclick*="Notion"]').onclick = () => this.exportToNotion();
+                document.querySelector('button[onclick*="Slides"]').onclick = () => this.exportToSlides();
+                document.querySelector('button[onclick*="share"]').onclick = () => this.shareReport();
+
+                // Modal buttons
+                document.querySelector('#exportModal button[onclick*="close"]').onclick = () => this.closeExportModal();
+                document.querySelector('#exportModal button[onclick*="download"]').onclick = () => this.downloadReport();
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.reportesApp = new ReportesApp();
+            reportesApp.init();
+        });
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>
