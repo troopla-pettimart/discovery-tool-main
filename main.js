@@ -333,32 +333,34 @@ class SunstoneApp {
     }
 
     validateCurrentStep() {
-        switch (this.currentStep) {
-            case 1:
-                const projectName = document.querySelector('input[placeholder*="Ej: TechFlow Solutions"]')?.value;
-                if (!projectName || projectName.trim().length < 3) {
-                    this.showNotification('Por favor ingresa un nombre de proyecto válido', 'error');
-                    return false;
-                }
-                break;
-            case 2:
-                const mainConcerns = document.getElementById('mainConcerns')?.value;
-                if (!mainConcerns || mainConcerns.trim().length < 10) {
-                    this.showNotification('Por favor describe tus preocupaciones principales', 'error');
-                    return false;
-                }
-                break;
-            case 3:
-                const duration = document.getElementById('duration')?.value;
-                const deliverable = document.getElementById('deliverable')?.value;
-                if (!duration || !deliverable) {
-                    this.showNotification('Por favor completa todos los campos', 'error');
-                    return false;
-                }
-                break;
+        if (this.currentStep === 1) {
+            const projectName = document.getElementById('projectNameInput')?.value;
+            if (!projectName || projectName.trim().length < 3) {
+                this.showNotification('Por favor ingresa un nombre de proyecto válido', 'error');
+                return false;
+            }
         }
+
+        if (this.currentStep === 2) {
+            const concerns = document.getElementById('mainConcerns')?.value;
+            if (!concerns || concerns.trim().length < 10) {
+                this.showNotification('Por favor describe tus preocupaciones principales', 'error');
+                return false;
+            }
+        }
+
+        if (this.currentStep === 3) {
+            const duration = document.getElementById('duration')?.value;
+            const deliverable = document.getElementById('deliverable')?.value;
+            if (!duration || !deliverable) {
+                this.showNotification('Por favor completa todos los campos', 'error');
+                return false;
+            }
+        }
+
         return true;
     }
+
 
     updateStepIndicator() {
         const steps = document.querySelectorAll('.flex.items-center .flex.items-center');
@@ -381,38 +383,79 @@ class SunstoneApp {
     }
 
     showStep(stepNumber) {
-        const step1 = document.getElementById('step1');
+        const stepContainer = document.getElementById('step1'); // This is our only container
         const nextBtn = document.getElementById('nextStep');
-        
-        // Hide all steps
-        if (step1) {
-            step1.style.display = 'none';
+
+        if (!stepContainer) return;
+
+        // STEP 1
+        if (stepNumber === 1) {
+            stepContainer.style.display = 'block';
+            stepContainer.innerHTML = `
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del proyecto</label>
+                    <input type="text" id="projectNameInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: TechFlow Solutions">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Industria</label>
+                    <select id="industrySelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">Selecciona una industria</option>
+                        <option value="Tecnología/SaaS">Tecnología/SaaS</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="E-commerce">E-commerce</option>
+                        <option value="Fintech">Fintech</option>
+                        <option value="Educación">Educación</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de modelo</label>
+                    <select id="modelTypeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">Selecciona un modelo</option>
+                        <option value="SaaS">SaaS</option>
+                        <option value="Marketplace">Marketplace</option>
+                        <option value="Servicio">Servicio</option>
+                        <option value="E-commerce">E-commerce</option>
+                        <option value="Hardware">Hardware</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Fase</label>
+                    <select id="phaseSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">Selecciona una fase</option>
+                        <option value="Idea/Concepto">Idea/Concepto</option>
+                        <option value="Pre-PMF">Pre-PMF</option>
+                        <option value="Post-PMF">Post-PMF</option>
+                        <option value="Scale-up">Scale-up</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">País/región principal</label>
+                    <input type="text" id="regionInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: España">
+                </div>
+            `;
+
+            if (nextBtn) nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
+
+            return;
         }
-        
-        // Show current step
-        switch(stepNumber) {
-            case 1:
-                if (step1) {
-                    step1.style.display = 'block';
-                }
-                if (nextBtn) {
-                    nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
-                }
-                break;
-            case 2:
-                this.renderStep2();
-                if (nextBtn) {
-                    nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
-                }
-                break;
-            case 3:
-                this.renderStep3();
-                if (nextBtn) {
-                    nextBtn.innerHTML = 'Crear proyecto <i class="fas fa-check ml-2"></i>';
-                }
-                break;
+
+        // STEP 2
+        if (stepNumber === 2) {
+            this.renderStep2();
+            if (nextBtn) nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
+            return;
+        }
+
+        // STEP 3
+        if (stepNumber === 3) {
+            this.renderStep3();
+            if (nextBtn) nextBtn.innerHTML = 'Crear proyecto <i class="fas fa-check ml-2"></i>';
+            return;
         }
     }
+
 
     renderStep2() {
         const step1 = document.getElementById('step1');

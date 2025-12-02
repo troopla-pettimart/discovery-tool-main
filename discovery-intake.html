@@ -472,6 +472,18 @@
             setupAutoSave();
         });
     </script>
+
+    <!-- Instantiate Supabase client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    window.supabase = supabase.createClient(
+        "https://reezovhnmonzaafhigjz.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM"
+    );
+    </script>
+
+    <!-- Main shared logic -->
     <script src="main.js"></script>
+
 </body>
 </html>

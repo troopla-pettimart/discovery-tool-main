@@ -280,6 +280,29 @@
         // Project data management
         let currentProject = null;
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentProject = JSON.parse(localStorage.getItem("sunstone_current_project"));
+
+            if (!currentProject) {
+                alert("No hay proyecto cargado.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            // Populate header info
+            const nameEl = document.getElementById("projectName");
+            const industryEl = document.getElementById("projectIndustry");
+            const phaseEl = document.getElementById("projectPhase");
+
+            if (nameEl) nameEl.textContent = currentProject.name || "Sin nombre";
+            if (industryEl) industryEl.textContent = currentProject.industry || "N/A";
+            if (phaseEl) phaseEl.textContent = currentProject.phase || "N/A";
+
+            // Store ID for module navigation
+            window.currentProjectId = currentProject.id;
+        });
+
+
         function loadCurrentProject() {
             // Try to get current project from localStorage
             const saved = localStorage.getItem('sunstone_current_project');
@@ -390,26 +413,24 @@
         }
 
         function openModule(moduleName) {
-            const routes = {
-                'intake': 'discovery-intake.html',
-                'jtbd': 'discovery-jtbd.html',
-                'tensiones': 'discovery-tensiones.html',
-                'audiencias': 'discovery-audiencias.html',
-                'valor': 'strategy-valor.html',
-                'narrativa': 'strategy-narrativa.html',
-                'funnels': 'gtm-funnels.html',
-                'canales': 'gtm-canales.html'
+            const moduleRoutes = {
+                "contexto": "discovery-intake.html",
+                "audiencias": "discovery-audiencias.html",
+                "jtbd": "discovery-jtbd.html",
+                "tensiones": "discovery-tensiones.html",
+                "valor": "strategy-valor.html",
+                "roadmap": "roadmap.html"
             };
 
-            if (routes[moduleName]) {
-                // Save current module to localStorage
-                localStorage.setItem('sunstone_current_module', moduleName);
-                window.SunstoneUtils.showNotification(`Abriendo módulo: ${moduleName}`, 'info');
-                setTimeout(() => {
-                    window.location.href = routes[moduleName];
-                }, 500);
-            }
+            const currentProject = JSON.parse(localStorage.getItem("sunstone_current_project"));
+            if (!currentProject) return;
+
+            localStorage.setItem("sunstone_current_module", moduleName);
+
+            const target = moduleRoutes[moduleName];
+            if (target) window.location.href = target;
         }
+
 
         // Add hover effects to module cards
         document.addEventListener('DOMContentLoaded', function() {
@@ -426,7 +447,8 @@
             });
         });
         </script>
-    <!-- Load shared utilities (notifications, etc.) -->
+    <!-- Load shared app logic / utilities -->
     <script src="main.js"></script>
 </body>
 </html>
+

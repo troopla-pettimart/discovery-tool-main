@@ -1,570 +1,655 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discovery JTBD - Sunstone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
-        .jtbd-card { transition: all 0.3s ease; border-left: 4px solid #4f46e5; }
-        .jtbd-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .relevance-stars { color: #fbbf24; }
-        .suggestion-card { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); }
-        .drag-handle { cursor: grab; }
-        .drag-handle:active { cursor: grabbing; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Discovery – Jobs To Be Done | Sunstone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome (icons) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <style>
+    body {
+      background: #f3f4f6;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .jtbd-card {
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .jtbd-card:hover {
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
-<body class="gradient-bg min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <i class="fas fa-gem text-2xl text-indigo-600 mr-3"></i>
-                        <span class="text-xl font-bold text-gray-900">Sunstone</span>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>Nueva sesión
-                    </button>
-                    <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
-                        <i class="fas fa-download mr-2"></i>Exportar
-                    </button>
-                </div>
-            </div>
+
+<body class="min-h-screen flex flex-col">
+  <!-- Top bar -->
+  <header class="w-full bg-white border-b border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-8 w-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
+          S
         </div>
-    </nav>
-
-    <div class="flex">
-        <!-- Project Sidebar -->
-        <div class="w-64 bg-white shadow-lg min-h-screen">
-            <div class="p-6">
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">TechFlow Solutions</h3>
-                    <p class="text-sm text-gray-600">B2B SaaS • En Discovery</p>
-                </div>
-                <nav class="space-y-2">
-                    <a href="project.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-chart-pie mr-3"></i>
-                        <span>Overview</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 rounded-lg">
-                        <i class="fas fa-search mr-3"></i>
-                        <span class="font-medium">Discovery</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-chess mr-3"></i>
-                        <span>Estrategia</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-funnel-dollar mr-3"></i>
-                        <span>GTM & Funnels</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-tasks mr-3"></i>
-                        <span>Roadmap</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-file-alt mr-3"></i>
-                        <span>Reportes</span>
-                    </a>
-                </nav>
-            </div>
+        <div>
+          <h1 class="text-sm font-semibold text-gray-900">
+            Sunstone Discovery
+          </h1>
+          <p class="text-xs text-gray-500">
+            Módulo: Jobs To Be Done
+          </p>
         </div>
-
-        <!-- Main Content -->
-        <div class="flex-1 p-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Discovery - Jobs to Be Done</h1>
-                        <p class="text-gray-600">Tus clientes "contratan" el producto para hacer un trabajo específico</p>
-                    </div>
-                    <div class="flex space-x-3">
-                        <button onclick="saveJTBDData()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-save mr-2"></i>Guardar
-                        </button>
-                        <button onclick="completeJTBD()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                            <i class="fas fa-check mr-2"></i>Completar
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <!-- JTBD List -->
-                <div class="lg:col-span-3 space-y-6">
-                    <!-- Existing JTBD Cards -->
-                    <div id="jtbdList">
-                        <div class="jtbd-card bg-white rounded-lg shadow-md p-6 mb-4">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="drag-handle text-gray-400 hover:text-gray-600 mr-3">
-                                    <i class="fas fa-grip-vertical"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Ayudarme a cumplir mis objetivos de venta</h3>
-                                    <p class="text-gray-600 text-sm mb-3">Cuando soy un representante de ventas, quiero poder enfocarme en vender en lugar de tareas administrativas, para poder superar mis cuotas mensuales.</p>
-                                    <div class="flex items-center space-x-4">
-                                        <div>
-                                            <span class="text-sm text-gray-500">Audiencia:</span>
-                                            <span class="text-sm font-medium text-gray-700">Equipo de ventas</span>
-                                        </div>
-                                        <div>
-                                            <span class="text-sm text-gray-500">Relevancia:</span>
-                                            <div class="relevance-stars inline-block ml-1">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button class="text-blue-600 hover:text-blue-800">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="jtbd-card bg-white rounded-lg shadow-md p-6 mb-4">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="drag-handle text-gray-400 hover:text-gray-600 mr-3">
-                                    <i class="fas fa-grip-vertical"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Reducir el tiempo en tareas administrativas</h3>
-                                    <p class="text-gray-600 text-sm mb-3">Cuando termino una llamada con un cliente, quiero que la información se registre automáticamente, para poder pasar rápidamente a la siguiente llamada.</p>
-                                    <div class="flex items-center space-x-4">
-                                        <div>
-                                            <span class="text-sm text-gray-500">Audiencia:</span>
-                                            <span class="text-sm font-medium text-gray-700">Representantes de ventas</span>
-                                        </div>
-                                        <div>
-                                            <span class="text-sm text-gray-500">Relevancia:</span>
-                                            <div class="relevance-stars inline-block ml-1">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="far fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button class="text-blue-600 hover:text-blue-800">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="jtbd-card bg-white rounded-lg shadow-md p-6 mb-4">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="drag-handle text-gray-400 hover:text-gray-600 mr-3">
-                                    <i class="fas fa-grip-vertical"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Tener visibilidad clara del performance</h3>
-                                    <p class="text-gray-600 text-sm mb-3">Cuando soy manager de ventas, quiero ver en tiempo real el progreso de mi equipo, para poder tomar decisiones informadas y ajustar estrategias.</p>
-                                    <div class="flex items-center space-x-4">
-                                        <div>
-                                            <span class="text-sm text-gray-500">Audiencia:</span>
-                                            <span class="text-sm font-medium text-gray-700">Managers de ventas</span>
-                                        </div>
-                                        <div>
-                                            <span class="text-sm text-gray-500">Relevancia:</span>
-                                            <div class="relevance-stars inline-block ml-1">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="far fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button class="text-blue-600 hover:text-blue-800">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Add New JTBD -->
-                    <div class="bg-white rounded-lg shadow-md border-2 border-dashed border-gray-300 p-6">
-                        <div class="text-center">
-                            <i class="fas fa-plus-circle text-4xl text-gray-400 mb-3"></i>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Agregar nuevo JTBD</h3>
-                            <p class="text-gray-600 text-sm mb-4">Define otro trabajo que tus clientes necesitan hacer</p>
-                            <button onclick="openNewJTBDModal()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                                <i class="fas fa-plus mr-2"></i>Nuevo JTBD
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Suggestions Sidebar -->
-                <div class="lg:col-span-1">
-                    <div class="bg-white rounded-lg shadow-md sticky top-8">
-                        <div class="p-6 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-900">Sugerencias</h3>
-                            <p class="text-sm text-gray-600 mt-1">Patrones comunes en tu industria</p>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
-                                <h4 class="font-medium text-gray-900 mb-2">Evitar errores costosos</h4>
-                                <p class="text-sm text-gray-600">Cuando estoy bajo presión, quiero evitar cometer errores en la documentación, para no perder oportunidades de venta.</p>
-                                <div class="mt-2 text-xs text-gray-500">Común en B2B SaaS</div>
-                            </div>
-
-                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
-                                <h4 class="font-medium text-gray-900 mb-2">Mantenerme organizado</h4>
-                                <p class="text-sm text-gray-600">Cuando tengo múltiples clientes, quiero tener todo organizado, para no perder ninguna oportunidad.</p>
-                                <div class="mt-2 text-xs text-gray-500">Común en equipos pequeños</div>
-                            </div>
-
-                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
-                                <h4 class="font-medium text-gray-900 mb-2">Colaborar con mi equipo</h4>
-                                <p class="text-sm text-gray-600">Cuando trabajo en equipo, quiero compartir información fácilmente, para que todos estemos alineados.</p>
-                                <div class="mt-2 text-xs text-gray-500">Común en equipos distribuidos</div>
-                            </div>
-
-                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
-                                <h4 class="font-medium text-gray-900 mb-2">Aprender y mejorar</h4>
-                                <p class="text-sm text-gray-600">Cuando analizo mis resultados, quiero entender qué funciona, para mejorar mis técnicas de venta.</p>
-                                <div class="mt-2 text-xs text-gray-500">Común en equipos data-driven</div>
-                            </div>
-
-                            <div class="suggestion-card p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow" onclick="useSuggestion(this)">
-                                <h4 class="font-medium text-gray-900 mb-2">Cumplir con compliance</h4>
-                                <p class="text-sm text-gray-600">Cuando trabajo en industrias reguladas, quiero asegurar el cumplimiento, para evitar problemas legales.</p>
-                                <div class="mt-2 text-xs text-gray-500">Común en industrias reguladas</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
+      <div class="flex items-center gap-3 text-xs text-gray-500">
+        <button
+          onclick="window.location.href='project.html'"
+          class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 text-gray-700 text-xs font-medium hover:bg-gray-50"
+        >
+          <i class="fa-solid fa-arrow-left mr-2"></i>
+          Volver al proyecto
+        </button>
+      </div>
     </div>
+  </header>
 
-    <!-- New JTBD Modal -->
-    <div id="newJTBDModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-2xl w-full">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900">Nuevo JTBD</h2>
-                        <button onclick="closeNewJTBDModal()" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
+  <!-- Main layout -->
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-6 flex gap-6">
+    <!-- Sidebar: Project summary -->
+    <aside class="w-72 bg-white border border-gray-200 rounded-2xl p-4 flex flex-col h-fit">
+      <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+        Proyecto
+      </h2>
+      <h3 id="projectName" class="text-lg font-semibold text-gray-900 mb-1">
+        <!-- filled by JS -->
+      </h3>
+      <p id="projectInfo" class="text-xs text-gray-500 mb-4">
+        <!-- filled by JS -->
+      </p>
 
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Título del Job</label>
-                            <input type="text" id="jtbdTitle" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: Ayudarme a cumplir mis objetivos">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
-                            <textarea id="jtbdDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Cuando... quiero... para..."></textarea>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Audiencia</label>
-                                <select id="jtbdAudience" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option>Equipo de ventas</option>
-                                    <option>Representantes de ventas</option>
-                                    <option>Managers de ventas</option>
-                                    <option>Fundadores</option>
-                                    <option>Operaciones</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Relevancia (1-5)</label>
-                                <select id="jtbdRelevance" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option>1 - Muy baja</option>
-                                    <option>2 - Baja</option>
-                                    <option>3 - Media</option>
-                                    <option>4 - Alta</option>
-                                    <option>5 - Muy alta</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+      <div class="border-t border-gray-100 my-3"></div>
 
-                    <div class="flex justify-end space-x-4 mt-8">
-                        <button onclick="closeNewJTBDModal()" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                            Cancelar
-                        </button>
-                        <button id="addJTBDButton" onclick="saveNewJTBD()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                            Guardar JTBD
-                        </button>
-                        <button id="updateJTBDButton" onclick="updateJTBD()" style="display: none;" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                            Actualizar JTBD
-                        </button>
-                    </div>
-                </div>
-            </div>
+      <div class="space-y-1 text-xs text-gray-600">
+        <div class="flex items-center justify-between">
+          <span class="flex items-center gap-1">
+            <i class="fa-solid fa-circle-dot text-[10px] text-indigo-500"></i>
+            Estado módulo
+          </span>
+          <span id="jtbdStatus" class="inline-flex items-center px-2 py-0.5 rounded-full bg-yellow-50 text-[11px] text-yellow-800">
+            En progreso
+          </span>
         </div>
-    </div>
+      </div>
 
-    <script>
-        let currentProject = null;
-        let jtbdData = [];
+      <div class="mt-4">
+        <button
+          id="markCompletedBtn"
+          class="w-full inline-flex items-center justify-center px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700"
+        >
+          <i class="fa-solid fa-check mr-2"></i>
+          Marcar módulo como completado
+        </button>
+      </div>
+    </aside>
 
-        function persistCurrentProject() {
-            if (!currentProject) return;
+    <!-- Main content -->
+    <section class="flex-1 flex flex-col gap-4">
+      <!-- JTBD Form -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="text-sm font-semibold text-gray-900">
+              Definir un nuevo Job To Be Done
+            </h2>
+            <p class="text-xs text-gray-500">
+              Describe el trabajo que tu usuario intenta resolver, en qué contexto, y qué resultado persigue.
+            </p>
+          </div>
+          <div>
+            <span id="editModeBadge" class="hidden inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-[11px] text-blue-700">
+              <i class="fa-solid fa-pen mr-1"></i>
+              Editando JTBD existente
+            </span>
+          </div>
+        </div>
 
-            localStorage.setItem('sunstone_current_project', JSON.stringify(currentProject));
+        <form id="jtbdForm" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div class="md:col-span-2">
+            <label class="block text-[11px] font-medium text-gray-700 mb-1">Job (título corto)</label>
+            <input
+              type="text"
+              id="jtbdTitle"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Ej: Organizar el pipeline de ventas semanal"
+            />
+          </div>
 
-            const projects = JSON.parse(localStorage.getItem('sunstone_projects') || '[]');
-            const projectIndex = projects.findIndex(p => p.id === currentProject.id);
-            if (projectIndex !== -1) {
-                projects[projectIndex] = currentProject;
-                localStorage.setItem('sunstone_projects', JSON.stringify(projects));
-            }
+          <div>
+            <label class="block text-[11px] font-medium text-gray-700 mb-1">Tipo de Job</label>
+            <select
+              id="jtbdType"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">Selecciona un tipo</option>
+              <option value="funcional">Funcional</option>
+              <option value="emocional">Emocional</option>
+              <option value="social">Social</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-medium text-gray-700 mb-1">Relevancia</label>
+            <select
+              id="jtbdRelevance"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="1">1 - Muy baja</option>
+              <option value="2">2 - Baja</option>
+              <option value="3" selected>3 - Media</option>
+              <option value="4">4 - Alta</option>
+              <option value="5">5 - Crítica</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-[11px] font-medium text-gray-700 mb-1">Contexto</label>
+            <textarea
+              id="jtbdContext"
+              rows="2"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="¿En qué situación se encuentra la persona cuando aparece este trabajo?"
+            ></textarea>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-[11px] font-medium text-gray-700 mb-1">Disparador</label>
+            <textarea
+              id="jtbdTrigger"
+              rows="2"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="¿Qué evento, problema o cambio hace que el trabajo se active ahora?"
+            ></textarea>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-[11px] font-medium text-gray-700 mb-1">Resultado deseado</label>
+            <textarea
+              id="jtbdOutcome"
+              rows="2"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="¿Cómo sabe la persona que el trabajo se resolvió bien?"
+            ></textarea>
+          </div>
+
+          <div class="md:col-span-2 flex justify-between items-center pt-1">
+            <button
+              type="button"
+              id="resetFormBtn"
+              class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
+            >
+              <i class="fa-solid fa-rotate-left mr-2"></i>
+              Limpiar formulario
+            </button>
+
+            <div class="flex gap-2">
+              <button
+                type="button"
+                id="cancelEditBtn"
+                class="hidden inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 text-xs"
+              >
+                Cancelar edición
+              </button>
+              <button
+                type="submit"
+                class="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700"
+              >
+                <i class="fa-solid fa-save mr-2"></i>
+                Guardar JTBD
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- JTBD List -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 flex-1">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="text-sm font-semibold text-gray-900">
+              Jobs definidos
+            </h2>
+            <p class="text-xs text-gray-500">
+              Haz clic en un job para editarlo. Puedes priorizar por relevancia.
+            </p>
+          </div>
+          <div class="text-xs text-gray-500">
+            <span id="jtbdCountBadge" class="inline-flex items-center px-2 py-0.5 rounded-full bg-gray-50 text-[11px] text-gray-700">
+              0 jobs
+            </span>
+          </div>
+        </div>
+
+        <div id="jtbdList" class="space-y-3">
+          <!-- cards rendered by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast notifications -->
+  <div id="toastContainer" class="fixed top-4 right-4 space-y-2 z-50"></div>
+
+  <!-- Supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Init Supabase client (v2, CDN)
+    const { createClient } = supabase;
+    const supabaseClient = createClient(
+      "https://reezovhnmonzaafhigjz.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM"
+    );
+    // Expose globally in case other scripts expect `window.supabase`
+    window.supabase = supabaseClient;
+  </script>
+
+  <script>
+    // ---------- Simple notification helper ----------
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toastContainer");
+      if (!container) return;
+
+      const wrapper = document.createElement("div");
+      wrapper.className =
+        "px-3 py-2 rounded-lg text-xs shadow-md flex items-center gap-2 " +
+        (type === "error"
+          ? "bg-red-50 text-red-800 border border-red-200"
+          : type === "success"
+          ? "bg-green-50 text-green-800 border border-green-200"
+          : "bg-slate-800 text-slate-50");
+
+      const icon = document.createElement("i");
+      icon.className =
+        type === "error"
+          ? "fa-solid fa-circle-exclamation"
+          : type === "success"
+          ? "fa-solid fa-circle-check"
+          : "fa-solid fa-circle-info";
+
+      const text = document.createElement("span");
+      text.textContent = message;
+
+      wrapper.appendChild(icon);
+      wrapper.appendChild(text);
+      container.appendChild(wrapper);
+
+      setTimeout(() => {
+        wrapper.classList.add("opacity-0", "translate-y-1", "transition");
+        setTimeout(() => wrapper.remove(), 200);
+      }, 2500);
+    }
+
+    // ---------- JTBD module logic ----------
+    let currentProject = null;
+    let projectData = {}; // mirrors Supabase `data` json
+    let jtbdData = [];
+    let editingIndex = -1;
+    let saveTimeoutId = null;
+
+    function debounceSave() {
+      if (saveTimeoutId) clearTimeout(saveTimeoutId);
+      saveTimeoutId = setTimeout(() => {
+        persistAll().catch((err) => console.error("Error saving:", err));
+      }, 600);
+    }
+
+    async function persistAll() {
+      if (!currentProject) return;
+
+      // Ensure discovery/jtbd structure in projectData
+      if (!projectData.discovery) projectData.discovery = {};
+      projectData.discovery.jtbd = {
+        completed: projectData.discovery.jtbd?.completed || false,
+        data: jtbdData,
+      };
+
+      // 1) Update local currentProject object
+      if (!currentProject.discovery) currentProject.discovery = {};
+      currentProject.discovery.jtbd = projectData.discovery.jtbd;
+
+      // Save to localStorage
+      localStorage.setItem("sunstone_current_project", JSON.stringify(currentProject));
+
+      // Also sync list of projects in localStorage if exists
+      const projectsStr = localStorage.getItem("sunstone_projects");
+      if (projectsStr) {
+        try {
+          const projects = JSON.parse(projectsStr);
+          const idx = projects.findIndex((p) => p.id === currentProject.id);
+          if (idx !== -1) {
+            projects[idx] = currentProject;
+            localStorage.setItem("sunstone_projects", JSON.stringify(projects));
+          }
+        } catch (e) {
+          console.warn("No se pudo actualizar la lista global de proyectos:", e);
         }
+      }
 
+      // 2) Update Supabase (projects.data)
+      if (!window.supabase) {
+        console.warn("Supabase no está inicializado; se guarda solo en localStorage.");
+        return;
+      }
 
-        function loadCurrentProject() {
-            const saved = localStorage.getItem('sunstone_current_project');
-            if (saved) {
-                currentProject = JSON.parse(saved);
-                if (currentProject.discovery && currentProject.discovery.jtbd) {
-                    jtbdData = currentProject.discovery.jtbd.data || [];
-                    renderJTBD();
-                }
-                
-                // Update project name in sidebar
-                const projectNameEl = document.getElementById('projectName');
-                const projectInfoEl = document.getElementById('projectInfo');
-                if (projectNameEl) projectNameEl.textContent = currentProject.name;
-                if (projectInfoEl) projectInfoEl.textContent = `${currentProject.modelType || 'SaaS'} • ${currentProject.status}`;
-            }
-        }
+      const { error } = await window.supabase
+        .from("projects")
+        .update({ data: projectData })
+        .eq("id", currentProject.id);
 
-        function saveJTBDData() {
-            if (!currentProject) return;
+      if (error) {
+        console.error("Error guardando en Supabase:", error);
+        showToast("No se pudo sincronizar con el backend", "error");
+      } else {
+        showToast("Cambios guardados", "success");
+      }
 
-            if (!currentProject.discovery) currentProject.discovery = {};
-            if (!currentProject.discovery.jtbd) {
-                currentProject.discovery.jtbd = { completed: false, data: [] };
-            }
+      updateStatusBadge();
+    }
 
-            currentProject.discovery.jtbd.data = jtbdData;
+    function updateStatusBadge() {
+      const badge = document.getElementById("jtbdStatus");
+      const countBadge = document.getElementById("jtbdCountBadge");
+      const total = jtbdData.length;
 
-            persistCurrentProject();
-        }
+      if (countBadge) {
+        countBadge.textContent = total === 1 ? "1 job" : `${total} jobs`;
+      }
 
+      if (!badge) return;
 
-        function renderJTBD() {
-            const jtbdList = document.getElementById('jtbdList');
-            jtbdList.innerHTML = '';
-            
-            jtbdData.forEach((jtbd, index) => {
-                const card = createJTBDCard(jtbd, index);
-                jtbdList.appendChild(card);
-            });
-        }
+      const isCompleted = projectData.discovery?.jtbd?.completed && total > 0;
 
-        function createJTBDCard(jtbd, index) {
-            const card = document.createElement('div');
-            card.className = 'jtbd-card bg-white rounded-lg shadow-md p-6 mb-4';
-            
-            const stars = '★'.repeat(jtbd.relevance || 3) + '☆'.repeat(5 - (jtbd.relevance || 3));
-            
-            card.innerHTML = `
-                <div class="flex items-start justify-between mb-4">
-                    <div class="drag-handle text-gray-400 hover:text-gray-600 mr-3">
-                        <i class="fas fa-grip-vertical"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">${jtbd.title}</h3>
-                        <p class="text-gray-600 text-sm mb-3">${jtbd.description}</p>
-                        <div class="flex items-center space-x-4">
-                            <div>
-                                <span class="text-sm text-gray-500">Audiencia:</span>
-                                <span class="text-sm font-medium text-gray-700">${jtbd.audience}</span>
-                            </div>
-                            <div>
-                                <span class="text-sm text-gray-500">Relevancia:</span>
-                                <div class="relevance-stars inline-block ml-1">${stars}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex space-x-2">
-                        <button onclick="editJTBD(${index})" class="text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteJTBD(${index})" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
+      if (isCompleted) {
+        badge.textContent = "Completado";
+        badge.className =
+          "inline-flex items-center px-2 py-0.5 rounded-full bg-green-50 text-[11px] text-green-700";
+      } else {
+        badge.textContent = total > 0 ? "En progreso" : "Sin empezar";
+        badge.className =
+          "inline-flex items-center px-2 py-0.5 rounded-full bg-yellow-50 text-[11px] text-yellow-800";
+      }
+    }
+
+    function renderJTBDList() {
+      const container = document.getElementById("jtbdList");
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      if (!jtbdData.length) {
+        const empty = document.createElement("div");
+        empty.className =
+          "flex items-center justify-center py-8 border border-dashed border-gray-200 rounded-xl bg-gray-50 text-xs text-gray-500";
+        empty.innerHTML =
+          '<i class="fa-regular fa-circle-dot mr-2"></i>Aún no definiste ningún Job. Empieza con el formulario de arriba.';
+        container.appendChild(empty);
+        updateStatusBadge();
+        return;
+      }
+
+      jtbdData
+        .slice()
+        .sort((a, b) => (b.relevance || 0) - (a.relevance || 0))
+        .forEach((item, index) => {
+          const card = document.createElement("div");
+          card.className =
+            "jtbd-card border border-gray-200 rounded-xl p-3 bg-white cursor-pointer";
+
+          const typeLabel =
+            item.type === "emocional"
+              ? "Emocional"
+              : item.type === "social"
+              ? "Social"
+              : "Funcional";
+
+          const relevance = item.relevance || 3;
+          const relevanceLabel = {
+            1: "Muy baja",
+            2: "Baja",
+            3: "Media",
+            4: "Alta",
+            5: "Crítica",
+          }[relevance] || "Media";
+
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-semibold">
+                    ${index + 1}
+                  </span>
+                  <h3 class="text-sm font-semibold text-gray-900">${item.title || "Sin título"}</h3>
                 </div>
-            `;
-            
-            return card;
-        }
+                <p class="text-[11px] text-gray-500 mb-1">
+                  Tipo: <span class="font-medium text-gray-700">${typeLabel}</span> ·
+                  Relevancia: <span class="font-medium text-gray-700">${relevance} (${relevanceLabel})</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                class="text-gray-400 hover:text-red-500 text-xs"
+                data-index="${index}"
+                data-role="delete-jtbd"
+                title="Eliminar Job"
+              >
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+            <div class="mt-2 text-[11px] text-gray-600">
+              <p class="mb-1"><span class="font-semibold text-gray-800">Contexto:</span> ${item.context || "–"}</p>
+              <p class="mb-1"><span class="font-semibold text-gray-800">Disparador:</span> ${item.trigger || "–"}</p>
+              <p><span class="font-semibold text-gray-800">Resultado deseado:</span> ${item.outcome || "–"}</p>
+            </div>
+          `;
 
-        function openNewJTBDModal() {
-            // Clear form
-            document.getElementById('jtbdTitle').value = '';
-            document.getElementById('jtbdDescription').value = '';
-            document.getElementById('jtbdAudience').selectedIndex = 0;
-            document.getElementById('jtbdRelevance').selectedIndex = 3;
-            
-            // Hide edit button, show add button
-            document.getElementById('addJTBDButton').style.display = 'block';
-            document.getElementById('updateJTBDButton').style.display = 'none';
-            
-            document.getElementById('newJTBDModal').classList.remove('hidden');
-        }
+          // Click to edit (excluding delete button)
+          card.addEventListener("click", (e) => {
+            const isDelete = e.target.closest("[data-role='delete-jtbd']");
+            if (isDelete) return; // deletion handled separately
+            enterEditMode(index);
+          });
 
-        function editJTBD(index) {
-            const jtbd = jtbdData[index];
-            
-            document.getElementById('jtbdTitle').value = jtbd.title;
-            document.getElementById('jtbdDescription').value = jtbd.description;
-            document.getElementById('jtbdAudience').value = jtbd.audience;
-            document.getElementById('jtbdRelevance').value = jtbd.relevance;
-            
-            // Show update button, hide add button
-            document.getElementById('addJTBDButton').style.display = 'none';
-            document.getElementById('updateJTBDButton').style.display = 'block';
-            
-            // Store current index
-            document.getElementById('updateJTBDButton').dataset.index = index;
-            
-            document.getElementById('newJTBDModal').classList.remove('hidden');
-        }
-
-        function closeNewJTBDModal() {
-            document.getElementById('newJTBDModal').classList.add('hidden');
-        }
-
-        function saveNewJTBD() {
-            const title = document.getElementById('jtbdTitle').value;
-            const description = document.getElementById('jtbdDescription').value;
-            const audience = document.getElementById('jtbdAudience').value;
-            const relevance = parseInt(document.getElementById('jtbdRelevance').value);
-
-            if (title && description) {
-                const newJTBD = {
-                    title,
-                    description,
-                    audience,
-                    relevance
-                };
-                
-                jtbdData.push(newJTBD);
-                saveJTBDData();
-                renderJTBD();
-                closeNewJTBDModal();
-                window.SunstoneUtils.showNotification('JTBD agregado exitosamente', 'success');
-            } else {
-                window.SunstoneUtils.showNotification('Por favor completa todos los campos requeridos', 'error');
-            }
-        }
-
-        function updateJTBD() {
-            const index = document.getElementById('updateJTBDButton').dataset.index;
-            const title = document.getElementById('jtbdTitle').value;
-            const description = document.getElementById('jtbdDescription').value;
-            const audience = document.getElementById('jtbdAudience').value;
-            const relevance = parseInt(document.getElementById('jtbdRelevance').value);
-
-            if (title && description) {
-                jtbdData[index] = {
-                    title,
-                    description,
-                    audience,
-                    relevance
-                };
-                
-                saveJTBDData();
-                renderJTBD();
-                closeNewJTBDModal();
-                window.SunstoneUtils.showNotification('JTBD actualizado exitosamente', 'success');
-            } else {
-                window.SunstoneUtils.showNotification('Por favor completa todos los campos requeridos', 'error');
-            }
-        }
-
-        function deleteJTBD(index) {
-            if (confirm('¿Estás seguro de que quieres eliminar este JTBD?')) {
+          // Delete handler
+          const deleteBtn = card.querySelector("[data-role='delete-jtbd']");
+          if (deleteBtn) {
+            deleteBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (confirm("¿Eliminar este Job?")) {
                 jtbdData.splice(index, 1);
-                saveJTBDData();
-                renderJTBD();
-                window.SunstoneUtils.showNotification('JTBD eliminado exitosamente', 'success');
-            }
-        }
+                debounceSave();
+                renderJTBDList();
+              }
+            });
+          }
 
-        function completeJTBD() {
-            if (jtbdData.length === 0) {
-                window.SunstoneUtils.showNotification('Por favor agrega al menos un JTBD antes de completar', 'error');
-                return;
-            }
-            
-            if (currentProject) {
-                if (!currentProject.discovery) currentProject.discovery = {};
-                if (!currentProject.discovery.jtbd) {
-                    currentProject.discovery.jtbd = { data: jtbdData, completed: true };
-                } else {
-                    currentProject.discovery.jtbd.data = jtbdData;
-                    currentProject.discovery.jtbd.completed = true;
-                }
-
-                persistCurrentProject();
-            }
-
-            
-            window.SunstoneUtils.showNotification('JTBD completado exitosamente', 'success');
-            
-            setTimeout(() => {
-                window.location.href = 'project.html';
-            }, 1500);
-        }
-
-        function useSuggestion(element) {
-            const title = element.querySelector('h4').textContent;
-            const description = element.querySelector('p').textContent;
-            
-            document.getElementById('jtbdTitle').value = title;
-            document.getElementById('jtbdDescription').value = description;
-            
-            openNewJTBDModal();
-        }
-
-        function saveJTBDData() {
-            // Data is already saved when adding/updating JTBDs
-            window.SunstoneUtils.showNotification('Datos guardados exitosamente', 'success');
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCurrentProject();
+          container.appendChild(card);
         });
+
+      updateStatusBadge();
+    }
+
+    function enterEditMode(index) {
+      const item = jtbdData[index];
+      if (!item) return;
+
+      editingIndex = index;
+
+      document.getElementById("jtbdTitle").value = item.title || "";
+      document.getElementById("jtbdType").value = item.type || "";
+      document.getElementById("jtbdContext").value = item.context || "";
+      document.getElementById("jtbdTrigger").value = item.trigger || "";
+      document.getElementById("jtbdOutcome").value = item.outcome || "";
+      document.getElementById("jtbdRelevance").value = item.relevance || 3;
+
+      const badge = document.getElementById("editModeBadge");
+      const cancelBtn = document.getElementById("cancelEditBtn");
+      if (badge) badge.classList.remove("hidden");
+      if (cancelBtn) cancelBtn.classList.remove("hidden");
+    }
+
+    function resetForm(clearEdit = true) {
+      document.getElementById("jtbdForm").reset();
+      document.getElementById("jtbdRelevance").value = "3";
+
+      if (clearEdit) {
+        editingIndex = -1;
+        const badge = document.getElementById("editModeBadge");
+        const cancelBtn = document.getElementById("cancelEditBtn");
+        if (badge) badge.classList.add("hidden");
+        if (cancelBtn) cancelBtn.classList.add("hidden");
+      }
+    }
+
+    async function loadInitialData() {
+      // 1) Load current project from localStorage
+      const saved = localStorage.getItem("sunstone_current_project");
+      if (!saved) {
+        alert("No hay proyecto activo. Volviendo al inicio.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      currentProject = JSON.parse(saved);
+
+      // Update sidebar
+      const projectNameEl = document.getElementById("projectName");
+      const projectInfoEl = document.getElementById("projectInfo");
+
+      if (projectNameEl) projectNameEl.textContent = currentProject.name || "Sin nombre";
+      if (projectInfoEl) {
+        const industry = currentProject.industry || "Industria no definida";
+        const phase = currentProject.phase || currentProject.stage || "Fase no definida";
+        projectInfoEl.textContent = `${industry} • ${phase}`;
+      }
+
+      // 2) Load Supabase data if available
+      projectData = {};
+
+      if (window.supabase && currentProject.id) {
+        const { data, error } = await window.supabase
+          .from("projects")
+          .select("data")
+          .eq("id", currentProject.id)
+          .maybeSingle();
+
+        if (error) {
+          console.warn("No se pudo cargar data desde Supabase:", error);
+        } else if (data && data.data) {
+          projectData = data.data || {};
+        }
+      }
+
+      // 3) Merge with any local discovery data
+      if (!projectData.discovery && currentProject.discovery) {
+        projectData.discovery = currentProject.discovery;
+      }
+
+      if (!projectData.discovery) projectData.discovery = {};
+
+      const jtbdBlock = projectData.discovery.jtbd || currentProject.discovery?.jtbd || {
+        completed: false,
+        data: [],
+      };
+
+      jtbdData = Array.isArray(jtbdBlock.data) ? jtbdBlock.data : [];
+
+      // Ensure structures
+      projectData.discovery.jtbd = {
+        completed: jtbdBlock.completed || false,
+        data: jtbdData,
+      };
+
+      renderJTBDList();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadInitialData().catch((err) => console.error(err));
+
+      const form = document.getElementById("jtbdForm");
+      const resetBtn = document.getElementById("resetFormBtn");
+      const cancelEditBtn = document.getElementById("cancelEditBtn");
+      const markCompletedBtn = document.getElementById("markCompletedBtn");
+
+      if (form) {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const title = document.getElementById("jtbdTitle").value.trim();
+          const type = document.getElementById("jtbdType").value;
+          const context = document.getElementById("jtbdContext").value.trim();
+          const trigger = document.getElementById("jtbdTrigger").value.trim();
+          const outcome = document.getElementById("jtbdOutcome").value.trim();
+          const relevance = parseInt(document.getElementById("jtbdRelevance").value, 10) || 3;
+
+          if (!title) {
+            showToast("El Job necesita un título", "error");
+            return;
+          }
+
+          const item = { title, type, context, trigger, outcome, relevance };
+
+          if (editingIndex >= 0) {
+            jtbdData[editingIndex] = item;
+            showToast("Job actualizado", "success");
+          } else {
+            jtbdData.push(item);
+            showToast("Job añadido", "success");
+          }
+
+          debounceSave();
+          renderJTBDList();
+          resetForm(true);
+        });
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => resetForm(false));
+      }
+
+      if (cancelEditBtn) {
+        cancelEditBtn.addEventListener("click", () => {
+          resetForm(true);
+        });
+      }
+
+      if (markCompletedBtn) {
+        markCompletedBtn.addEventListener("click", () => {
+          if (!projectData.discovery) projectData.discovery = {};
+          if (!projectData.discovery.jtbd)
+            projectData.discovery.jtbd = { completed: false, data: jtbdData };
+
+          if (!jtbdData.length) {
+            showToast("Añade al menos un Job antes de marcar como completado", "error");
+            return;
+          }
+
+          projectData.discovery.jtbd.completed = true;
+          showToast("Módulo marcado como completado", "success");
+          debounceSave();
+          updateStatusBadge();
+        });
+      }
+    });
+  </script>
+
+  <!-- If you need shared utilities from main.js, you can also include it here -->
+  <!-- <script src="main.js"></script> -->
+</body>
+</html>
