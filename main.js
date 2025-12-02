@@ -7,16 +7,25 @@ class SunstoneApp {
         this.currentProject = null;
         this.isLoading = false;
         this.loadingTimeout = null;
-        
+
+        this.step1InitialHTML = '';  // 👈 add this line
+
         this.init();
     }
 
     init() {
+        // Store original Step 1 HTML so we can restore it later
+        const step1 = document.getElementById('step1');
+        if (step1) {
+            this.step1InitialHTML = step1.innerHTML;
+        }
+
         this.bindEvents();
         this.loadProjects();
         this.renderProjects();
         this.setupErrorHandling();
     }
+
 
     bindEvents() {
         // Modal events
@@ -300,6 +309,7 @@ class SunstoneApp {
         if (modal) {
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+            this.resetWizard();
         }
     }
 
@@ -383,78 +393,43 @@ class SunstoneApp {
     }
 
     showStep(stepNumber) {
-        const stepContainer = document.getElementById('step1'); // This is our only container
+        const step1 = document.getElementById('step1');
         const nextBtn = document.getElementById('nextStep');
 
-        if (!stepContainer) return;
+        if (!step1) return;
 
-        // STEP 1
-        if (stepNumber === 1) {
-            stepContainer.style.display = 'block';
-            stepContainer.innerHTML = `
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del proyecto</label>
-                    <input type="text" id="projectNameInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: TechFlow Solutions">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Industria</label>
-                    <select id="industrySelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Selecciona una industria</option>
-                        <option value="Tecnología/SaaS">Tecnología/SaaS</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="E-commerce">E-commerce</option>
-                        <option value="Fintech">Fintech</option>
-                        <option value="Educación">Educación</option>
-                        <option value="Otros">Otros</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de modelo</label>
-                    <select id="modelTypeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Selecciona un modelo</option>
-                        <option value="SaaS">SaaS</option>
-                        <option value="Marketplace">Marketplace</option>
-                        <option value="Servicio">Servicio</option>
-                        <option value="E-commerce">E-commerce</option>
-                        <option value="Hardware">Hardware</option>
-                        <option value="Otros">Otros</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Fase</label>
-                    <select id="phaseSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Selecciona una fase</option>
-                        <option value="Idea/Concepto">Idea/Concepto</option>
-                        <option value="Pre-PMF">Pre-PMF</option>
-                        <option value="Post-PMF">Post-PMF</option>
-                        <option value="Scale-up">Scale-up</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">País/región principal</label>
-                    <input type="text" id="regionInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: España">
-                </div>
-            `;
+        // always show the container
+        step1.style.display = 'block';
 
-            if (nextBtn) nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
+        switch (stepNumber) {
+            case 1:
+                // Restore original Step 1 HTML
+                if (this.step1InitialHTML) {
+                    step1.innerHTML = this.step1InitialHTML;
+                }
+                if (nextBtn) {
+                    nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
+                }
+                break;
 
-            return;
-        }
+            case 2:
+                // Render Step 2 into the same container
+                this.renderStep2();
+                if (nextBtn) {
+                    nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
+                }
+                break;
 
-        // STEP 2
-        if (stepNumber === 2) {
-            this.renderStep2();
-            if (nextBtn) nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
-            return;
-        }
-
-        // STEP 3
-        if (stepNumber === 3) {
-            this.renderStep3();
-            if (nextBtn) nextBtn.innerHTML = 'Crear proyecto <i class="fas fa-check ml-2"></i>';
-            return;
+            case 3:
+                // Render Step 3 into the same container
+                this.renderStep3();
+                if (nextBtn) {
+                    nextBtn.innerHTML = 'Crear proyecto <i class="fas fa-check ml-2"></i>';
+                }
+                break;
         }
     }
+
 
 
     renderStep2() {
@@ -542,77 +517,76 @@ class SunstoneApp {
         step1.style.display = 'block';
     }
 
-    createProject() {
-        if (this.isLoading) return;
-        
-        this.showLoading('Creando proyecto...');
+    async createProject() {
+        // Collect data from wizard fields
+        const projectName = document.querySelector('#projectNameInput')?.value || '';
+        const industry = document.querySelector('#industrySelect')?.value || '';
+        const modelType = document.querySelector('#modelTypeSelect')?.value || '';
+        const phase = document.querySelector('#phaseSelect')?.value || '';
+        const region = document.querySelector('#regionInput')?.value || '';
+        const mainConcerns = document.querySelector('#mainConcerns')?.value || '';
+        const mainOpportunities = document.querySelector('#mainOpportunities')?.value || '';
+        const duration = document.querySelector('#duration')?.value || '';
+        const deliverable = document.querySelector('#deliverable')?.value || '';
 
+        const newProject = {
+            id: crypto.randomUUID(),
+            name: projectName,
+            industry,
+            modelType,
+            phase,
+            region,
+            mainConcerns,
+            mainOpportunities,
+            duration,
+            deliverable,
+            discovery: {},         // ready for intake/jtbd/etc
+            strategy: {},          // ready for roadmap/etc
+            createdAt: new Date().toISOString()
+        };
+
+        // 🔥 FIRST: save to Supabase
         try {
-            // Collect all wizard data
-            const projectName = document.querySelector('input[placeholder*="Ej: TechFlow Solutions"]')?.value || 'Nuevo Proyecto';
-            const industry = document.querySelector('select')?.value || '';
-            const modelType = document.querySelectorAll('select')[1]?.value || '';
-            const phase = document.querySelectorAll('select')[2]?.value || '';
-            const region = document.querySelector('input[placeholder*="Ej: España"]')?.value || '';
-            
-            // Collect objectives
-            const objectives = Array.from(document.querySelectorAll('input[name="objectives"]:checked'))
-                .map(cb => cb.value);
-            
-            const mainConcerns = document.getElementById('mainConcerns')?.value || '';
-            const duration = document.getElementById('duration')?.value || '';
-            const deliverable = document.getElementById('deliverable')?.value || '';
-            const budget = document.getElementById('budget')?.value || '';
+            const { data, error } = await window.supabase
+            .from("projects")
+            .insert({
+                id: newProject.id,
+                name: newProject.name,
+                industry: newProject.industry,
+                phase: newProject.phase,
+                modelType: newProject.modelType || null,
+                region: newProject.region || null,
+                data: {}   // backend JSON structure starts empty
+            });
 
-            // Create project data
-            const projectData = {
-                id: Date.now(),
-                name: projectName,
-                industry,
-                modelType,
-                phase,
-                region,
-                objectives,
-                mainConcerns,
-                duration,
-                deliverable,
-                budget,
-                status: 'Exploración',
-                progress: 0,
-                created: new Date(),
-                discovery: {
-                    intake: { completed: false, data: {} },
-                    jtbd: { completed: false, data: [] },
-                    tensiones: { completed: false, data: {} },
-                    audiencias: { completed: false, data: [] }
-                },
-                strategy: {
-                    valor: { completed: false, data: {} },
-                    narrativa: { completed: false, data: {} }
-                },
-                roadmap: {
-                    initiatives: []
-                }
-            };
-
-            this.projects.push(projectData);
-            this.saveProjects();
-            this.closeModal();
-            
-            // Show success message
-            this.showNotification('Proyecto creado exitosamente!', 'success');
-            
-            // Redirect to project overview
-            setTimeout(() => {
-                this.hideLoading();
-                window.location.href = 'project.html';
-            }, 1000);
-        } catch (error) {
-            this.hideLoading();
-            this.showNotification('Error al crear proyecto', 'error');
-            console.error('Create project error:', error);
+            if (error) {
+            console.error("Supabase insert error:", error);
+            this.showNotification("No se pudo guardar el proyecto en Supabase", "error");
+            } else {
+            this.showNotification("Proyecto guardado en la nube", "success");
+            }
+        } catch (e) {
+            console.error("Supabase: unexpected error", e);
         }
+
+        // SECOND: still save locally (for speed & caching)
+        localStorage.setItem("sunstone_current_project", JSON.stringify(newProject));
+
+        const allProjects = JSON.parse(localStorage.getItem("sunstone_projects") || "[]");
+        allProjects.unshift(newProject);
+        localStorage.setItem("sunstone_projects", JSON.stringify(allProjects));
+
+        // Show new project in the UI
+        this.projects = allProjects;
+        this.renderProjects();
+
+        // Close modal & go to project page
+        this.closeModal();
+        setTimeout(() => {
+            window.location.href = "project.html";
+        }, 300);
     }
+
 
     loadProjects() {
         this.showLoading('Cargando proyectos...');
