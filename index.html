@@ -119,76 +119,180 @@
                         </button>
                     </div>
 
-                    <!-- Step Indicator -->
-                    <div class="flex items-center mb-8">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-medium">1</div>
-                            <span class="ml-2 text-sm font-medium text-indigo-600">Datos básicos</span>
-                        </div>
-                        <div class="flex-1 h-px bg-gray-300 mx-4"></div>
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">2</div>
-                            <span class="ml-2 text-sm text-gray-500">Objetivo</span>
-                        </div>
-                        <div class="flex-1 h-px bg-gray-300 mx-4"></div>
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">3</div>
-                            <span class="ml-2 text-sm text-gray-500">Scope</span>
-                        </div>
-                    </div>
+                    <!-- Single-page form -->
+                    <form id="newProjectForm" class="space-y-6">
 
-                    <!-- Step 1 Content -->
-                    <div id="step1" class="space-y-6">
+                        <!-- Datos básicos -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del proyecto</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: TechFlow Solutions">
+                            <h3 class="text-sm font-semibold text-gray-900 mb-2">Datos básicos</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del proyecto</label>
+                                    <input
+                                        type="text"
+                                        id="projectNameInput"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        placeholder="Ej: TechFlow Solutions"
+                                    />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Industria</label>
+                                    <select
+                                        id="industrySelect"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="">Selecciona una industria</option>
+                                        <option value="Tecnología/SaaS">Tecnología/SaaS</option>
+                                        <option value="Healthcare">Healthcare</option>
+                                        <option value="E-commerce">E-commerce</option>
+                                        <option value="Fintech">Fintech</option>
+                                        <option value="Educación">Educación</option>
+                                        <option value="Otros">Otros</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de modelo</label>
+                                    <select
+                                        id="modelTypeSelect"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="">Selecciona un modelo</option>
+                                        <option value="SaaS">SaaS</option>
+                                        <option value="Marketplace">Marketplace</option>
+                                        <option value="Servicio">Servicio</option>
+                                        <option value="E-commerce">E-commerce</option>
+                                        <option value="Hardware">Hardware</option>
+                                        <option value="Otros">Otros</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Fase</label>
+                                    <select
+                                        id="phaseSelect"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="">Selecciona una fase</option>
+                                        <option value="Idea/Concepto">Idea/Concepto</option>
+                                        <option value="Pre-PMF">Pre-PMF</option>
+                                        <option value="Post-PMF">Post-PMF</option>
+                                        <option value="Scale-up">Scale-up</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Contexto -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Industria</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                <option>Selecciona una industria</option>
-                                <option>Tecnología/SaaS</option>
-                                <option>Healthcare</option>
-                                <option>E-commerce</option>
-                                <option>Fintech</option>
-                                <option>Educación</option>
-                                <option>Otros</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de modelo</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                <option>Selecciona un modelo</option>
-                                <option>SaaS</option>
-                                <option>Marketplace</option>
-                                <option>Servicio</option>
-                                <option>E-commerce</option>
-                                <option>Hardware</option>
-                                <option>Otros</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Fase</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                <option>Selecciona una fase</option>
-                                <option>Idea/Concepto</option>
-                                <option>Pre-PMF</option>
-                                <option>Post-PMF</option>
-                                <option>Scale-up</option>
-                            </select>
-                        </div>
-                        <div>
+                            <h3 class="text-sm font-semibold text-gray-900 mb-2">Contexto</h3>
                             <label class="block text-sm font-medium text-gray-700 mb-2">País/región principal</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: España">
+                            <input
+                                type="text"
+                                id="regionInput"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                placeholder="Ej: España"
+                            />
                         </div>
-                    </div>
 
-                    <!-- Navigation Buttons -->
-                    <div class="flex justify-end space-x-4 mt-8">
-                        <button id="nextStep" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                            Siguiente <i class="fas fa-arrow-right ml-2"></i>
-                        </button>
-                    </div>
+                        <!-- Objetivo del Discovery -->
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-900 mb-2">Objetivo del Discovery</h3>
+                            <p class="text-xs text-gray-500 mb-3">
+                                ¿Qué te gustaría conseguir principalmente con este proceso? (puedes marcar varias)
+                            </p>
+                            <div class="space-y-2">
+                                <label class="flex items-center text-sm text-gray-700">
+                                    <input type="checkbox" name="objectives" value="funding" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                    <span class="ml-3">Conseguir funding</span>
+                                </label>
+                                <label class="flex items-center text-sm text-gray-700">
+                                    <input type="checkbox" name="objectives" value="goforpmf" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                    <span class="ml-3">Acercarnos a Product-Market Fit</span>
+                                </label>
+                                <label class="flex items-center text-sm text-gray-700">
+                                    <input type="checkbox" name="objectives" value="aligntheteam" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                    <span class="ml-3">Alinear al equipo alrededor de una narrativa</span>
+                                </label>
+                                <label class="flex items-center text-sm text-gray-700">
+                                    <input type="checkbox" name="objectives" value="gofortest" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                    <span class="ml-3">Preparar un plan de Go-to-Market</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Preocupaciones principales -->
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-900 mb-2">Preocupaciones principales</h3>
+                            <textarea
+                                id="mainConcerns"
+                                rows="3"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                placeholder="Cuéntame qué te preocupa hoy respecto al producto, mercado o narrativa..."
+                            ></textarea>
+                        </div>
+
+                        <!-- Scope & expectativas -->
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-900 mb-2">Scope & expectativas</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Duración estimada</label>
+                                    <select
+                                        id="duration"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="">Selecciona duración</option>
+                                        <option value="2-3-weeks">2-3 semanas</option>
+                                        <option value="4-6-weeks-discovery">4-6 semanas Discovery</option>
+                                        <option value="8-10-weeks-full">8-10 semanas Discovery + Estrategia</option>
+                                        <option value="12plus-weeks-complete">12+ semanas Proyecto completo</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de entregable</label>
+                                    <select
+                                        id="deliverable"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="">Selecciona entregable</option>
+                                        <option value="informe-ejecutivo">Informe ejecutivo</option>
+                                        <option value="playbook-gtm">Playbook de Go-To-Market</option>
+                                        <option value="deck-inversion">Pitch deck para inversión</option>
+                                        <option value="mixto">Mixto</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Budget estimado</label>
+                                    <select
+                                        id="budget"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="">Rango estimado</option>
+                                        <option value="5-10k">5-10K EUR</option>
+                                        <option value="10-20k">10-20K EUR</option>
+                                        <option value="20-50k">20-50K EUR</option>
+                                        <option value="50k-plus">50K+ EUR</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex justify-end space-x-4 pt-4">
+                            <button
+                                type="button"
+                                id="cancelNewProject"
+                                class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="submit"
+                                class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+                            >
+                                Crear proyecto
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

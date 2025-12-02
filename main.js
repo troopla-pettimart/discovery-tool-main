@@ -28,11 +28,12 @@ class SunstoneApp {
 
 
     bindEvents() {
-        // Modal events
+        // Modal elements
         const newProjectBtn = document.getElementById('newProjectBtn');
         const newProjectModal = document.getElementById('newProjectModal');
         const closeModal = document.getElementById('closeModal');
-        const nextStep = document.getElementById('nextStep');
+        const newProjectForm = document.getElementById('newProjectForm');
+        const cancelNewProject = document.getElementById('cancelNewProject');
 
         if (newProjectBtn) {
             newProjectBtn.addEventListener('click', () => this.openModal());
@@ -42,8 +43,16 @@ class SunstoneApp {
             closeModal.addEventListener('click', () => this.closeModal());
         }
 
-        if (nextStep) {
-            nextStep.addEventListener('click', () => this.handleNextStep());
+        if (cancelNewProject) {
+            cancelNewProject.addEventListener('click', () => this.closeModal());
+        }
+
+        // Submit form → createProject
+        if (newProjectForm) {
+            newProjectForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.createProject();
+            });
         }
 
         // Close modal on outside click
@@ -58,6 +67,7 @@ class SunstoneApp {
         // Project card clicks
         this.bindProjectCardEvents();
     }
+
 
     bindProjectCardEvents() {
         const projectCards = document.querySelectorAll('.project-card');
@@ -359,9 +369,14 @@ class SunstoneApp {
         if (modal) {
             modal.classList.add('hidden');
             document.body.style.overflow = 'auto';
-            this.resetWizard();
+
+            const form = document.getElementById('newProjectForm');
+            if (form) {
+                form.reset();
+            }
         }
     }
+
 
     resetWizard() {
         this.currentStep = 1;
@@ -558,75 +573,80 @@ class SunstoneApp {
         step1.style.display = 'block';
     }
 
-    async createProject() {
-        // Collect data from wizard fields
-        const projectName = document.querySelector('#projectNameInput')?.value || '';
-        const industry = document.querySelector('#industrySelect')?.value || '';
-        const modelType = document.querySelector('#modelTypeSelect')?.value || '';
-        const phase = document.querySelector('#phaseSelect')?.value || '';
-        const region = document.querySelector('#regionInput')?.value || '';
-        const mainConcerns = document.querySelector('#mainConcerns')?.value || '';
-        const mainOpportunities = document.querySelector('#mainOpportunities')?.value || '';
-        const duration = document.querySelector('#duration')?.value || '';
-        const deliverable = document.querySelector('#deliverable')?.value || '';
+    createProject() {
+        if (this.isLoading) return;
 
-        const newProject = {
-            id: crypto.randomUUID(),
-            name: projectName,
-            industry,
-            modelType,
-            phase,
-            region,
-            mainConcerns,
-            mainOpportunities,
-            duration,
-            deliverable,
-            discovery: {},         // ready for intake/jtbd/etc
-            strategy: {},          // ready for roadmap/etc
-            createdAt: new Date().toISOString()
-        };
+        this.showLoading('Creando proyecto...');
 
-        // 🔥 FIRST: save to Supabase
         try {
-            const { data, error } = await window.supabase
-            .from("projects")
-            .insert({
-                id: newProject.id,
-                name: newProject.name,
-                industry: newProject.industry,
-                phase: newProject.phase,
-                modelType: newProject.modelType || null,
-                region: newProject.region || null,
-                data: {}   // backend JSON structure starts empty
-            });
+            // Read form fields by ID
+            const projectName = document.getElementById('projectNameInput')?.value.trim() || 'Nuevo Proyecto';
+            const industry = document.getElementById('industrySelect')?.value || '';
+            const modelType = document.getElementById('modelTypeSelect')?.value || '';
+            const phase = document.getElementById('phaseSelect')?.value || '';
+            const region = document.getElementById('regionInput')?.value || '';
 
-            if (error) {
-            console.error("Supabase insert error:", error);
-            this.showNotification("No se pudo guardar el proyecto en Supabase", "error");
-            } else {
-            this.showNotification("Proyecto guardado en la nube", "success");
-            }
-        } catch (e) {
-            console.error("Supabase: unexpected error", e);
+            const objectives = Array.from(document.querySelectorAll('input[name="objectives"]:checked'))
+                .map(cb => cb.value);
+
+            const mainConcerns = document.getElementById('mainConcerns')?.value || '';
+            const duration = document.getElementById('duration')?.value || '';
+            const deliverable = document.getElementById('deliverable')?.value || '';
+            const budget = document.getElementById('budget')?.value || '';
+
+            // Create project data (local, for now)
+            const projectData = {
+                id: Date.now(),
+                name: projectName,
+                industry,
+                modelType,
+                phase,
+                region,
+                objectives,
+                mainConcerns,
+                duration,
+                deliverable,
+                budget,
+                status: 'Exploración',
+                progress: 0,
+                created: new Date(),
+                discovery: {
+                    intake: { completed: false, data: {} },
+                    jtbd: { completed: false, data: [] },
+                    audiences: { completed: false, data: {} },
+                    tensions: { completed: false, data: {} }
+                },
+                strategy: {
+                    value: { completed: false, data: {} },
+                    narrative: { completed: false, data: {} },
+                    roadmap: { completed: false, data: {} },
+                    initiatives: []
+                }
+            };
+
+            // Add to in-memory list + localStorage
+            this.projects.push(projectData);
+            this.saveProjects();
+
+            // Set as current project
+            localStorage.setItem('sunstone_current_project', JSON.stringify(projectData));
+
+            this.closeModal();
+
+            // Show success and redirect
+            this.showNotification('Proyecto creado exitosamente!', 'success');
+
+            setTimeout(() => {
+                this.hideLoading();
+                window.location.href = 'project.html';
+            }, 800);
+        } catch (error) {
+            this.hideLoading();
+            this.showNotification('Error al crear proyecto', 'error');
+            console.error('Create project error:', error);
         }
-
-        // SECOND: still save locally (for speed & caching)
-        localStorage.setItem("sunstone_current_project", JSON.stringify(newProject));
-
-        const allProjects = JSON.parse(localStorage.getItem("sunstone_projects") || "[]");
-        allProjects.unshift(newProject);
-        localStorage.setItem("sunstone_projects", JSON.stringify(allProjects));
-
-        // Show new project in the UI
-        this.projects = allProjects;
-        this.renderProjects();
-
-        // Close modal & go to project page
-        this.closeModal();
-        setTimeout(() => {
-            window.location.href = "project.html";
-        }, 300);
     }
+
 
 
     // Carga proyectos desde Supabase + localStorage
