@@ -4,21 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sunstone - Discovery & GTM Platform</title>
+
+    <!-- Tailwind + FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
         body { font-family: 'Inter', sans-serif; }
         .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
-        .card-hover { transition: all 0.3s ease; }
+        .card-hover { transition: all 0.2s ease; }
         .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .progress-bar { background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%); }
         .status-badge { font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 0.375rem; }
-        .project-card { border-left: 4px solid #4f46e5; }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
-    <!-- Navigation -->
+
+    <!-- Top Navigation -->
     <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -29,8 +31,8 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>Nueva sesión
+                    <button id="newProjectBtnTop" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Nuevo proyecto
                     </button>
                     <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
                         <i class="fas fa-download mr-2"></i>Exportar
@@ -40,8 +42,10 @@
         </div>
     </nav>
 
-    <!-- Sidebar -->
+    <!-- Layout -->
     <div class="flex">
+
+        <!-- Sidebar -->
         <div class="w-64 bg-white shadow-lg min-h-screen">
             <div class="p-6">
                 <nav class="space-y-2">
@@ -82,32 +86,32 @@
 
             <!-- Projects Grid -->
             <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Projects will be loaded dynamically by JavaScript -->
+                <!-- Cards rendered by JS -->
             </div>
 
             <!-- Stats Section -->
             <div class="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                    <div class="text-2xl font-bold text-indigo-600 mb-2">12</div>
+                    <div id="totalProjectsStat" class="text-2xl font-bold text-indigo-600 mb-2">0</div>
                     <div class="text-gray-600">Proyectos activos</div>
                 </div>
                 <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                    <div class="text-2xl font-bold text-green-600 mb-2">8</div>
+                    <div id="discoveryProjectsStat" class="text-2xl font-bold text-green-600 mb-2">0</div>
                     <div class="text-gray-600">En Discovery</div>
                 </div>
                 <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                    <div class="text-2xl font-bold text-blue-600 mb-2">4</div>
+                    <div id="strategyProjectsStat" class="text-2xl font-bold text-blue-600 mb-2">0</div>
                     <div class="text-gray-600">En Estrategia</div>
                 </div>
                 <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                    <div class="text-2xl font-bold text-purple-600 mb-2">85%</div>
-                    <div class="text-gray-600">Tasa de éxito</div>
+                    <div id="successRateStat" class="text-2xl font-bold text-purple-600 mb-2">0%</div>
+                    <div class="text-gray-600">Tasa de éxito (proxy)</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- New Project Modal -->
+    <!-- New Project Modal (single-page form) -->
     <div id="newProjectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg max-w-2xl w-full max-h-screen overflow-y-auto">
@@ -119,9 +123,7 @@
                         </button>
                     </div>
 
-                    <!-- Single-page form -->
                     <form id="newProjectForm" class="space-y-6">
-
                         <!-- Datos básicos -->
                         <div>
                             <h3 class="text-sm font-semibold text-gray-900 mb-2">Datos básicos</h3>
@@ -193,32 +195,6 @@
                             />
                         </div>
 
-                        <!-- Objetivo del Discovery -->
-                        <div>
-                            <h3 class="text-sm font-semibold text-gray-900 mb-2">Objetivo del Discovery</h3>
-                            <p class="text-xs text-gray-500 mb-3">
-                                ¿Qué te gustaría conseguir principalmente con este proceso? (puedes marcar varias)
-                            </p>
-                            <div class="space-y-2">
-                                <label class="flex items-center text-sm text-gray-700">
-                                    <input type="checkbox" name="objectives" value="funding" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                    <span class="ml-3">Conseguir funding</span>
-                                </label>
-                                <label class="flex items-center text-sm text-gray-700">
-                                    <input type="checkbox" name="objectives" value="goforpmf" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                    <span class="ml-3">Acercarnos a Product-Market Fit</span>
-                                </label>
-                                <label class="flex items-center text-sm text-gray-700">
-                                    <input type="checkbox" name="objectives" value="aligntheteam" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                    <span class="ml-3">Alinear al equipo alrededor de una narrativa</span>
-                                </label>
-                                <label class="flex items-center text-sm text-gray-700">
-                                    <input type="checkbox" name="objectives" value="gofortest" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                    <span class="ml-3">Preparar un plan de Go-to-Market</span>
-                                </label>
-                            </div>
-                        </div>
-
                         <!-- Preocupaciones principales -->
                         <div>
                             <h3 class="text-sm font-semibold text-gray-900 mb-2">Preocupaciones principales</h3>
@@ -256,7 +232,7 @@
                                         <option value="">Selecciona entregable</option>
                                         <option value="informe-ejecutivo">Informe ejecutivo</option>
                                         <option value="playbook-gtm">Playbook de Go-To-Market</option>
-                                        <option value="deck-inversion">Pitch deck para inversión</option>
+                                        <option value="pitch-deck">Pitch deck para inversión</option>
                                         <option value="mixto">Mixto</option>
                                     </select>
                                 </div>
@@ -298,6 +274,7 @@
         </div>
     </div>
 
+    <!-- App logic -->
     <script src="main.js"></script>
 </body>
 </html>

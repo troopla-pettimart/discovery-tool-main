@@ -1,53 +1,50 @@
-// Enhanced Main JavaScript for Sunstone Platform with Loading States and Error Handling
+// Simple main JS for Sunstone dashboard (no wizard)
+
 class SunstoneApp {
     constructor() {
-        this.currentStep = 1;
-        this.maxSteps = 3;
         this.projects = [];
         this.currentProject = null;
         this.isLoading = false;
         this.loadingTimeout = null;
 
-        this.step1InitialHTML = '';  // 👈 add this line
-
         this.init();
     }
 
     init() {
-        // Store original Step 1 HTML so we can restore it later
-        const step1 = document.getElementById('step1');
-        if (step1) {
-            this.step1InitialHTML = step1.innerHTML;
-        }
-
         this.bindEvents();
         this.loadProjects();
         this.renderProjects();
-        this.setupErrorHandling();
+        this.updateStats();
     }
 
+    // ---------- EVENTS ----------
 
     bindEvents() {
-        // Modal elements
         const newProjectBtn = document.getElementById('newProjectBtn');
-        const newProjectModal = document.getElementById('newProjectModal');
-        const closeModal = document.getElementById('closeModal');
-        const newProjectForm = document.getElementById('newProjectForm');
+        const newProjectBtnTop = document.getElementById('newProjectBtnTop');
+        const modal = document.getElementById('newProjectModal');
+        const closeModalBtn = document.getElementById('closeModal');
         const cancelNewProject = document.getElementById('cancelNewProject');
+        const newProjectForm = document.getElementById('newProjectForm');
+        const projectsGrid = document.getElementById('projectsGrid');
 
         if (newProjectBtn) {
             newProjectBtn.addEventListener('click', () => this.openModal());
         }
-
-        if (closeModal) {
-            closeModal.addEventListener('click', () => this.closeModal());
+        if (newProjectBtnTop) {
+            newProjectBtnTop.addEventListener('click', () => this.openModal());
         }
-
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => this.closeModal());
+        }
         if (cancelNewProject) {
             cancelNewProject.addEventListener('click', () => this.closeModal());
         }
-
-        // Submit form → createProject
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) this.closeModal();
+            });
+        }
         if (newProjectForm) {
             newProjectForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -55,121 +52,118 @@ class SunstoneApp {
             });
         }
 
-        // Close modal on outside click
-        if (newProjectModal) {
-            newProjectModal.addEventListener('click', (e) => {
-                if (e.target === newProjectModal) {
-                    this.closeModal();
-                }
+        // Delegate click from cards
+        if (projectsGrid) {
+            projectsGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.project-card');
+                if (!card) return;
+                const projectId = card.dataset.projectId;
+                if (projectId) this.openProjectById(projectId);
             });
         }
-
-        // Project card clicks
-        this.bindProjectCardEvents();
     }
 
+    // ---------- MODAL ----------
 
-    bindProjectCardEvents() {
-        const projectCards = document.querySelectorAll('.project-card');
-        projectCards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (!e.target.closest('button') && !this.isLoading) {
-                    this.openProject(card);
-                }
-            });
-        });
-    }
-
-    // Loading state management
-    showLoading(message = 'Cargando...') {
-        if (this.isLoading) return;
-        
-        this.isLoading = true;
-        
-        // Create loading overlay if it doesn't exist
-        let loadingOverlay = document.getElementById('loadingOverlay');
-        if (!loadingOverlay) {
-            loadingOverlay = document.createElement('div');
-            loadingOverlay.id = 'loadingOverlay';
-            loadingOverlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-            loadingOverlay.innerHTML = `
-                <div class="bg-white rounded-lg p-6 text-center shadow-xl">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-                    <p class="text-gray-700 font-medium">${message}</p>
-                </div>
-            `;
-            document.body.appendChild(loadingOverlay);
-        } else {
-            loadingOverlay.querySelector('p').textContent = message;
-        }
-        
-        loadingOverlay.classList.remove('hidden');
+    openModal() {
+        const modal = document.getElementById('newProjectModal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
-        
-        // Set timeout for long operations
-        this.loadingTimeout = setTimeout(() => {
-            this.hideLoading();
-            this.showNotification('La operación está tomando más tiempo de lo esperado', 'warning');
-        }, 15000);
     }
 
-    hideLoading() {
-        if (!this.isLoading) return;
-        
-        this.isLoading = false;
-        
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        if (loadingOverlay) {
-            loadingOverlay.classList.add('hidden');
-        }
-        
+    closeModal() {
+        const modal = document.getElementById('newProjectModal');
+        if (!modal) return;
+        modal.classList.add('hidden');
         document.body.style.overflow = 'auto';
-        
-        if (this.loadingTimeout) {
-            clearTimeout(this.loadingTimeout);
-            this.loadingTimeout = null;
+
+        const form = document.getElementById('newProjectForm');
+        if (form) form.reset();
+    }
+
+    // ---------- STORAGE ----------
+
+    loadProjects() {
+        const stored = window.SunstoneUtils.safeLocalStorageGet('sunstone_projects', []);
+        if (Array.isArray(stored)) {
+            this.projects = stored;
+        } else {
+            this.projects = [];
         }
     }
 
-    // Enhanced error handling
-    setupErrorHandling() {
-        window.addEventListener('error', (e) => {
-            console.error('JavaScript Error:', e.error);
-            this.showNotification('Ha ocurrido un error inesperado', 'error');
-            this.hideLoading();
-        });
-
-        window.addEventListener('unhandledrejection', (e) => {
-            console.error('Unhandled Promise Rejection:', e.reason);
-            this.showNotification('Error de conexión o procesamiento', 'error');
-            this.hideLoading();
-        });
+    saveProjects() {
+        window.SunstoneUtils.safeLocalStorageSet('sunstone_projects', this.projects);
     }
 
-    // Safe localStorage operations
-    safeLocalStorageGet(key, defaultValue = null) {
-        try {
-            const item = localStorage.getItem(key);
-            return item ? JSON.parse(item) : defaultValue;
-        } catch (error) {
-            console.error('Error reading from localStorage:', error);
-            this.showNotification('Error al cargar datos guardados', 'error');
-            return defaultValue;
+    // ---------- PROJECT CREATION ----------
+
+    createProject() {
+        const name = document.getElementById('projectNameInput')?.value.trim();
+        const industry = document.getElementById('industrySelect')?.value || '';
+        const modelType = document.getElementById('modelTypeSelect')?.value || '';
+        const phase = document.getElementById('phaseSelect')?.value || '';
+        const region = document.getElementById('regionInput')?.value || '';
+        const mainConcerns = document.getElementById('mainConcerns')?.value || '';
+        const duration = document.getElementById('duration')?.value || '';
+        const deliverable = document.getElementById('deliverable')?.value || '';
+        const budget = document.getElementById('budget')?.value || '';
+
+        if (!name || name.length < 3) {
+            this.showNotification('Por favor ingresa un nombre de proyecto válido', 'error');
+            return;
         }
+
+        const id = String(Date.now());
+
+        const project = {
+            id,
+            name,
+            industry,
+            modelType,
+            phase,
+            region,
+            mainConcerns,
+            duration,
+            deliverable,
+            budget,
+            status: 'En Discovery',
+            progress: 0,
+            created: new Date().toISOString(),
+            discovery: {
+                intake: { completed: false, data: {} },
+                jtbd: { completed: false, data: [] },
+                audiences: { completed: false, data: {} },
+                tensions: { completed: false, data: {} }
+            },
+            strategy: {
+                value: { completed: false, data: {} },
+                narrative: { completed: false, data: {} },
+                roadmap: { completed: false, data: {} },
+                initiatives: []
+            }
+        };
+
+        this.projects.push(project);
+        this.saveProjects();
+        this.renderProjects();
+        this.updateStats();
+
+        // set as current project for project.html
+        window.SunstoneUtils.safeLocalStorageSet('sunstone_current_project', project);
+
+        this.closeModal();
+        this.showNotification('Proyecto creado exitosamente', 'success');
+
+        // Go straight to project page
+        setTimeout(() => {
+            window.location.href = 'project.html';
+        }, 600);
     }
 
-    safeLocalStorageSet(key, value) {
-        try {
-            localStorage.setItem(key, JSON.stringify(value));
-            return true;
-        } catch (error) {
-            console.error('Error writing to localStorage:', error);
-            this.showNotification('Error al guardar datos', 'error');
-            return false;
-        }
-    }
+    // ---------- PROJECT CARDS ----------
 
-    // Pinta las tarjetas en el grid principal
     renderProjects() {
         const grid = document.getElementById('projectsGrid');
         if (!grid) return;
@@ -178,717 +172,204 @@ class SunstoneApp {
 
         if (!this.projects || this.projects.length === 0) {
             grid.innerHTML = `
-                <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center text-gray-500 text-sm py-10 border border-dashed border-gray-300 rounded-lg bg-gray-50">
-                    Aún no tienes proyectos. Crea uno nuevo para empezar.
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-rocket text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay proyectos aún</h3>
+                    <p class="text-gray-500 mb-6">Crea tu primer proyecto para comenzar con el discovery y estrategia</p>
+                    <button class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors"
+                        onclick="window.sunstoneApp.openModal()">
+                        <i class="fas fa-plus mr-2"></i>Crear primer proyecto
+                    </button>
                 </div>
             `;
             return;
         }
 
-        this.projects.forEach(project => {
-            const card = document.createElement('div');
-            card.className = 'card-hover bg-white rounded-lg shadow-md p-5 cursor-pointer flex flex-col justify-between';
-            card.dataset.projectId = project.id;
-
-            const industry = project.industry || 'Industria no definida';
-            const phase = project.phase || 'Fase no definida';
-            const modelType = project.modelType || 'Modelo no definido';
-
-            card.innerHTML = `
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-lg font-semibold text-gray-900">
-                            ${project.name || 'Proyecto sin nombre'}
-                        </h3>
-                        <span class="status-badge bg-indigo-50 text-indigo-700">
-                            En discovery
-                        </span>
-                    </div>
-                    <p class="text-sm text-gray-500 mb-3">
-                        ${industry} • ${phase}
-                    </p>
-                    <p class="text-xs text-gray-400">
-                        Modelo: ${modelType}${project.region ? ' • Región: ' + project.region : ''}
-                    </p>
-                </div>
-                <div class="mt-4 flex items-center justify-between">
-                    <div class="flex items-center text-xs text-gray-500">
-                        <i class="fas fa-chart-line mr-1"></i>
-                        <span>Discovery & Go-To-Market</span>
-                    </div>
-                    <button class="text-xs text-indigo-600 hover:text-indigo-800 inline-flex items-center">
-                        Ver detalles
-                        <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
-                </div>
-            `;
-
-            card.addEventListener('click', () => {
-                this.openProject(project.id);
-            });
-
+        this.projects.forEach((project) => {
+            const card = this.createProjectCard(project);
             grid.appendChild(card);
         });
     }
 
-
-    showEmptyState(container) {
-        container.innerHTML = `
-            <div class="col-span-full text-center py-12">
-                <i class="fas fa-rocket text-6xl text-gray-300 mb-4"></i>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay proyectos aún</h3>
-                <p class="text-gray-500 mb-6">Crea tu primer proyecto para comenzar con el discovery y estrategia</p>
-                <button onclick="window.sunstoneApp.openModal()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors">
-                    <i class="fas fa-plus mr-2"></i>Crear primer proyecto
-                </button>
-            </div>
-        `;
-    }
-
     createProjectCard(project) {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-lg shadow-md p-6 card-hover project-card';
-        card.onclick = () => this.openProject(project);
+        card.className = 'bg-white rounded-lg shadow-md p-6 card-hover project-card flex flex-col justify-between';
+        card.dataset.projectId = project.id;
 
-        // Determine status badge color and text
-        let statusBadgeClass = 'bg-gray-100 text-gray-800';
-        let statusText = project.status || 'Nuevo';
-        let progressText = 'Progreso';
+        const industry = project.industry || 'Industria no definida';
+        const phase = project.phase || 'Fase no definida';
+        const modelType = project.modelType || 'Modelo no definido';
+
+        // Status & progress
+        let statusBadgeClass = 'bg-blue-100 text-blue-800';
+        let statusText = project.status || 'En Discovery';
         let progressWidth = project.progress || 0;
 
-        if (project.status === 'En Discovery') {
-            statusBadgeClass = 'bg-blue-100 text-blue-800';
-            progressText = 'Discovery';
-        } else if (project.status === 'En Estrategia') {
+        if (project.status === 'En Estrategia') {
             statusBadgeClass = 'bg-green-100 text-green-800';
-            progressText = 'Estrategia';
         } else if (project.status === 'Exploración') {
             statusBadgeClass = 'bg-purple-100 text-purple-800';
-            progressText = 'Exploración';
         }
 
-        // Format last session date
-        const lastSession = new Date(project.created);
-        const today = new Date();
-        const diffTime = Math.abs(today - lastSession);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        // Last session text
         let lastSessionText = 'Hoy';
-        
-        if (diffDays === 1) {
-            lastSessionText = 'Ayer';
-        } else if (diffDays <= 7) {
-            lastSessionText = `Hace ${diffDays} días`;
-        } else {
-            lastSessionText = lastSession.toLocaleDateString('es-ES');
+        if (project.created) {
+            const last = new Date(project.created);
+            const now = new Date();
+            const diffDays = Math.round(Math.abs(now - last) / (1000 * 60 * 60 * 24));
+            if (diffDays === 1) lastSessionText = 'Ayer';
+            else if (diffDays > 1 && diffDays <= 7) lastSessionText = `Hace ${diffDays} días`;
+            else if (diffDays > 7) lastSessionText = last.toLocaleDateString('es-ES');
         }
 
         card.innerHTML = `
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">${project.name}</h3>
-                <span class="status-badge ${statusBadgeClass}">${project.modelType || 'SaaS'}</span>
-            </div>
-            <p class="text-gray-600 text-sm mb-4">${project.mainConcerns || 'Proyecto de Discovery y Estrategia'}</p>
-            <div class="mb-4">
-                <div class="flex justify-between text-sm text-gray-600 mb-1">
-                    <span>${progressText}</span>
-                    <span>${progressWidth}%</span>
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold text-gray-900">${project.name}</h3>
+                    <span class="status-badge ${statusBadgeClass}">
+                        ${statusText}
+                    </span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="progress-bar h-2 rounded-full" style="width: ${progressWidth}%"></div>
+                <p class="text-gray-600 text-sm mb-2">${industry} • ${phase}</p>
+                <p class="text-xs text-gray-400 mb-4">
+                    Modelo: ${modelType}${project.region ? ' • Región: ' + project.region : ''}
+                </p>
+                <div class="mb-4">
+                    <div class="flex justify-between text-xs text-gray-600 mb-1">
+                        <span>Progreso</span>
+                        <span>${progressWidth}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="h-2 rounded-full bg-indigo-500" style="width: ${progressWidth}%;"></div>
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center justify-between text-sm text-gray-500">
+            <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
                 <span>Última sesión: ${lastSessionText}</span>
-                <i class="fas fa-arrow-right text-indigo-600"></i>
+                <span class="inline-flex items-center text-indigo-600">
+                    Ver detalles
+                    <i class="fas fa-arrow-right ml-1"></i>
+                </span>
             </div>
         `;
 
         return card;
     }
 
-    updateStats() {
-        const totalProjects = this.projects.length;
-        const discoveryProjects = this.projects.filter(p => p.status === 'En Discovery').length;
-        const strategyProjects = this.projects.filter(p => p.status === 'En Estrategia').length;
-        const successRate = Math.round((this.projects.filter(p => p.progress >= 75).length / totalProjects) * 100) || 85;
-
-        // Update stats if elements exist
-        const statsElements = document.querySelectorAll('.text-2xl.font-bold');
-        if (statsElements.length >= 4) {
-            statsElements[0].textContent = totalProjects;
-            statsElements[1].textContent = discoveryProjects;
-            statsElements[2].textContent = strategyProjects;
-            statsElements[3].textContent = successRate + '%';
-        }
-    }
-
-    // Abre un proyecto: lo guarda como "current" y navega a project.html
-    openProject(projectId) {
-        const project = this.projects.find(p => p.id === projectId);
+    openProjectById(projectId) {
+        const project = this.projects.find((p) => p.id === projectId);
         if (!project) {
-            if (window.SunstoneUtils && window.SunstoneUtils.showNotification) {
-                window.SunstoneUtils.showNotification('No se pudo abrir el proyecto', 'error');
-            } else {
-                alert('No se pudo abrir el proyecto');
-            }
+            this.showNotification('No se encontró el proyecto', 'error');
             return;
         }
 
-        // Guardar como proyecto actual
-        try {
-            localStorage.setItem('sunstone_current_project', JSON.stringify(project));
-        } catch (e) {
-            console.warn('No se pudo guardar el proyecto actual en localStorage:', e);
-        }
+        window.SunstoneUtils.safeLocalStorageSet('sunstone_current_project', project);
+        this.showNotification(`Abriendo proyecto: ${project.name}`, 'info');
 
-        // Guardar lista de proyectos también (por si otro módulo la necesita)
-        try {
-            localStorage.setItem('sunstone_projects', JSON.stringify(this.projects));
-        } catch (e) {
-            console.warn('No se pudo actualizar sunstone_projects en localStorage:', e);
-        }
-
-        // Navegar a la página del proyecto
-        window.location.href = 'project.html';
-    }
-
-
-    openModal() {
-        if (this.isLoading) return;
-        
-        const modal = document.getElementById('newProjectModal');
-        if (modal) {
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            this.resetWizard();
-        }
-    }
-
-    closeModal() {
-        const modal = document.getElementById('newProjectModal');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-
-            const form = document.getElementById('newProjectForm');
-            if (form) {
-                form.reset();
-            }
-        }
-    }
-
-
-    resetWizard() {
-        this.currentStep = 1;
-        this.updateStepIndicator();
-        this.showStep(1);
-    }
-
-    handleNextStep() {
-        if (this.isLoading) return;
-        
-        if (this.currentStep < this.maxSteps) {
-            if (this.validateCurrentStep()) {
-                this.currentStep++;
-                this.updateStepIndicator();
-                this.showStep(this.currentStep);
-            }
-        } else {
-            this.createProject();
-        }
-    }
-
-    validateCurrentStep() {
-        if (this.currentStep === 1) {
-            const projectName = document.getElementById('projectNameInput')?.value;
-            if (!projectName || projectName.trim().length < 3) {
-                this.showNotification('Por favor ingresa un nombre de proyecto válido', 'error');
-                return false;
-            }
-        }
-
-        if (this.currentStep === 2) {
-            const concerns = document.getElementById('mainConcerns')?.value;
-            if (!concerns || concerns.trim().length < 10) {
-                this.showNotification('Por favor describe tus preocupaciones principales', 'error');
-                return false;
-            }
-        }
-
-        if (this.currentStep === 3) {
-            const duration = document.getElementById('duration')?.value;
-            const deliverable = document.getElementById('deliverable')?.value;
-            if (!duration || !deliverable) {
-                this.showNotification('Por favor completa todos los campos', 'error');
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    updateStepIndicator() {
-        const steps = document.querySelectorAll('.flex.items-center .flex.items-center');
-        steps.forEach((step, index) => {
-            const circle = step.querySelector('.w-8');
-            const text = step.querySelector('span');
-            
-            if (index + 1 <= this.currentStep) {
-                circle.classList.remove('bg-gray-300', 'text-gray-600');
-                circle.classList.add('bg-indigo-600', 'text-white');
-                text.classList.remove('text-gray-500');
-                text.classList.add('text-indigo-600', 'font-medium');
-            } else {
-                circle.classList.add('bg-gray-300', 'text-gray-600');
-                circle.classList.remove('bg-indigo-600', 'text-white');
-                text.classList.add('text-gray-500');
-                text.classList.remove('text-indigo-600', 'font-medium');
-            }
-        });
-    }
-
-    showStep(stepNumber) {
-        const step1 = document.getElementById('step1');
-        const nextBtn = document.getElementById('nextStep');
-
-        if (!step1) return;
-
-        // always show the container
-        step1.style.display = 'block';
-
-        switch (stepNumber) {
-            case 1:
-                // Restore original Step 1 HTML
-                if (this.step1InitialHTML) {
-                    step1.innerHTML = this.step1InitialHTML;
-                }
-                if (nextBtn) {
-                    nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
-                }
-                break;
-
-            case 2:
-                // Render Step 2 into the same container
-                this.renderStep2();
-                if (nextBtn) {
-                    nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-2"></i>';
-                }
-                break;
-
-            case 3:
-                // Render Step 3 into the same container
-                this.renderStep3();
-                if (nextBtn) {
-                    nextBtn.innerHTML = 'Crear proyecto <i class="fas fa-check ml-2"></i>';
-                }
-                break;
-        }
-    }
-
-
-
-    renderStep2() {
-        const step1 = document.getElementById('step1');
-        if (!step1) return;
-
-        step1.innerHTML = `
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-3">Objetivo principal de la intervención (puedes marcar varias)</label>
-                    <div class="space-y-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" name="objectives" value="funding" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                            <span class="ml-3 text-gray-700">Conseguir funding</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="objectives" value="pmf" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                            <span class="ml-3 text-gray-700">Encontrar PMF</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="objectives" value="launch" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                            <span class="ml-3 text-gray-700">Lanzar producto</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="objectives" value="repositioning" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                            <span class="ml-3 text-gray-700">Reposicionar marca/narrativa</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="objectives" value="gtm" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                            <span class="ml-3 text-gray-700">Diseñar GTM</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="objectives" value="new-segment" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                            <span class="ml-3 text-gray-700">Entrar en nuevo segmento</span>
-                        </label>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">¿Qué te preocupa más ahora mismo?</label>
-                    <textarea id="mainConcerns" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="4" placeholder="Describe brevemente tus principales preocupaciones..."></textarea>
-                </div>
-            </div>
-        `;
-        step1.style.display = 'block';
-    }
-
-    renderStep3() {
-        const step1 = document.getElementById('step1');
-        if (!step1) return;
-
-        step1.innerHTML = `
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Duración estimada</label>
-                    <select id="duration" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Selecciona duración</option>
-                        <option value="2-3-weeks">2-3 semanas</option>
-                        <option value="4-6-weeks-discovery">4-6 semanas Discovery</option>
-                        <option value="8-10-weeks-full">8-10 semanas Discovery + Estrategia</option>
-                        <option value="12plus-weeks-complete">12+ semanas Proyecto completo</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de entregable esperado</label>
-                    <select id="deliverable" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Selecciona entregable</option>
-                        <option value="discovery-only">Solo Discovery</option>
-                        <option value="discovery-strategy">Discovery + Estrategia</option>
-                        <option value="full-gtm">GTM completo</option>
-                        <option value="end-to-end">Proyecto end-to-end</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Presupuesto aproximado</label>
-                    <select id="budget" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Selecciona rango</option>
-                        <option value="5k-10k">5K - 10K EUR</option>
-                        <option value="10k-25k">10K - 25K EUR</option>
-                        <option value="25k-50k">25K - 50K EUR</option>
-                        <option value="50k-plus">50K+ EUR</option>
-                    </select>
-                </div>
-            </div>
-        `;
-        step1.style.display = 'block';
-    }
-
-    createProject() {
-        if (this.isLoading) return;
-
-        this.showLoading('Creando proyecto...');
-
-        try {
-            // Read form fields by ID
-            const projectName = document.getElementById('projectNameInput')?.value.trim() || 'Nuevo Proyecto';
-            const industry = document.getElementById('industrySelect')?.value || '';
-            const modelType = document.getElementById('modelTypeSelect')?.value || '';
-            const phase = document.getElementById('phaseSelect')?.value || '';
-            const region = document.getElementById('regionInput')?.value || '';
-
-            const objectives = Array.from(document.querySelectorAll('input[name="objectives"]:checked'))
-                .map(cb => cb.value);
-
-            const mainConcerns = document.getElementById('mainConcerns')?.value || '';
-            const duration = document.getElementById('duration')?.value || '';
-            const deliverable = document.getElementById('deliverable')?.value || '';
-            const budget = document.getElementById('budget')?.value || '';
-
-            // Create project data (local, for now)
-            const projectData = {
-                id: Date.now(),
-                name: projectName,
-                industry,
-                modelType,
-                phase,
-                region,
-                objectives,
-                mainConcerns,
-                duration,
-                deliverable,
-                budget,
-                status: 'Exploración',
-                progress: 0,
-                created: new Date(),
-                discovery: {
-                    intake: { completed: false, data: {} },
-                    jtbd: { completed: false, data: [] },
-                    audiences: { completed: false, data: {} },
-                    tensions: { completed: false, data: {} }
-                },
-                strategy: {
-                    value: { completed: false, data: {} },
-                    narrative: { completed: false, data: {} },
-                    roadmap: { completed: false, data: {} },
-                    initiatives: []
-                }
-            };
-
-            // Add to in-memory list + localStorage
-            this.projects.push(projectData);
-            this.saveProjects();
-
-            // Set as current project
-            localStorage.setItem('sunstone_current_project', JSON.stringify(projectData));
-
-            this.closeModal();
-
-            // Show success and redirect
-            this.showNotification('Proyecto creado exitosamente!', 'success');
-
-            setTimeout(() => {
-                this.hideLoading();
-                window.location.href = 'project.html';
-            }, 800);
-        } catch (error) {
-            this.hideLoading();
-            this.showNotification('Error al crear proyecto', 'error');
-            console.error('Create project error:', error);
-        }
-    }
-
-
-
-    // Carga proyectos desde Supabase + localStorage
-    async loadProjects() {
-        // Mostrar loading si tienes método
-        if (this.showLoading) {
-            this.showLoading('Cargando proyectos...');
-        }
-
-        const projectsMap = new Map();
-
-        // 1) Intentar cargar desde Supabase (si está disponible)
-        if (window.supabase) {
-            try {
-                const { data, error } = await window.supabase
-                    .from('projects')
-                    .select('id, name, industry, phase, modelType, region, data, created_at')
-                    .order('created_at', { ascending: false });
-
-                if (error) {
-                    console.error('Error al cargar proyectos desde Supabase:', error);
-                } else if (data && Array.isArray(data)) {
-                    data.forEach(row => {
-                        projectsMap.set(row.id, {
-                            id: row.id,
-                            name: row.name || 'Proyecto sin nombre',
-                            industry: row.industry || '',
-                            phase: row.phase || '',
-                            modelType: row.modelType || '',
-                            region: row.region || '',
-                            discovery: row.data?.discovery || {},
-                            strategy: row.data?.strategy || {},
-                            createdAt: row.created_at || null
-                        });
-                    });
-                }
-            } catch (e) {
-                console.error('Error inesperado al leer Supabase:', e);
-            }
-        }
-
-        // 2) Merge con lo que haya en localStorage (fallback / cache)
-        try {
-            const localStr = localStorage.getItem('sunstone_projects');
-            if (localStr) {
-                const localProjects = JSON.parse(localStr);
-                if (Array.isArray(localProjects)) {
-                    localProjects.forEach(p => {
-                        if (!projectsMap.has(p.id)) {
-                            projectsMap.set(p.id, p);
-                        }
-                    });
-                }
-            }
-        } catch (e) {
-            console.warn('No se pudo leer proyectos de localStorage:', e);
-        }
-
-        // 3) Pasar a array
-        this.projects = Array.from(projectsMap.values());
-
-        // 4) Guardar versión merged en localStorage (cache)
-        try {
-            localStorage.setItem('sunstone_projects', JSON.stringify(this.projects));
-        } catch (e) {
-            console.warn('No se pudo escribir proyectos en localStorage:', e);
-        }
-
-        // 5) Renderizar
-        this.renderProjects();
-
-        if (this.hideLoading) {
-            this.hideLoading();
-        }
-    }
-
-
-    getDefaultProjects() {
-        return [
-            {
-                id: 1,
-                name: 'TechFlow Solutions',
-                industry: 'Tecnología/SaaS',
-                modelType: 'SaaS',
-                phase: 'Pre-PMF',
-                region: 'España',
-                objectives: ['pmf', 'gtm'],
-                mainConcerns: 'Necesitamos encontrar PMF antes del próximo funding round',
-                duration: '4-6-weeks-discovery',
-                deliverable: 'discovery-strategy',
-                budget: '25k-50k',
-                status: 'En Discovery',
-                progress: 75,
-                created: new Date('2025-11-24'),
-                discovery: {
-                    intake: { completed: true, data: {} },
-                    jtbd: { completed: true, data: [] },
-                    tensiones: { completed: false, data: {} },
-                    audiencias: { completed: false, data: [] }
-                },
-                strategy: {
-                    valor: { completed: false, data: {} },
-                    narrativa: { completed: false, data: {} }
-                },
-                roadmap: {
-                    initiatives: []
-                }
-            },
-            {
-                id: 2,
-                name: 'MarketPlace Pro',
-                industry: 'E-commerce',
-                modelType: 'Marketplace',
-                phase: 'Post-PMF',
-                region: 'Latinoamérica',
-                objectives: ['funding', 'new-segment'],
-                mainConcerns: 'Necesitamos escalar a nuevos mercados',
-                duration: '8-10-weeks-full',
-                deliverable: 'full-gtm',
-                budget: '50k-plus',
-                status: 'En Estrategia',
-                progress: 45,
-                created: new Date('2025-11-20'),
-                discovery: {
-                    intake: { completed: true, data: {} },
-                    jtbd: { completed: true, data: [] },
-                    tensiones: { completed: true, data: {} },
-                    audiencias: { completed: true, data: [] }
-                },
-                strategy: {
-                    valor: { completed: true, data: {} },
-                    narrativa: { completed: false, data: {} }
-                },
-                roadmap: {
-                    initiatives: []
-                }
-            }
-        ];
-    }
-
-    saveProjects() {
-        this.safeLocalStorageSet('sunstone_projects', this.projects);
-    }
-
-    // Enhanced notification system
-    showNotification(message, type = 'info', duration = 3000) {
-        // Remove existing notifications
-        const existingNotifications = document.querySelectorAll('.notification-toast');
-        existingNotifications.forEach(n => n.remove());
-
-        const notification = document.createElement('div');
-        notification.className = `notification-toast fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 max-w-sm ${
-            type === 'success' ? 'bg-green-500 text-white' :
-            type === 'error' ? 'bg-red-500 text-white' :
-            type === 'warning' ? 'bg-yellow-500 text-white' :
-            'bg-blue-500 text-white'
-        }`;
-        
-        notification.innerHTML = `
-            <div class="flex items-center">
-                <i class="fas ${
-                    type === 'success' ? 'fa-check-circle' :
-                    type === 'error' ? 'fa-exclamation-circle' :
-                    type === 'warning' ? 'fa-exclamation-triangle' :
-                    'fa-info-circle'
-                } mr-3"></i>
-                <span class="font-medium">${message}</span>
-                <button onclick="this.parentElement.parentElement.remove()" class="ml-3 text-white hover:text-gray-200">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Auto remove after duration
         setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
+            window.location.href = 'project.html';
+        }, 400);
+    }
+
+    // ---------- STATS ----------
+
+    updateStats() {
+        const total = this.projects.length;
+        const discovery = this.projects.filter((p) => p.status === 'En Discovery').length;
+        const strategy = this.projects.filter((p) => p.status === 'En Estrategia').length;
+        const successRate =
+            total === 0
+                ? 0
+                : Math.round((this.projects.filter((p) => p.progress >= 75).length / total) * 100);
+
+        const totalEl = document.getElementById('totalProjectsStat');
+        const discEl = document.getElementById('discoveryProjectsStat');
+        const stratEl = document.getElementById('strategyProjectsStat');
+        const successEl = document.getElementById('successRateStat');
+
+        if (totalEl) totalEl.textContent = total;
+        if (discEl) discEl.textContent = discovery;
+        if (stratEl) stratEl.textContent = strategy;
+        if (successEl) successEl.textContent = successRate + '%';
+    }
+
+    // ---------- NOTIFICATIONS & UTIL ----------
+
+    showNotification(message, type = 'info', duration = 2500) {
+        const existing = document.querySelectorAll('.notification-toast');
+        existing.forEach((n) => n.remove());
+
+        const notif = document.createElement('div');
+        notif.className =
+            'notification-toast fixed top-4 right-4 p-3 rounded-lg shadow-lg z-50 max-w-sm text-sm flex items-center gap-2 ' +
+            (type === 'success'
+                ? 'bg-green-600 text-white'
+                : type === 'error'
+                ? 'bg-red-600 text-white'
+                : type === 'warning'
+                ? 'bg-yellow-500 text-white'
+                : 'bg-indigo-600 text-white');
+
+        const iconClass =
+            type === 'success'
+                ? 'fa-check-circle'
+                : type === 'error'
+                ? 'fa-exclamation-circle'
+                : type === 'warning'
+                ? 'fa-exclamation-triangle'
+                : 'fa-info-circle';
+
+        notif.innerHTML = `
+            <i class="fas ${iconClass}"></i>
+            <span>${message}</span>
+            <button class="ml-2 text-white/80 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        notif.querySelector('button').addEventListener('click', () => notif.remove());
+
+        document.body.appendChild(notif);
+
+        setTimeout(() => {
+            notif.classList.add('opacity-0', 'translate-y-1');
+            notif.style.transition = 'all 0.2s ease';
+            setTimeout(() => notif.remove(), 200);
         }, duration);
-        
-        // Add entrance animation
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-            notification.style.opacity = '1';
-        }, 10);
-        
-        notification.style.transform = 'translateX(100%)';
-        notification.style.opacity = '0';
-        notification.style.transition = 'all 0.3s ease';
     }
 }
 
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.sunstoneApp = new SunstoneApp();
-});
+// ---------- Global utilities for other pages (intake, JTBD, etc.) ----------
 
-// Utility functions for other modules
 window.SunstoneUtils = {
-    showNotification: (message, type = 'info') => {
+    showNotification(message, type = 'info') {
         if (window.sunstoneApp) {
             window.sunstoneApp.showNotification(message, type);
         } else {
             alert(message);
         }
     },
-    
-    showLoading: (message) => {
-        if (window.sunstoneApp) {
-            window.sunstoneApp.showLoading(message);
-        }
-    },
-    
-    hideLoading: () => {
-        if (window.sunstoneApp) {
-            window.sunstoneApp.hideLoading();
-        }
-    },
-    
-    safeLocalStorageGet: (key, defaultValue) => {
-        if (window.sunstoneApp) {
-            return window.sunstoneApp.safeLocalStorageGet(key, defaultValue);
-        }
+    safeLocalStorageGet(key, defaultValue = null) {
         try {
             const item = localStorage.getItem(key);
             return item ? JSON.parse(item) : defaultValue;
-        } catch {
+        } catch (e) {
+            console.warn('Error leyendo localStorage', e);
             return defaultValue;
         }
     },
-    
-    safeLocalStorageSet: (key, value) => {
-        if (window.sunstoneApp) {
-            return window.sunstoneApp.safeLocalStorageSet(key, value);
-        }
+    safeLocalStorageSet(key, value) {
         try {
             localStorage.setItem(key, JSON.stringify(value));
             return true;
-        } catch {
+        } catch (e) {
+            console.warn('Error escribiendo localStorage', e);
             return false;
         }
     }
 };
+
+// Initialize app
+document.addEventListener('DOMContentLoaded', () => {
+    window.sunstoneApp = new SunstoneApp();
+});
