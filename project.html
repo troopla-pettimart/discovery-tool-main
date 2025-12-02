@@ -32,35 +32,51 @@
 <body class="min-h-screen flex flex-col">
 
   <!-- Top bar -->
-  <header class="bg-white border-b border-gray-200">
+    <header class="bg-white border-b border-gray-200">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3">
         <button
-          onclick="window.location.href='index.html'"
-          class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
+            onclick="window.location.href='index.html'"
+            class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
         >
-          <i class="fa-solid fa-arrow-left mr-2"></i>
-          Volver al dashboard
+            <i class="fa-solid fa-arrow-left mr-2"></i>
+            Volver al dashboard
         </button>
         <div>
-          <h1 id="projectName" class="text-lg font-semibold text-gray-900">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center text-[11px] text-gray-500 gap-1 mb-1">
+            <button
+                type="button"
+                onclick="window.location.href='index.html'"
+                class="hover:text-gray-800"
+            >
+                Dashboard
+            </button>
+            <span>/</span>
+            <span id="breadcrumbProject" class="text-gray-700 font-semibold">
+                <!-- filled by JS -->
+            </span>
+            </nav>
+
+            <h1 id="projectName" class="text-lg font-semibold text-gray-900">
             <!-- filled by JS -->
-          </h1>
-          <p id="projectMeta" class="text-xs text-gray-500">
+            </h1>
+            <p id="projectMeta" class="text-xs text-gray-500">
             <!-- filled by JS -->
-          </p>
+            </p>
         </div>
-      </div>
-      <div class="flex items-center gap-3 text-xs">
+        </div>
+        <div class="flex items-center gap-3 text-xs">
         <span id="projectStatusBadge" class="badge bg-indigo-50 text-indigo-700">
-          <!-- filled by JS -->
+            <!-- filled by JS -->
         </span>
         <span id="projectProgressText" class="text-gray-500">
-          <!-- filled by JS -->
+            <!-- filled by JS -->
         </span>
-      </div>
+        </div>
     </div>
-  </header>
+    </header>
+
 
   <!-- Main layout -->
   <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
