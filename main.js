@@ -159,34 +159,68 @@ class SunstoneApp {
         }
     }
 
+    // Pinta las tarjetas en el grid principal
     renderProjects() {
-        const projectsGrid = document.getElementById('projectsGrid');
-        if (!projectsGrid) return;
+        const grid = document.getElementById('projectsGrid');
+        if (!grid) return;
 
-        this.showLoading('Cargando proyectos...');
+        grid.innerHTML = '';
 
-        try {
-            projectsGrid.innerHTML = '';
-
-            if (this.projects.length === 0) {
-                this.showEmptyState(projectsGrid);
-            } else {
-                this.projects.forEach(project => {
-                    const projectCard = this.createProjectCard(project);
-                    projectsGrid.appendChild(projectCard);
-                });
-            }
-
-            // Update stats
-            this.updateStats();
-            
-            this.hideLoading();
-        } catch (error) {
-            this.hideLoading();
-            this.showNotification('Error al renderizar proyectos', 'error');
-            console.error('Render error:', error);
+        if (!this.projects || this.projects.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center text-gray-500 text-sm py-10 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+                    Aún no tienes proyectos. Crea uno nuevo para empezar.
+                </div>
+            `;
+            return;
         }
+
+        this.projects.forEach(project => {
+            const card = document.createElement('div');
+            card.className = 'card-hover bg-white rounded-lg shadow-md p-5 cursor-pointer flex flex-col justify-between';
+            card.dataset.projectId = project.id;
+
+            const industry = project.industry || 'Industria no definida';
+            const phase = project.phase || 'Fase no definida';
+            const modelType = project.modelType || 'Modelo no definido';
+
+            card.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            ${project.name || 'Proyecto sin nombre'}
+                        </h3>
+                        <span class="status-badge bg-indigo-50 text-indigo-700">
+                            En discovery
+                        </span>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-3">
+                        ${industry} • ${phase}
+                    </p>
+                    <p class="text-xs text-gray-400">
+                        Modelo: ${modelType}${project.region ? ' • Región: ' + project.region : ''}
+                    </p>
+                </div>
+                <div class="mt-4 flex items-center justify-between">
+                    <div class="flex items-center text-xs text-gray-500">
+                        <i class="fas fa-chart-line mr-1"></i>
+                        <span>Discovery & Go-To-Market</span>
+                    </div>
+                    <button class="text-xs text-indigo-600 hover:text-indigo-800 inline-flex items-center">
+                        Ver detalles
+                        <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                this.openProject(project.id);
+            });
+
+            grid.appendChild(card);
+        });
     }
+
 
     showEmptyState(container) {
         container.innerHTML = `
@@ -278,29 +312,36 @@ class SunstoneApp {
         }
     }
 
-    openProject(projectData) {
-        if (this.isLoading) return;
-        
-        this.showLoading('Abriendo proyecto...');
-        
-        try {
-            if (typeof projectData === 'object') {
-                this.currentProject = projectData;
-                this.safeLocalStorageSet('sunstone_current_project', projectData);
+    // Abre un proyecto: lo guarda como "current" y navega a project.html
+    openProject(projectId) {
+        const project = this.projects.find(p => p.id === projectId);
+        if (!project) {
+            if (window.SunstoneUtils && window.SunstoneUtils.showNotification) {
+                window.SunstoneUtils.showNotification('No se pudo abrir el proyecto', 'error');
+            } else {
+                alert('No se pudo abrir el proyecto');
             }
-            
-            this.showNotification(`Abriendo proyecto: ${projectData.name}`, 'info');
-            
-            setTimeout(() => {
-                this.hideLoading();
-                window.location.href = 'project.html';
-            }, 800);
-        } catch (error) {
-            this.hideLoading();
-            this.showNotification('Error al abrir proyecto', 'error');
-            console.error('Open project error:', error);
+            return;
         }
+
+        // Guardar como proyecto actual
+        try {
+            localStorage.setItem('sunstone_current_project', JSON.stringify(project));
+        } catch (e) {
+            console.warn('No se pudo guardar el proyecto actual en localStorage:', e);
+        }
+
+        // Guardar lista de proyectos también (por si otro módulo la necesita)
+        try {
+            localStorage.setItem('sunstone_projects', JSON.stringify(this.projects));
+        } catch (e) {
+            console.warn('No se pudo actualizar sunstone_projects en localStorage:', e);
+        }
+
+        // Navegar a la página del proyecto
+        window.location.href = 'project.html';
     }
+
 
     openModal() {
         if (this.isLoading) return;
@@ -588,28 +629,80 @@ class SunstoneApp {
     }
 
 
-    loadProjects() {
-        this.showLoading('Cargando proyectos...');
-        
-        try {
-            // Load projects from localStorage or use default
-            const saved = this.safeLocalStorageGet('sunstone_projects');
-            if (saved && saved.length > 0) {
-                this.projects = saved;
-            } else {
-                // Default projects for demo
-                this.projects = this.getDefaultProjects();
-                this.saveProjects();
+    // Carga proyectos desde Supabase + localStorage
+    async loadProjects() {
+        // Mostrar loading si tienes método
+        if (this.showLoading) {
+            this.showLoading('Cargando proyectos...');
+        }
+
+        const projectsMap = new Map();
+
+        // 1) Intentar cargar desde Supabase (si está disponible)
+        if (window.supabase) {
+            try {
+                const { data, error } = await window.supabase
+                    .from('projects')
+                    .select('id, name, industry, phase, modelType, region, data, created_at')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error al cargar proyectos desde Supabase:', error);
+                } else if (data && Array.isArray(data)) {
+                    data.forEach(row => {
+                        projectsMap.set(row.id, {
+                            id: row.id,
+                            name: row.name || 'Proyecto sin nombre',
+                            industry: row.industry || '',
+                            phase: row.phase || '',
+                            modelType: row.modelType || '',
+                            region: row.region || '',
+                            discovery: row.data?.discovery || {},
+                            strategy: row.data?.strategy || {},
+                            createdAt: row.created_at || null
+                        });
+                    });
+                }
+            } catch (e) {
+                console.error('Error inesperado al leer Supabase:', e);
             }
-            
+        }
+
+        // 2) Merge con lo que haya en localStorage (fallback / cache)
+        try {
+            const localStr = localStorage.getItem('sunstone_projects');
+            if (localStr) {
+                const localProjects = JSON.parse(localStr);
+                if (Array.isArray(localProjects)) {
+                    localProjects.forEach(p => {
+                        if (!projectsMap.has(p.id)) {
+                            projectsMap.set(p.id, p);
+                        }
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn('No se pudo leer proyectos de localStorage:', e);
+        }
+
+        // 3) Pasar a array
+        this.projects = Array.from(projectsMap.values());
+
+        // 4) Guardar versión merged en localStorage (cache)
+        try {
+            localStorage.setItem('sunstone_projects', JSON.stringify(this.projects));
+        } catch (e) {
+            console.warn('No se pudo escribir proyectos en localStorage:', e);
+        }
+
+        // 5) Renderizar
+        this.renderProjects();
+
+        if (this.hideLoading) {
             this.hideLoading();
-        } catch (error) {
-            this.hideLoading();
-            this.showNotification('Error al cargar proyectos', 'error');
-            console.error('Load projects error:', error);
-            this.projects = this.getDefaultProjects();
         }
     }
+
 
     getDefaultProjects() {
         return [
