@@ -1,454 +1,555 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Overview - Sunstone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
-        .module-card { transition: all 0.3s ease; border-left: 4px solid transparent; }
-        .module-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .module-card.completed { border-left-color: #10b981; }
-        .module-card.in-progress { border-left-color: #f59e0b; }
-        .module-card.pending { border-left-color: #6b7280; }
-        .timeline-item { position: relative; }
-        .timeline-item::before { content: ''; position: absolute; left: -8px; top: 8px; width: 16px; height: 16px; border-radius: 50%; background: #4f46e5; }
-        .timeline-item.completed::before { background: #10b981; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Proyecto – Sunstone Discovery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind + FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f3f4f6;
+    }
+    .card-hover {
+      transition: all 0.2s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+    }
+  </style>
 </head>
-<body class="gradient-bg min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <i class="fas fa-gem text-2xl text-indigo-600 mr-3"></i>
-                        <span class="text-xl font-bold text-gray-900">Sunstone</span>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>Nueva sesión
-                    </button>
-                    <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
-                        <i class="fas fa-download mr-2"></i>Exportar
-                    </button>
-                </div>
-            </div>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Top bar -->
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button
+          onclick="window.location.href='index.html'"
+          class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
+        >
+          <i class="fa-solid fa-arrow-left mr-2"></i>
+          Volver al dashboard
+        </button>
+        <div>
+          <h1 id="projectName" class="text-lg font-semibold text-gray-900">
+            <!-- filled by JS -->
+          </h1>
+          <p id="projectMeta" class="text-xs text-gray-500">
+            <!-- filled by JS -->
+          </p>
         </div>
-    </nav>
-
-    <div class="flex">
-        <!-- Project Sidebar -->
-        <div class="w-64 bg-white shadow-lg min-h-screen">
-            <div class="p-6">
-                <div class="mb-6">
-                    <h3 id="projectName" class="text-lg font-semibold text-gray-900 mb-2">TechFlow Solutions</h3>
-                    <p id="projectInfo" class="text-sm text-gray-600">B2B SaaS • En Discovery</p>
-                </div>
-                <nav class="space-y-2">
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 rounded-lg">
-                        <i class="fas fa-chart-pie mr-3"></i>
-                        <span class="font-medium">Overview</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-search mr-3"></i>
-                        <span>Discovery</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-chess mr-3"></i>
-                        <span>Estrategia</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-funnel-dollar mr-3"></i>
-                        <span>GTM & Funnels</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-tasks mr-3"></i>
-                        <span>Roadmap</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-file-alt mr-3"></i>
-                        <span>Reportes</span>
-                    </a>
-                </nav>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="flex-1 p-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Project Overview</h1>
-                <p class="text-gray-600">Vista general del trabajo estratégico</p>
-            </div>
-
-            <!-- Three Column Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Column 1: Resumen -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Resumen</h2>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-700 mb-2">Objetivo principal</h3>
-                            <p class="text-gray-600 text-sm">Encontrar Product-Market Fit y diseñar estrategia de Go-To-Market para equipos de ventas B2B</p>
-                        </div>
-
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-700 mb-2">Fase de la startup</h3>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                Pre-PMF
-                            </span>
-                        </div>
-
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-700 mb-2">3 pains principales</h3>
-                            <ul class="text-sm text-gray-600 space-y-1">
-                                <li>• Equipos de ventas no logran cuota</li>
-                                <li>• Procesos manuales ineficientes</li>
-                                <li>• Falta de visibilidad del pipeline</li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-700 mb-2">JTBD resumidos</h3>
-                            <ul class="text-sm text-gray-600 space-y-1">
-                                <li>• "Ayudarme a cumplir mis objetivos de venta"</li>
-                                <li>• "Reducir el tiempo en tareas administrativas"</li>
-                                <li>• "Tener visibilidad clara del performance"</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Column 2: Estado de módulos -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Estado de módulos</h2>
-                    
-                    <div class="space-y-4">
-                        <!-- Discovery Section -->
-                        <div>
-                            <h3 class="text-lg font-medium text-gray-800 mb-3">Discovery</h3>
-                            <div class="space-y-2">
-                                <div class="module-card completed bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('intake')">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium">Intake básico</span>
-                                        <i class="fas fa-check text-green-600"></i>
-                                    </div>
-                                </div>
-                                <div class="module-card completed bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('jtbd')">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium">JTBD</span>
-                                        <i class="fas fa-check text-green-600"></i>
-                                    </div>
-                                </div>
-                                <div class="module-card in-progress bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('tensiones')">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium">Tensiones</span>
-                                        <i class="fas fa-clock text-yellow-600"></i>
-                                    </div>
-                                </div>
-                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('audiencias')">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium">Audiencias</span>
-                                        <i class="fas fa-circle text-gray-400"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Estrategia Section -->
-                        <div>
-                            <h3 class="text-lg font-medium text-gray-800 mb-3">Estrategia</h3>
-                            <div class="space-y-2">
-                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('valor')">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium">Propuesta de valor</span>
-                                        <i class="fas fa-circle text-gray-400"></i>
-                                    </div>
-                                </div>
-                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('narrativa')">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium">Narrativa</span>
-                                        <i class="fas fa-circle text-gray-400"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- GTM Section -->
-                        <div>
-                            <h3 class="text-lg font-medium text-gray-800 mb-3">GTM</h3>
-                            <div class="space-y-2">
-                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('funnels')">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium">Funnel por audiencia</span>
-                                        <i class="fas fa-circle text-gray-400"></i>
-                                    </div>
-                                </div>
-                                <div class="module-card pending bg-gray-50 p-3 rounded-lg cursor-pointer" onclick="openModule('canales')">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium">Canales</span>
-                                        <i class="fas fa-circle text-gray-400"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Column 3: Timeline -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Timeline</h2>
-                    
-                    <div class="relative pl-6 border-l-2 border-gray-200">
-                        <div class="timeline-item completed mb-6">
-                            <div class="text-sm">
-                                <div class="font-medium text-gray-900">Discovery 1 - Intake</div>
-                                <div class="text-gray-600">Sesión de 90 minutos</div>
-                                <div class="text-xs text-gray-500">Hace 2 días</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item completed mb-6">
-                            <div class="text-sm">
-                                <div class="font-medium text-gray-900">Discovery 2 - JTBD</div>
-                                <div class="text-gray-600">Workshop de mapeo</div>
-                                <div class="text-xs text-gray-500">Hace 1 día</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item mb-6">
-                            <div class="text-sm">
-                                <div class="font-medium text-gray-900">Discovery 3 - Tensiones</div>
-                                <div class="text-gray-600">Matriz Push/Pull</div>
-                                <div class="text-xs text-gray-500">Hoy</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item mb-6 opacity-50">
-                            <div class="text-sm">
-                                <div class="font-medium text-gray-900">Entregable Discovery v1</div>
-                                <div class="text-gray-600">Documento consolidado</div>
-                                <div class="text-xs text-gray-500">Próxima semana</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item opacity-50">
-                            <div class="text-sm">
-                                <div class="font-medium text-gray-900">Kickoff Estrategia</div>
-                                <div class="text-gray-600">Sesión de alineación</div>
-                                <div class="text-xs text-gray-500">En 2 semanas</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="mt-8 bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4">Acciones rápidas</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <button class="bg-indigo-600 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 transition-colors text-center">
-                        <i class="fas fa-plus mb-2 block"></i>
-                        <span class="text-sm">Nueva sesión</span>
-                    </button>
-                    <button class="bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors text-center">
-                        <i class="fas fa-clipboard-list mb-2 block"></i>
-                        <span class="text-sm">Completar tarea</span>
-                    </button>
-                    <button class="bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors text-center">
-                        <i class="fas fa-users mb-2 block"></i>
-                        <span class="text-sm">Invitar equipo</span>
-                    </button>
-                    <button class="bg-gray-600 text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-center">
-                        <i class="fas fa-file-pdf mb-2 block"></i>
-                        <span class="text-sm">Exportar PDF</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+      </div>
+      <div class="flex items-center gap-3 text-xs">
+        <span id="projectStatusBadge" class="badge bg-indigo-50 text-indigo-700">
+          <!-- filled by JS -->
+        </span>
+        <span id="projectProgressText" class="text-gray-500">
+          <!-- filled by JS -->
+        </span>
+      </div>
     </div>
+  </header>
 
-    <script>
-        // Project data management
-        let currentProject = null;
+  <!-- Main layout -->
+  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const currentProject = JSON.parse(localStorage.getItem("sunstone_current_project"));
+    <!-- Left column: Context & JTBD summary -->
+    <section class="lg:col-span-2 space-y-4">
 
-            if (!currentProject) {
-                alert("No hay proyecto cargado.");
-                window.location.href = "index.html";
-                return;
-            }
+      <!-- Context & pains form -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="text-sm font-semibold text-gray-900">Contexto & pains iniciales</h2>
+            <p class="text-xs text-gray-500">
+              Usa este espacio para capturar la foto actual del proyecto antes de profundizar en los módulos.
+            </p>
+          </div>
+          <span id="contextStatusBadge" class="badge bg-gray-50 text-gray-500">
+            <!-- filled by JS -->
+          </span>
+        </div>
 
-            // Populate header info
-            const nameEl = document.getElementById("projectName");
-            const industryEl = document.getElementById("projectIndustry");
-            const phaseEl = document.getElementById("projectPhase");
+        <form id="contextForm" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-medium text-gray-700 mb-1">Contexto general</label>
+            <textarea
+              id="contextText"
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="¿En qué punto está el proyecto hoy? ¿Qué ha pasado hasta ahora?"
+            ></textarea>
+          </div>
 
-            if (nameEl) nameEl.textContent = currentProject.name || "Sin nombre";
-            if (industryEl) industryEl.textContent = currentProject.industry || "N/A";
-            if (phaseEl) phaseEl.textContent = currentProject.phase || "N/A";
+          <div>
+            <label class="block font-medium text-gray-700 mb-1">Pains principales</label>
+            <textarea
+              id="painsText"
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Qué duele hoy: fricciones de producto, mercado, equipo, narrativa, etc."
+            ></textarea>
+          </div>
 
-            // Store ID for module navigation
-            window.currentProjectId = currentProject.id;
+          <div>
+            <label class="block font-medium text-gray-700 mb-1">Oportunidades / hipótesis</label>
+            <textarea
+              id="oppsText"
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="¿Qué oportunidades o caminos ves que valga la pena explorar?"
+            ></textarea>
+          </div>
+
+          <div class="flex justify-between items-center pt-2">
+            <p class="text-[11px] text-gray-400">
+              Esta sección alimenta el resto del discovery. Siempre puedes volver y actualizar.
+            </p>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                id="resetContextBtn"
+                class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
+              >
+                Resetear
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700"
+              >
+                Guardar contexto
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- JTBD summary -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="text-sm font-semibold text-gray-900">Jobs To Be Done (resumen)</h2>
+            <p class="text-xs text-gray-500">
+              Vista rápida de los jobs más relevantes definidos para este proyecto.
+            </p>
+          </div>
+          <button
+            type="button"
+            id="openJtbdBtn"
+            class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-700 hover:bg-gray-50"
+          >
+            <i class="fa-solid fa-pen-to-square mr-2"></i>
+            Definir / editar JTBDs
+          </button>
+        </div>
+
+        <div id="jtbdSummary" class="space-y-3 text-xs">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Right column: Modules -->
+    <aside class="space-y-4">
+      <div class="bg-white rounded-2xl border border-gray-200 p-4">
+        <h2 class="text-sm font-semibold text-gray-900 mb-3">Módulos de Discovery & Estrategia</h2>
+        <div id="modulesList" class="space-y-2 text-xs">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 text-xs text-gray-600">
+        <h3 class="text-sm font-semibold text-gray-900 mb-2">Siguiente mejor paso</h3>
+        <p id="nextStepText">
+          <!-- filled by JS -->
+        </p>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Toast container (uses SunstoneApp styles if main.js is loaded) -->
+  <div id="toastContainer"></div>
+
+  <!-- Reuse main.js utilities (SunstoneUtils, notifications, etc.) -->
+  <script src="main.js"></script>
+
+  <script>
+    // Small helper that prefers SunstoneUtils if available
+    function notify(message, type = 'info') {
+      if (window.SunstoneUtils && window.SunstoneUtils.showNotification) {
+        window.SunstoneUtils.showNotification(message, type);
+      } else {
+        alert(message);
+      }
+    }
+
+    function getCurrentProject() {
+      try {
+        const raw = localStorage.getItem('sunstone_current_project');
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        console.warn('Error leyendo proyecto actual', e);
+        return null;
+      }
+    }
+
+    function saveCurrentProject(project) {
+      try {
+        localStorage.setItem('sunstone_current_project', JSON.stringify(project));
+        // Si existe la lista global, actualizamos también
+        const projectsRaw = localStorage.getItem('sunstone_projects');
+        if (projectsRaw) {
+          const projects = JSON.parse(projectsRaw);
+          const idx = projects.findIndex(p => p.id === project.id);
+          if (idx !== -1) {
+            projects[idx] = project;
+            localStorage.setItem('sunstone_projects', JSON.stringify(projects));
+          }
+        }
+      } catch (e) {
+        console.warn('Error guardando proyecto actual', e);
+      }
+    }
+
+    function renderHeader(project) {
+      const nameEl = document.getElementById('projectName');
+      const metaEl = document.getElementById('projectMeta');
+      const statusBadge = document.getElementById('projectStatusBadge');
+      const progressText = document.getElementById('projectProgressText');
+
+      if (nameEl) nameEl.textContent = project.name || 'Proyecto sin nombre';
+
+      const industry = project.industry || 'Industria no definida';
+      const phase = project.phase || 'Fase no definida';
+      const modelType = project.modelType || 'Modelo no definido';
+      const region = project.region ? ` • ${project.region}` : '';
+
+      if (metaEl) {
+        metaEl.textContent = `${industry} • ${phase} • Modelo ${modelType}${region}`;
+      }
+
+      const status = project.status || 'En Discovery';
+      if (statusBadge) {
+        statusBadge.textContent = status;
+        statusBadge.className = 'badge ' +
+          (status === 'En Estrategia'
+            ? 'bg-green-50 text-green-700'
+            : status === 'Exploración'
+            ? 'bg-purple-50 text-purple-700'
+            : 'bg-indigo-50 text-indigo-700');
+      }
+
+      const progress = project.progress || 0;
+      if (progressText) {
+        progressText.textContent = `Progreso estimado: ${progress}%`;
+      }
+    }
+
+    function renderContext(project) {
+      const contextEl = document.getElementById('contextText');
+      const painsEl = document.getElementById('painsText');
+      const oppsEl = document.getElementById('oppsText');
+      const contextStatus = document.getElementById('contextStatusBadge');
+
+      const discovery = project.discovery || {};
+      const intake = discovery.intake || {};
+      const data = intake.data || {};
+
+      if (contextEl) contextEl.value = data.context || '';
+      if (painsEl) painsEl.value = data.pains || project.mainConcerns || '';
+      if (oppsEl) oppsEl.value = data.opportunities || data.opps || '';
+
+      const hasAny =
+        (contextEl && contextEl.value.trim()) ||
+        (painsEl && painsEl.value.trim()) ||
+        (oppsEl && oppsEl.value.trim());
+
+      if (contextStatus) {
+        if (hasAny) {
+          contextStatus.textContent = 'En progreso';
+          contextStatus.className = 'badge bg-yellow-50 text-yellow-800';
+        } else {
+          contextStatus.textContent = 'Sin empezar';
+          contextStatus.className = 'badge bg-gray-50 text-gray-500';
+        }
+      }
+    }
+
+    function renderJtbdSummary(project) {
+      const container = document.getElementById('jtbdSummary');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      const discovery = project.discovery || {};
+      const jtbdBlock = discovery.jtbd || {};
+      const jtbdList = Array.isArray(jtbdBlock.data) ? jtbdBlock.data : [];
+
+      if (!jtbdList.length) {
+        container.innerHTML = `
+          <div class="border border-dashed border-gray-200 rounded-xl py-6 px-4 text-center text-gray-500">
+            <p class="mb-2 text-xs">Todavía no definiste ningún Job To Be Done.</p>
+            <p class="text-[11px] text-gray-400">Empieza por clarificar qué intentan resolver tus usuarios antes de entrar en soluciones.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Ordenar por relevancia (5 → 1) y mostrar top 3
+      const top = jtbdList
+        .slice()
+        .sort((a, b) => (b.relevance || 0) - (a.relevance || 0))
+        .slice(0, 3);
+
+      top.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'border border-gray-200 rounded-xl p-3 text-xs bg-gray-50';
+
+        const relevance = item.relevance || 3;
+        const relevanceLabel = {
+          1: 'Muy baja',
+          2: 'Baja',
+          3: 'Media',
+          4: 'Alta',
+          5: 'Crítica'
+        }[relevance] || 'Media';
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-semibold">
+                ${idx + 1}
+              </span>
+              <h3 class="font-semibold text-gray-900">${item.title || 'Job sin título'}</h3>
+            </div>
+            <span class="badge bg-indigo-50 text-indigo-700">
+              Relevancia ${relevance} (${relevanceLabel})
+            </span>
+          </div>
+          <p class="text-[11px] text-gray-600 mb-1">
+            <span class="font-semibold text-gray-800">Contexto:</span> ${item.context || '–'}
+          </p>
+          <p class="text-[11px] text-gray-600 mb-1">
+            <span class="font-semibold text-gray-800">Disparador:</span> ${item.trigger || '–'}
+          </p>
+          <p class="text-[11px] text-gray-600">
+            <span class="font-semibold text-gray-800">Resultado deseado:</span> ${item.outcome || '–'}
+          </p>
+        `;
+        container.appendChild(card);
+      });
+
+      if (jtbdList.length > 3) {
+        const more = document.createElement('p');
+        more.className = 'mt-2 text-[11px] text-gray-500';
+        more.textContent = `+${jtbdList.length - 3} jobs adicionales definidos en el módulo de JTBD.`;
+        container.appendChild(more);
+      }
+    }
+
+    function renderModules(project) {
+      const container = document.getElementById('modulesList');
+      const nextStep = document.getElementById('nextStepText');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      const discovery = project.discovery || {};
+      const strategy = project.strategy || {};
+
+      const modules = [
+        {
+          id: 'intake',
+          label: 'Contexto & diagnóstico',
+          desc: 'Foto inicial del proyecto: contexto, pains, señales de mercado.',
+          status: discovery.intake?.completed ? 'Completado' : 'En progreso',
+          href: 'discovery-intake.html'
+        },
+        {
+          id: 'audiences',
+          label: 'Audiencias & decisores',
+          desc: 'Quiénes son los actores clave, decisores e influenciadores.',
+          status: discovery.audiences?.completed ? 'Completado' : 'Pendiente',
+          href: 'discovery-audiencias.html'
+        },
+        {
+          id: 'jtbd',
+          label: 'Jobs To Be Done',
+          desc: 'Qué intentan resolver realmente tus usuarios/clientes.',
+          status: discovery.jtbd?.completed ? 'Completado' : 'En progreso',
+          href: 'discovery-jtbd.html'
+        },
+        {
+          id: 'tensiones',
+          label: 'Tensiones & fricciones',
+          desc: 'Conflictos, trade-offs y bloqueos que frenan avance.',
+          status: discovery.tensions?.completed ? 'Completado' : 'Pendiente',
+          href: 'discovery-tensiones.html'
+        },
+        {
+          id: 'valor',
+          label: 'Propuesta de valor & narrativa',
+          desc: 'Cómo se conecta el insight con una promesa clara y creíble.',
+          status: strategy.value?.completed ? 'Completado' : 'Pendiente',
+          href: 'strategy-valor.html'
+        },
+        {
+          id: 'roadmap',
+          label: 'Roadmap & experimentos',
+          desc: 'Secuencia de iniciativas para probar, aprender y escalar.',
+          status: strategy.roadmap?.completed ? 'Completado' : 'Pendiente',
+          href: 'roadmap.html'
+        }
+      ];
+
+      let firstPending = null;
+
+      modules.forEach(mod => {
+        const row = document.createElement('div');
+        row.className =
+          'flex items-start justify-between gap-2 p-3 rounded-xl border border-gray-200 bg-gray-50 card-hover';
+
+        const isCompleted = mod.status === 'Completado';
+        const isInProgress = mod.status === 'En progreso';
+
+        if (!isCompleted && !firstPending) {
+          firstPending = mod;
+        }
+
+        row.innerHTML = `
+          <div>
+            <p class="text-xs font-semibold text-gray-900 mb-1">${mod.label}</p>
+            <p class="text-[11px] text-gray-600">${mod.desc}</p>
+          </div>
+          <div class="flex flex-col items-end gap-2">
+            <span class="badge ${
+              isCompleted
+                ? 'bg-green-50 text-green-700'
+                : isInProgress
+                ? 'bg-yellow-50 text-yellow-800'
+                : 'bg-gray-50 text-gray-500'
+            }">
+              ${mod.status}
+            </span>
+            <button
+              type="button"
+              class="inline-flex items-center px-2 py-1 rounded-lg bg-white border border-gray-200 text-[11px] text-gray-700 hover:bg-gray-100"
+              data-href="${mod.href}"
+            >
+              Abrir módulo
+              <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+          </div>
+        `;
+
+        const btn = row.querySelector('button[data-href]');
+        if (btn) {
+          btn.addEventListener('click', () => {
+            // Guardar proyecto actual por si otro módulo lo usa
+            saveCurrentProject(project);
+            const href = btn.getAttribute('data-href');
+            if (href) window.location.href = href;
+          });
+        }
+
+        container.appendChild(row);
+      });
+
+      if (nextStep) {
+        if (firstPending) {
+          nextStep.textContent = `Te recomiendo empezar (o continuar) por: "${firstPending.label}".`;
+        } else {
+          nextStep.textContent =
+            'Todos los módulos están completados. Puedes refinar el roadmap o preparar materiales de ejecución.';
+        }
+      }
+    }
+
+    function wireEvents(project) {
+      const form = document.getElementById('contextForm');
+      const resetBtn = document.getElementById('resetContextBtn');
+      const jtbdBtn = document.getElementById('openJtbdBtn');
+
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const context = document.getElementById('contextText')?.value || '';
+          const pains = document.getElementById('painsText')?.value || '';
+          const opportunities = document.getElementById('oppsText')?.value || '';
+
+          if (!project.discovery) project.discovery = {};
+          if (!project.discovery.intake) project.discovery.intake = { completed: false, data: {} };
+
+          project.discovery.intake.data = {
+            ...(project.discovery.intake.data || {}),
+            context,
+            pains,
+            opportunities
+          };
+
+          // marcar como "en progreso" si hay algo
+          const hasAny = context.trim() || pains.trim() || opportunities.trim();
+          project.discovery.intake.completed = !!hasAny;
+
+          saveCurrentProject(project);
+          renderContext(project);
+          notify('Contexto guardado', 'success');
         });
+      }
 
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          document.getElementById('contextText').value = '';
+          document.getElementById('painsText').value = '';
+          document.getElementById('oppsText').value = '';
 
-        function loadCurrentProject() {
-            // Try to get current project from localStorage
-            const saved = localStorage.getItem('sunstone_current_project');
-            if (saved) {
-                currentProject = JSON.parse(saved);
-            } else {
-                // Fallback to first project
-                const projects = JSON.parse(localStorage.getItem('sunstone_projects') || '[]');
-                if (projects.length > 0) {
-                    currentProject = projects[0];
-                } else {
-                    // Default project
-                    currentProject = {
-                        name: 'TechFlow Solutions',
-                        industry: 'Tecnología/SaaS',
-                        modelType: 'SaaS',
-                        phase: 'Pre-PMF',
-                        region: 'España',
-                        objectives: ['pmf', 'gtm'],
-                        mainConcerns: 'Necesitamos encontrar PMF antes del próximo funding round',
-                        status: 'En Discovery',
-                        progress: 75,
-                        created: new Date()
-                    };
-                }
-            }
-            
-            updateProjectDisplay();
-        }
+          if (!project.discovery) project.discovery = {};
+          if (!project.discovery.intake) project.discovery.intake = { completed: false, data: {} };
+          project.discovery.intake.data = { context: '', pains: '', opportunities: '' };
+          project.discovery.intake.completed = false;
 
-        function updateProjectDisplay() {
-            if (!currentProject) return;
-
-            // Update project name and info
-            const projectNameEl = document.getElementById('projectName');
-            const projectInfoEl = document.getElementById('projectInfo');
-            const projectObjectiveEl = document.getElementById('projectObjective');
-            const projectPhaseEl = document.getElementById('projectPhase');
-
-            if (projectNameEl) projectNameEl.textContent = currentProject.name;
-            if (projectInfoEl) projectInfoEl.textContent = `${currentProject.modelType || 'SaaS'} • ${currentProject.status}`;
-            if (projectObjectiveEl) projectObjectiveEl.textContent = currentProject.mainConcerns || 'Definir objetivos del proyecto';
-            if (projectPhaseEl) projectPhaseEl.textContent = currentProject.phase || 'Pre-PMF';
-
-            // Update module status based on project data
-            updateModuleStatus();
-        }
-
-        function updateModuleStatus() {
-            if (!currentProject || !currentProject.discovery) return;
-
-            // Update Discovery modules
-            if (currentProject.discovery.intake && currentProject.discovery.intake.completed) {
-                const intakeCard = document.querySelector('[onclick*="intake"]');
-                if (intakeCard) {
-                    intakeCard.classList.add('completed');
-                    const icon = intakeCard.querySelector('.fa-clock, .fa-circle');
-                    if (icon) {
-                        icon.className = 'fas fa-check text-green-600';
-                    }
-                }
-            }
-
-            if (currentProject.discovery.jtbd && currentProject.discovery.jtbd.completed) {
-                const jtbdCard = document.querySelector('[onclick*="jtbd"]');
-                if (jtbdCard) {
-                    jtbdCard.classList.add('completed');
-                    const icon = jtbdCard.querySelector('.fa-clock, .fa-circle');
-                    if (icon) {
-                        icon.className = 'fas fa-check text-green-600';
-                    }
-                }
-            }
-
-            if (currentProject.discovery.tensiones && currentProject.discovery.tensiones.completed) {
-                const tensionesCard = document.querySelector('[onclick*="tensiones"]');
-                if (tensionesCard) {
-                    tensionesCard.classList.add('completed');
-                    const icon = tensionesCard.querySelector('.fa-clock, .fa-circle');
-                    if (icon) {
-                        icon.className = 'fas fa-check text-green-600';
-                    }
-                }
-            }
-
-            if (currentProject.discovery.audiencias && currentProject.discovery.audiencias.completed) {
-                const audienciasCard = document.querySelector('[onclick*="audiencias"]');
-                if (audienciasCard) {
-                    audienciasCard.classList.add('completed');
-                    const icon = audienciasCard.querySelector('.fa-clock, .fa-circle');
-                    if (icon) {
-                        icon.className = 'fas fa-check text-green-600';
-                    }
-                }
-            }
-
-            // Update Strategy modules
-            if (currentProject.strategy && currentProject.strategy.valor && currentProject.strategy.valor.completed) {
-                const valorCard = document.querySelector('[onclick*="valor"]');
-                if (valorCard) {
-                    valorCard.classList.add('completed');
-                    const icon = valorCard.querySelector('.fa-clock, .fa-circle');
-                    if (icon) {
-                        icon.className = 'fas fa-check text-green-600';
-                    }
-                }
-            }
-        }
-
-        function openModule(moduleName) {
-            const moduleRoutes = {
-                "contexto": "discovery-intake.html",
-                "audiencias": "discovery-audiencias.html",
-                "jtbd": "discovery-jtbd.html",
-                "tensiones": "discovery-tensiones.html",
-                "valor": "strategy-valor.html",
-                "roadmap": "roadmap.html"
-            };
-
-            const currentProject = JSON.parse(localStorage.getItem("sunstone_current_project"));
-            if (!currentProject) return;
-
-            localStorage.setItem("sunstone_current_module", moduleName);
-
-            const target = moduleRoutes[moduleName];
-            if (target) window.location.href = target;
-        }
-
-
-        // Add hover effects to module cards
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCurrentProject();
-            
-            const moduleCards = document.querySelectorAll('.module-card');
-            moduleCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.backgroundColor = '#f3f4f6';
-                });
-                card.addEventListener('mouseleave', function() {
-                    this.style.backgroundColor = '#f9fafb';
-                });
-            });
+          saveCurrentProject(project);
+          renderContext(project);
+          notify('Contexto reseteado', 'info');
         });
-        </script>
-    <!-- Load shared app logic / utilities -->
-    <script src="main.js"></script>
+      }
+
+      if (jtbdBtn) {
+        jtbdBtn.addEventListener('click', () => {
+          saveCurrentProject(project);
+          window.location.href = 'discovery-jtbd.html';
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const project = getCurrentProject();
+      if (!project) {
+        notify('No hay proyecto activo. Volviendo al dashboard.', 'error');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Render
+      renderHeader(project);
+      renderContext(project);
+      renderJtbdSummary(project);
+      renderModules(project);
+      wireEvents(project);
+    });
+  </script>
 </body>
 </html>
-
