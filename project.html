@@ -1,571 +1,578 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Proyecto – Sunstone Discovery</title>
+  <title>Project · Discovery & Strategy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Tailwind + FontAwesome -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+  <!-- Optional: external stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
   <style>
     body {
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f3f4f6;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
     }
-    .card-hover {
-      transition: all 0.2s ease;
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
     }
-    .card-hover:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+    .card {
+      background: radial-gradient(circle at top left, #1e293b, #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 24px 20px 28px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
     }
-    .badge {
-      font-size: 0.75rem;
-      padding: 0.15rem 0.5rem;
+    nav.breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+    nav.breadcrumb a {
+      color: #e5e7eb;
+      text-decoration: none;
+    }
+    nav.breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
       border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: transparent;
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .project-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .project-meta {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+    .pill-small {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: #9ca3af;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 4px;
+    }
+    .pill-small .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+    .summary-block {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.85);
+      font-size: 0.85rem;
+      color: #d1d5db;
+      white-space: pre-wrap;
+    }
+    .summary-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    .progress-text {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+    .progress-bar {
+      position: relative;
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(30, 64, 175, 0.4);
+      overflow: hidden;
+    }
+    .progress-bar-inner {
+      position: absolute;
+      inset: 0;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(to right, #4f46e5, #6366f1);
+      transition: width 0.3s ease-out;
+    }
+    .modules-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    @media (min-width: 768px) {
+      .modules-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .module-card {
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, border-color 0.1s ease-out;
+    }
+    .module-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.8);
+      border-color: rgba(129, 140, 248, 0.9);
+    }
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .module-title {
+      font-size: 0.98rem;
+      font-weight: 500;
+    }
+    .module-tag {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+    .module-desc {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    .module-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .status-pill {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-pill.completed {
+      border-color: rgba(34, 197, 94, 0.9);
+      color: #bbf7d0;
+    }
+    .status-pill.pending {
+      border-color: rgba(148, 163, 184, 0.7);
+      color: #e5e7eb;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .status-dot.completed {
+      background: #22c55e;
+    }
+    .status-dot.pending {
+      background: #fbbf24;
+    }
+    .open-link {
+      font-size: 0.8rem;
+      color: #a5b4fc;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .open-link span.arrow {
+      font-size: 0.9rem;
+    }
+    .status-message {
+      font-size: 0.8rem;
+      margin-top: 8px;
+      color: #9ca3af;
+    }
+    .status-message.error {
+      color: #f97373;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
-
-  <!-- Top bar -->
-    <header class="bg-white border-b border-gray-200">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-        <button
-            onclick="window.location.href='index.html'"
-            class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
-        >
-            <i class="fa-solid fa-arrow-left mr-2"></i>
-            Volver al dashboard
-        </button>
-        <div>
-            <!-- Breadcrumb -->
-            <nav class="flex items-center text-[11px] text-gray-500 gap-1 mb-1">
-            <button
-                type="button"
-                onclick="window.location.href='index.html'"
-                class="hover:text-gray-800"
-            >
-                Dashboard
-            </button>
-            <span>/</span>
-            <span id="breadcrumbProject" class="text-gray-700 font-semibold">
-                <!-- filled by JS -->
-            </span>
-            </nav>
-
-            <h1 id="projectName" class="text-lg font-semibold text-gray-900">
-            <!-- filled by JS -->
-            </h1>
-            <p id="projectMeta" class="text-xs text-gray-500">
-            <!-- filled by JS -->
-            </p>
-        </div>
-        </div>
-        <div class="flex items-center gap-3 text-xs">
-        <span id="projectStatusBadge" class="badge bg-indigo-50 text-indigo-700">
-            <!-- filled by JS -->
-        </span>
-        <span id="projectProgressText" class="text-gray-500">
-            <!-- filled by JS -->
-        </span>
-        </div>
+<body>
+  <div class="page-wrapper">
+    <!-- Breadcrumb + back -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px;">
+      <nav class="breadcrumb" id="breadcrumb">
+        <a href="index.html">Dashboard</a>
+        <span>/</span>
+        <span id="breadcrumb-project">Project</span>
+      </nav>
+      <button type="button" class="back-btn" id="backToDashboardBtn">
+        ← Back to dashboard
+      </button>
     </div>
-    </header>
 
-
-  <!-- Main layout -->
-  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-    <!-- Left column: Context & JTBD summary -->
-    <section class="lg:col-span-2 space-y-4">
-
-      <!-- Context & pains form -->
-      <div class="bg-white rounded-2xl border border-gray-200 p-4">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h2 class="text-sm font-semibold text-gray-900">Contexto & pains iniciales</h2>
-            <p class="text-xs text-gray-500">
-              Usa este espacio para capturar la foto actual del proyecto antes de profundizar en los módulos.
-            </p>
-          </div>
-          <span id="contextStatusBadge" class="badge bg-gray-50 text-gray-500">
-            <!-- filled by JS -->
-          </span>
+    <div class="card">
+      <div class="header-row">
+        <div>
+          <div class="project-title" id="projectName">Loading project…</div>
+          <div class="project-meta" id="projectMeta">—</div>
         </div>
-
-        <form id="contextForm" class="space-y-3 text-xs">
-          <div>
-            <label class="block font-medium text-gray-700 mb-1">Contexto general</label>
-            <textarea
-              id="contextText"
-              rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="¿En qué punto está el proyecto hoy? ¿Qué ha pasado hasta ahora?"
-            ></textarea>
+        <div style="text-align:right;">
+          <div class="project-meta" id="projectCreated">—</div>
+          <div class="project-meta">
+            <span>Modules completion</span>
+            <span class="pill-small" id="completionLabel">
+              <span class="dot"></span>
+              0 / 6
+            </span>
           </div>
-
-          <div>
-            <label class="block font-medium text-gray-700 mb-1">Pains principales</label>
-            <textarea
-              id="painsText"
-              rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Qué duele hoy: fricciones de producto, mercado, equipo, narrativa, etc."
-            ></textarea>
-          </div>
-
-          <div>
-            <label class="block font-medium text-gray-700 mb-1">Oportunidades / hipótesis</label>
-            <textarea
-              id="oppsText"
-              rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="¿Qué oportunidades o caminos ves que valga la pena explorar?"
-            ></textarea>
-          </div>
-
-          <div class="flex justify-between items-center pt-2">
-            <p class="text-[11px] text-gray-400">
-              Esta sección alimenta el resto del discovery. Siempre puedes volver y actualizar.
-            </p>
-            <div class="flex gap-2">
-              <button
-                type="button"
-                id="resetContextBtn"
-                class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
-              >
-                Resetear
-              </button>
-              <button
-                type="submit"
-                class="px-4 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700"
-              >
-                Guardar contexto
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- JTBD summary -->
-      <div class="bg-white rounded-2xl border border-gray-200 p-4">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h2 class="text-sm font-semibold text-gray-900">Jobs To Be Done (resumen)</h2>
-            <p class="text-xs text-gray-500">
-              Vista rápida de los jobs más relevantes definidos para este proyecto.
-            </p>
-          </div>
-          <button
-            type="button"
-            id="openJtbdBtn"
-            class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-700 hover:bg-gray-50"
-          >
-            <i class="fa-solid fa-pen-to-square mr-2"></i>
-            Definir / editar JTBDs
-          </button>
-        </div>
-
-        <div id="jtbdSummary" class="space-y-3 text-xs">
-          <!-- filled by JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Right column: Modules -->
-    <aside class="space-y-4">
-      <div class="bg-white rounded-2xl border border-gray-200 p-4">
-        <h2 class="text-sm font-semibold text-gray-900 mb-3">Módulos de Discovery & Estrategia</h2>
-        <div id="modulesList" class="space-y-2 text-xs">
-          <!-- filled by JS -->
         </div>
       </div>
 
-      <div class="bg-white rounded-2xl border border-gray-200 p-4 text-xs text-gray-600">
-        <h3 class="text-sm font-semibold text-gray-900 mb-2">Siguiente mejor paso</h3>
-        <p id="nextStepText">
-          <!-- filled by JS -->
-        </p>
+      <div>
+        <div class="summary-label">Primary goal</div>
+        <div class="summary-block" id="summaryGoal">—</div>
+
+        <div class="summary-label" style="margin-top:10px;">Main pains / challenges</div>
+        <div class="summary-block" id="summaryPains">—</div>
       </div>
-    </aside>
-  </main>
 
-  <!-- Toast container (uses SunstoneApp styles if main.js is loaded) -->
-  <div id="toastContainer"></div>
+      <div class="progress-row">
+        <div class="progress-text" id="progressText">Discovery & strategy progress</div>
+        <div class="progress-bar">
+          <div class="progress-bar-inner" id="progressBarInner"></div>
+        </div>
+      </div>
 
-  <!-- Reuse main.js utilities (SunstoneUtils, notifications, etc.) -->
-  <script src="main.js"></script>
+      <div class="modules-grid" id="modulesGrid">
+        <!-- Cards se generan por JS -->
+      </div>
+
+      <div id="statusMessage" class="status-message"></div>
+    </div>
+  </div>
+
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    // Small helper that prefers SunstoneUtils if available
-    function notify(message, type = 'info') {
-      if (window.SunstoneUtils && window.SunstoneUtils.showNotification) {
-        window.SunstoneUtils.showNotification(message, type);
-      } else {
-        alert(message);
-      }
+    // === Supabase client setup ===
+    const SUPABASE_URL = "https://reezovhnmonzaafhigjz.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM";
+
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // UI refs
+    const backToDashboardBtn = document.getElementById("backToDashboardBtn");
+    const breadcrumbProject = document.getElementById("breadcrumb-project");
+
+    const projectNameEl = document.getElementById("projectName");
+    const projectMetaEl = document.getElementById("projectMeta");
+    const projectCreatedEl = document.getElementById("projectCreated");
+    const summaryGoalEl = document.getElementById("summaryGoal");
+    const summaryPainsEl = document.getElementById("summaryPains");
+    const completionLabelEl = document.getElementById("completionLabel");
+    const progressBarInnerEl = document.getElementById("progressBarInner");
+    const modulesGridEl = document.getElementById("modulesGrid");
+    const statusEl = document.getElementById("statusMessage");
+
+    let currentProjectId = null;
+    let currentProjectData = null;
+
+    function setStatus(message, isError = false) {
+      if (!statusEl) return;
+      statusEl.textContent = message || "";
+      statusEl.classList.toggle("error", !!isError);
     }
 
-    function getCurrentProject() {
-      try {
-        const raw = localStorage.getItem('sunstone_current_project');
-        return raw ? JSON.parse(raw) : null;
-      } catch (e) {
-        console.warn('Error leyendo proyecto actual', e);
+    function getProjectIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("projectId");
+    }
+
+    function isObjectNonEmpty(obj) {
+      if (!obj || typeof obj !== "object") return false;
+      return Object.values(obj).some(v => {
+        if (v === null || v === undefined) return false;
+        if (typeof v === "string" && v.trim() === "") return false;
+        return true;
+      });
+    }
+
+    function computeModuleStatus(project) {
+      const statuses = [];
+
+      // Intake
+      const intakeComplete = isObjectNonEmpty(project.intake);
+      statuses.push({
+        key: "intake",
+        name: "Discovery · Intake",
+        tag: "Context & goals",
+        description: "Context, goals, constraints and previous attempts.",
+        completed: intakeComplete,
+        url: "discovery-intake.html"
+      });
+
+      // Audiences
+      const audiencesComplete = isObjectNonEmpty(project.audiences);
+      statuses.push({
+        key: "audiences",
+        name: "Discovery · Audiences",
+        tag: "Who decides & uses",
+        description: "ICP, decision makers, influencers, end users and segmentation.",
+        completed: audiencesComplete,
+        url: "discovery-audiencias.html"
+      });
+
+      // JTBD
+      const jtbdComplete = project.jtbd && Array.isArray(project.jtbd.items) && project.jtbd.items.length > 0;
+      statuses.push({
+        key: "jtbd",
+        name: "Discovery · JTBD",
+        tag: "Jobs to Be Done",
+        description: "Jobs, contexts, outcomes and emotional layers.",
+        completed: jtbdComplete,
+        url: "discovery-jtbd.html"
+      });
+
+      // Tensions
+      const tensionsComplete = isObjectNonEmpty(project.tensions);
+      statuses.push({
+        key: "tensions",
+        name: "Discovery · Tensions",
+        tag: "Structural frictions",
+        description: "Tensions, root causes, workarounds and narrative hooks.",
+        completed: tensionsComplete,
+        url: "discovery-tensiones.html"
+      });
+
+      // Strategy – Value
+      const strategyValueComplete = isObjectNonEmpty(project.strategy_value);
+      statuses.push({
+        key: "strategy_value",
+        name: "Strategy · Value",
+        tag: "Value proposition",
+        description: "Target segment, problem, promise, differentiation and proof.",
+        completed: strategyValueComplete,
+        url: "strategy-valor.html"
+      });
+
+      // Roadmap
+      const roadmapComplete = isObjectNonEmpty(project.roadmap);
+      statuses.push({
+        key: "roadmap",
+        name: "Strategy · Roadmap",
+        tag: "Roadmap & experiments",
+        description: "Horizons, experiments, risks and governance.",
+        completed: roadmapComplete,
+        url: "roadmap.html"
+      });
+
+      // Report (no completion, depende de lo demás)
+      const completedCount = statuses.filter(s => s.completed).length;
+      const reportEnabled = completedCount > 0;
+      statuses.push({
+        key: "report",
+        name: "Report",
+        tag: "Executive view",
+        description: "Consolidated view of discovery and strategy. Export to JSON or clipboard.",
+        completed: reportEnabled,
+        url: "reportes.html",
+        isReport: true
+      });
+
+      return statuses;
+    }
+
+    function renderModules(statuses) {
+      modulesGridEl.innerHTML = "";
+
+      statuses.forEach(status => {
+        const card = document.createElement("div");
+        card.className = "module-card";
+
+        card.addEventListener("click", () => {
+          if (!currentProjectId) return;
+          const targetUrl = `${status.url}?projectId=${encodeURIComponent(currentProjectId)}`;
+          window.location.href = targetUrl;
+        });
+
+        const header = document.createElement("div");
+        header.className = "module-header";
+
+        const titleBlock = document.createElement("div");
+        const title = document.createElement("div");
+        title.className = "module-title";
+        title.textContent = status.name;
+
+        const tag = document.createElement("div");
+        tag.className = "module-tag";
+        tag.textContent = status.tag;
+
+        titleBlock.appendChild(title);
+        titleBlock.appendChild(tag);
+
+        const statusPill = document.createElement("div");
+        statusPill.className = "status-pill " + (status.completed ? "completed" : "pending");
+
+        const dot = document.createElement("span");
+        dot.className = "status-dot " + (status.completed ? "completed" : "pending");
+
+        const label = document.createElement("span");
+        label.textContent = status.completed
+          ? (status.isReport ? "Ready" : "Completed")
+          : (status.isReport ? "Not ready" : "Not started");
+
+        statusPill.appendChild(dot);
+        statusPill.appendChild(label);
+
+        header.appendChild(titleBlock);
+        header.appendChild(statusPill);
+
+        const desc = document.createElement("div");
+        desc.className = "module-desc";
+        desc.textContent = status.description;
+
+        const footer = document.createElement("div");
+        footer.className = "module-footer";
+
+        const open = document.createElement("div");
+        open.className = "open-link";
+        open.innerHTML = `<span>Open</span><span class="arrow">↗</span>`;
+
+        footer.appendChild(open);
+
+        card.appendChild(header);
+        card.appendChild(desc);
+        card.appendChild(footer);
+
+        modulesGridEl.appendChild(card);
+      });
+    }
+
+    async function loadProject(projectId) {
+      setStatus("Loading project…");
+      const { data, error } = await supabaseClient
+        .from("projects")
+        .select("*")
+        .eq("id", projectId)
+        .single();
+
+      if (error) {
+        console.error("Error loading project", error);
+        setStatus("Error loading project from Supabase.", true);
+        projectNameEl.textContent = "Project not found";
         return null;
       }
+
+      currentProjectData = data;
+
+      // Header
+      projectNameEl.textContent = data.name || "Unnamed project";
+      const metaParts = [];
+      if (data.type) metaParts.push(data.type);
+      if (data.stage) metaParts.push(data.stage);
+      projectMetaEl.textContent = metaParts.length ? metaParts.join(" · ") : "—";
+
+      if (data.created_at) {
+        projectCreatedEl.textContent = "Created: " + new Date(data.created_at).toLocaleString();
+      } else {
+        projectCreatedEl.textContent = "";
+      }
+
+      breadcrumbProject.textContent = data.name || "Project";
+
+      // Summary (from intake if present)
+      const intake = data.intake || {};
+      summaryGoalEl.textContent = intake.primary_goal && intake.primary_goal.trim()
+        ? intake.primary_goal
+        : "No primary goal captured yet. Fill it in the Intake module.";
+      summaryPainsEl.textContent = intake.main_challenges && intake.main_challenges.trim()
+        ? intake.main_challenges
+        : "No main pains captured yet. Fill them in the Intake module.";
+
+      // Modules status
+      const statuses = computeModuleStatus(data);
+      const nonReportModules = statuses.filter(m => !m.isReport);
+      const completedCount = nonReportModules.filter(m => m.completed).length;
+      const totalCount = nonReportModules.length;
+
+      // Completion label & progress bar
+      completionLabelEl.innerHTML = `
+        <span class="dot"></span>
+        ${completedCount} / ${totalCount}
+      `;
+      const pct = totalCount ? (completedCount / totalCount) * 100 : 0;
+      progressBarInnerEl.style.width = `${pct}%`;
+
+      // Render module cards
+      renderModules(statuses);
+
+      setStatus("Project loaded. Choose a module to work on.");
+      return data;
     }
 
-    function saveCurrentProject(project) {
-      try {
-        localStorage.setItem('sunstone_current_project', JSON.stringify(project));
-        // Si existe la lista global, actualizamos también
-        const projectsRaw = localStorage.getItem('sunstone_projects');
-        if (projectsRaw) {
-          const projects = JSON.parse(projectsRaw);
-          const idx = projects.findIndex(p => p.id === project.id);
-          if (idx !== -1) {
-            projects[idx] = project;
-            localStorage.setItem('sunstone_projects', JSON.stringify(projects));
-          }
-        }
-      } catch (e) {
-        console.warn('Error guardando proyecto actual', e);
-      }
-    }
-
-    function renderHeader(project) {
-      const nameEl = document.getElementById('projectName');
-      const metaEl = document.getElementById('projectMeta');
-      const statusBadge = document.getElementById('projectStatusBadge');
-      const progressText = document.getElementById('projectProgressText');
-
-      if (nameEl) nameEl.textContent = project.name || 'Proyecto sin nombre';
-
-      const industry = project.industry || 'Industria no definida';
-      const phase = project.phase || 'Fase no definida';
-      const modelType = project.modelType || 'Modelo no definido';
-      const region = project.region ? ` • ${project.region}` : '';
-
-      if (metaEl) {
-        metaEl.textContent = `${industry} • ${phase} • Modelo ${modelType}${region}`;
-      }
-
-      const status = project.status || 'En Discovery';
-      if (statusBadge) {
-        statusBadge.textContent = status;
-        statusBadge.className = 'badge ' +
-          (status === 'En Estrategia'
-            ? 'bg-green-50 text-green-700'
-            : status === 'Exploración'
-            ? 'bg-purple-50 text-purple-700'
-            : 'bg-indigo-50 text-indigo-700');
-      }
-
-      const progress = project.progress || 0;
-      if (progressText) {
-        progressText.textContent = `Progreso estimado: ${progress}%`;
-      }
-    }
-
-    function renderContext(project) {
-      const contextEl = document.getElementById('contextText');
-      const painsEl = document.getElementById('painsText');
-      const oppsEl = document.getElementById('oppsText');
-      const contextStatus = document.getElementById('contextStatusBadge');
-
-      const discovery = project.discovery || {};
-      const intake = discovery.intake || {};
-      const data = intake.data || {};
-
-      if (contextEl) contextEl.value = data.context || '';
-      if (painsEl) painsEl.value = data.pains || project.mainConcerns || '';
-      if (oppsEl) oppsEl.value = data.opportunities || data.opps || '';
-
-      const hasAny =
-        (contextEl && contextEl.value.trim()) ||
-        (painsEl && painsEl.value.trim()) ||
-        (oppsEl && oppsEl.value.trim());
-
-      if (contextStatus) {
-        if (hasAny) {
-          contextStatus.textContent = 'En progreso';
-          contextStatus.className = 'badge bg-yellow-50 text-yellow-800';
-        } else {
-          contextStatus.textContent = 'Sin empezar';
-          contextStatus.className = 'badge bg-gray-50 text-gray-500';
-        }
-      }
-    }
-
-    function renderJtbdSummary(project) {
-      const container = document.getElementById('jtbdSummary');
-      if (!container) return;
-
-      container.innerHTML = '';
-
-      const discovery = project.discovery || {};
-      const jtbdBlock = discovery.jtbd || {};
-      const jtbdList = Array.isArray(jtbdBlock.data) ? jtbdBlock.data : [];
-
-      if (!jtbdList.length) {
-        container.innerHTML = `
-          <div class="border border-dashed border-gray-200 rounded-xl py-6 px-4 text-center text-gray-500">
-            <p class="mb-2 text-xs">Todavía no definiste ningún Job To Be Done.</p>
-            <p class="text-[11px] text-gray-400">Empieza por clarificar qué intentan resolver tus usuarios antes de entrar en soluciones.</p>
-          </div>
-        `;
+    async function init() {
+      const projectId = getProjectIdFromURL();
+      if (!projectId) {
+        setStatus("Missing projectId in URL. Go back to the dashboard and open a project from there.", true);
+        projectNameEl.textContent = "No project selected";
         return;
       }
+      currentProjectId = projectId;
 
-      // Ordenar por relevancia (5 → 1) y mostrar top 3
-      const top = jtbdList
-        .slice()
-        .sort((a, b) => (b.relevance || 0) - (a.relevance || 0))
-        .slice(0, 3);
-
-      top.forEach((item, idx) => {
-        const card = document.createElement('div');
-        card.className = 'border border-gray-200 rounded-xl p-3 text-xs bg-gray-50';
-
-        const relevance = item.relevance || 3;
-        const relevanceLabel = {
-          1: 'Muy baja',
-          2: 'Baja',
-          3: 'Media',
-          4: 'Alta',
-          5: 'Crítica'
-        }[relevance] || 'Media';
-
-        card.innerHTML = `
-          <div class="flex items-center justify-between mb-1">
-            <div class="flex items-center gap-2">
-              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-semibold">
-                ${idx + 1}
-              </span>
-              <h3 class="font-semibold text-gray-900">${item.title || 'Job sin título'}</h3>
-            </div>
-            <span class="badge bg-indigo-50 text-indigo-700">
-              Relevancia ${relevance} (${relevanceLabel})
-            </span>
-          </div>
-          <p class="text-[11px] text-gray-600 mb-1">
-            <span class="font-semibold text-gray-800">Contexto:</span> ${item.context || '–'}
-          </p>
-          <p class="text-[11px] text-gray-600 mb-1">
-            <span class="font-semibold text-gray-800">Disparador:</span> ${item.trigger || '–'}
-          </p>
-          <p class="text-[11px] text-gray-600">
-            <span class="font-semibold text-gray-800">Resultado deseado:</span> ${item.outcome || '–'}
-          </p>
-        `;
-        container.appendChild(card);
-      });
-
-      if (jtbdList.length > 3) {
-        const more = document.createElement('p');
-        more.className = 'mt-2 text-[11px] text-gray-500';
-        more.textContent = `+${jtbdList.length - 3} jobs adicionales definidos en el módulo de JTBD.`;
-        container.appendChild(more);
-      }
-    }
-
-    function renderModules(project) {
-      const container = document.getElementById('modulesList');
-      const nextStep = document.getElementById('nextStepText');
-      if (!container) return;
-
-      container.innerHTML = '';
-
-      const discovery = project.discovery || {};
-      const strategy = project.strategy || {};
-
-      const modules = [
-        {
-          id: 'intake',
-          label: 'Contexto & diagnóstico',
-          desc: 'Foto inicial del proyecto: contexto, pains, señales de mercado.',
-          status: discovery.intake?.completed ? 'Completado' : 'En progreso',
-          href: 'discovery-intake.html'
-        },
-        {
-          id: 'audiences',
-          label: 'Audiencias & decisores',
-          desc: 'Quiénes son los actores clave, decisores e influenciadores.',
-          status: discovery.audiences?.completed ? 'Completado' : 'Pendiente',
-          href: 'discovery-audiencias.html'
-        },
-        {
-          id: 'jtbd',
-          label: 'Jobs To Be Done',
-          desc: 'Qué intentan resolver realmente tus usuarios/clientes.',
-          status: discovery.jtbd?.completed ? 'Completado' : 'En progreso',
-          href: 'discovery-jtbd.html'
-        },
-        {
-          id: 'tensiones',
-          label: 'Tensiones & fricciones',
-          desc: 'Conflictos, trade-offs y bloqueos que frenan avance.',
-          status: discovery.tensions?.completed ? 'Completado' : 'Pendiente',
-          href: 'discovery-tensiones.html'
-        },
-        {
-          id: 'valor',
-          label: 'Propuesta de valor & narrativa',
-          desc: 'Cómo se conecta el insight con una promesa clara y creíble.',
-          status: strategy.value?.completed ? 'Completado' : 'Pendiente',
-          href: 'strategy-valor.html'
-        },
-        {
-          id: 'roadmap',
-          label: 'Roadmap & experimentos',
-          desc: 'Secuencia de iniciativas para probar, aprender y escalar.',
-          status: strategy.roadmap?.completed ? 'Completado' : 'Pendiente',
-          href: 'roadmap.html'
-        }
-      ];
-
-      let firstPending = null;
-
-      modules.forEach(mod => {
-        const row = document.createElement('div');
-        row.className =
-          'flex items-start justify-between gap-2 p-3 rounded-xl border border-gray-200 bg-gray-50 card-hover';
-
-        const isCompleted = mod.status === 'Completado';
-        const isInProgress = mod.status === 'En progreso';
-
-        if (!isCompleted && !firstPending) {
-          firstPending = mod;
-        }
-
-        row.innerHTML = `
-          <div>
-            <p class="text-xs font-semibold text-gray-900 mb-1">${mod.label}</p>
-            <p class="text-[11px] text-gray-600">${mod.desc}</p>
-          </div>
-          <div class="flex flex-col items-end gap-2">
-            <span class="badge ${
-              isCompleted
-                ? 'bg-green-50 text-green-700'
-                : isInProgress
-                ? 'bg-yellow-50 text-yellow-800'
-                : 'bg-gray-50 text-gray-500'
-            }">
-              ${mod.status}
-            </span>
-            <button
-              type="button"
-              class="inline-flex items-center px-2 py-1 rounded-lg bg-white border border-gray-200 text-[11px] text-gray-700 hover:bg-gray-100"
-              data-href="${mod.href}"
-            >
-              Abrir módulo
-              <i class="fa-solid fa-arrow-right ml-1"></i>
-            </button>
-          </div>
-        `;
-
-        const btn = row.querySelector('button[data-href]');
-        if (btn) {
-          btn.addEventListener('click', () => {
-            // Guardar proyecto actual por si otro módulo lo usa
-            saveCurrentProject(project);
-            const href = btn.getAttribute('data-href');
-            if (href) window.location.href = href;
-          });
-        }
-
-        container.appendChild(row);
-      });
-
-      if (nextStep) {
-        if (firstPending) {
-          nextStep.textContent = `Te recomiendo empezar (o continuar) por: "${firstPending.label}".`;
-        } else {
-          nextStep.textContent =
-            'Todos los módulos están completados. Puedes refinar el roadmap o preparar materiales de ejecución.';
-        }
-      }
-    }
-
-    function wireEvents(project) {
-      const form = document.getElementById('contextForm');
-      const resetBtn = document.getElementById('resetContextBtn');
-      const jtbdBtn = document.getElementById('openJtbdBtn');
-
-      if (form) {
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
-
-          const context = document.getElementById('contextText')?.value || '';
-          const pains = document.getElementById('painsText')?.value || '';
-          const opportunities = document.getElementById('oppsText')?.value || '';
-
-          if (!project.discovery) project.discovery = {};
-          if (!project.discovery.intake) project.discovery.intake = { completed: false, data: {} };
-
-          project.discovery.intake.data = {
-            ...(project.discovery.intake.data || {}),
-            context,
-            pains,
-            opportunities
-          };
-
-          // marcar como "en progreso" si hay algo
-          const hasAny = context.trim() || pains.trim() || opportunities.trim();
-          project.discovery.intake.completed = !!hasAny;
-
-          saveCurrentProject(project);
-          renderContext(project);
-          notify('Contexto guardado', 'success');
+      // Back to dashboard
+      if (backToDashboardBtn) {
+        backToDashboardBtn.addEventListener("click", () => {
+          window.location.href = "index.html";
         });
       }
 
-      if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-          document.getElementById('contextText').value = '';
-          document.getElementById('painsText').value = '';
-          document.getElementById('oppsText').value = '';
-
-          if (!project.discovery) project.discovery = {};
-          if (!project.discovery.intake) project.discovery.intake = { completed: false, data: {} };
-          project.discovery.intake.data = { context: '', pains: '', opportunities: '' };
-          project.discovery.intake.completed = false;
-
-          saveCurrentProject(project);
-          renderContext(project);
-          notify('Contexto reseteado', 'info');
-        });
-      }
-
-      if (jtbdBtn) {
-        jtbdBtn.addEventListener('click', () => {
-          saveCurrentProject(project);
-          window.location.href = 'discovery-jtbd.html';
-        });
-      }
+      // Breadcrumb project as text (ya se muestra, y cada módulo tiene navegación)
+      await loadProject(projectId);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const project = getCurrentProject();
-      if (!project) {
-        notify('No hay proyecto activo. Volviendo al dashboard.', 'error');
-        window.location.href = 'index.html';
-        return;
-      }
-
-      // Render
-      renderHeader(project);
-      renderContext(project);
-      renderJtbdSummary(project);
-      renderModules(project);
-      wireEvents(project);
-    });
+    document.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
 </html>

@@ -1,972 +1,466 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estrategia Propuesta de Valor - Sunstone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
-        .value-column { min-height: 400px; }
-        .value-item { transition: all 0.3s ease; cursor: pointer; }
-        .value-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .value-card { border-left: 4px solid #4f46e5; }
-        .different-card { border-left: 4px solid #059669; }
-        .feature-card { border-left: 4px solid #dc2626; }
-        .drag-zone { border: 2px dashed #d1d5db; transition: all 0.3s ease; }
-        .drag-zone.drag-over { border-color: #4f46e5; background-color: #f3f4f6; }
-        .connection-line { stroke: #4f46e5; stroke-width: 2; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Strategy – Value Proposition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Optional: external stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+    }
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .card {
+      background: radial-gradient(circle at top left, #1e293b, #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 24px 20px 28px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-title span.subtitle {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #9ca3af;
+    }
+    nav.breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+    nav.breadcrumb a {
+      color: #e5e7eb;
+      text-decoration: none;
+    }
+    nav.breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.75rem;
+      color: #9ca3af;
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: transparent;
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+    @media (min-width: 768px) {
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #9ca3af;
+      display: block;
+      margin-bottom: 4px;
+    }
+    textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      resize: vertical;
+      min-height: 80px;
+    }
+    textarea::placeholder {
+      color: #6b7280;
+    }
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin: 20px 0 4px;
+      color: #e5e7eb;
+    }
+    .section-subtitle {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-primary {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: linear-gradient(to right, #4f46e5, #6366f1);
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary[disabled] {
+      opacity: 0.6;
+      cursor: wait;
+    }
+    .status-message {
+      font-size: 0.8rem;
+      margin-top: 8px;
+      color: #9ca3af;
+    }
+    .status-message.error {
+      color: #f97373;
+    }
+    .pill-small {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: #9ca3af;
+    }
+  </style>
 </head>
-<body class="gradient-bg min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <i class="fas fa-gem text-2xl text-indigo-600 mr-3"></i>
-                        <span class="text-xl font-bold text-gray-900">Sunstone</span>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>Nueva sesión
-                    </button>
-                    <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
-                        <i class="fas fa-download mr-2"></i>Exportar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="flex">
-        <!-- Project Sidebar -->
-        <div class="w-64 bg-white shadow-lg min-h-screen">
-            <div class="p-6">
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">TechFlow Solutions</h3>
-                    <p class="text-sm text-gray-600">B2B SaaS • En Discovery</p>
-                </div>
-                <nav class="space-y-2">
-                    <a href="project.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-chart-pie mr-3"></i>
-                        <span>Overview</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-search mr-3"></i>
-                        <span>Discovery</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 rounded-lg">
-                        <i class="fas fa-chess mr-3"></i>
-                        <span class="font-medium">Estrategia</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-funnel-dollar mr-3"></i>
-                        <span>GTM & Funnels</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-tasks mr-3"></i>
-                        <span>Roadmap</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-file-alt mr-3"></i>
-                        <span>Reportes</span>
-                    </a>
-                </nav>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="flex-1 p-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Estrategia - Propuesta de Valor</h1>
-                        <p class="text-gray-600">Clarifica valor, diferenciales y features por audiencia</p>
-                    </div>
-                    <div class="flex space-x-3">
-                        <button class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-save mr-2"></i>Guardar
-                        </button>
-                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                            <i class="fas fa-check mr-2"></i>Completar
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Audience Selector -->
-            <div class="mb-6">
-                <div class="bg-white rounded-lg shadow-md p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="font-medium text-gray-900">Audiencia seleccionada</h3>
-                            <p class="text-sm text-gray-600">Equipo de ventas B2B • 5-10 personas • SaaS</p>
-                        </div>
-                        <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                            <i class="fas fa-users mr-2"></i>Cambiar audiencia
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Three Column Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Column 1: Valor para el cliente -->
-                <div class="bg-white rounded-lg shadow-md value-column">
-                    <div class="p-6 border-b border-gray-200">
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-gem text-indigo-600 text-xl mr-3"></i>
-                            <h3 class="text-lg font-semibold text-gray-900">Valor para el cliente</h3>
-                        </div>
-                        <p class="text-sm text-gray-600">Resultados y beneficios que el cliente obtiene</p>
-                    </div>
-                    
-                    <div class="p-6">
-                        <div class="space-y-4" id="valorList">
-                            <div class="value-item value-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">Aumentar productividad del equipo</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">Reducir tiempo en tareas administrativas en un 60%</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">Valor</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="value-item value-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">Mejorar tasa de conversión</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">Seguimiento oportuno reduce pérdida de leads</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">Valor</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="value-item value-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">Visibilidad en tiempo real</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">Dashboards para tomar decisiones informadas</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">Valor</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button onclick="addValueItem()" class="w-full mt-4 p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-gray-400 hover:text-gray-600">
-                            <i class="fas fa-plus mr-2"></i>Agregar valor
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Column 2: Diferencial de la marca -->
-                <div class="bg-white rounded-lg shadow-md value-column">
-                    <div class="p-6 border-b border-gray-200">
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-star text-green-600 text-xl mr-3"></i>
-                            <h3 class="text-lg font-semibold text-gray-900">Diferencial de la marca</h3>
-                        </div>
-                        <p class="text-sm text-gray-600">Lo que nos hace únicos vs competencia</p>
-                    </div>
-                    
-                    <div class="p-6">
-                        <div class="space-y-4" id="diferencialList">
-                            <div class="value-item different-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">IA conversacional nativa</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">Procesamiento de lenguaje natural vs reglas predefinidas</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Diferencial</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="value-item different-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">Integración zero-touch</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">Setup en minutos, no requiere IT</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Diferencial</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="value-item different-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">Modelo predictivo propietario</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">Entrenado con datos específicos del sector</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Diferencial</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button onclick="addDiferencialItem()" class="w-full mt-4 p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-gray-400 hover:text-gray-600">
-                            <i class="fas fa-plus mr-2"></i>Agregar diferencial
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Column 3: Features del producto -->
-                <div class="bg-white rounded-lg shadow-md value-column">
-                    <div class="p-6 border-b border-gray-200">
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-cogs text-red-600 text-xl mr-3"></i>
-                            <h3 class="text-lg font-semibold text-gray-900">Features del producto</h3>
-                        </div>
-                        <p class="text-sm text-gray-600">Funcionalidades específicas del producto</p>
-                    </div>
-                    
-                    <div class="p-6">
-                        <div class="space-y-4" id="featureList">
-                            <div class="value-item feature-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">Transcripción automática de llamadas</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">Convierte audio a texto en tiempo real</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Feature</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="value-item feature-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">CRM bidireccional</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">Sincronización con Salesforce, HubSpot</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Feature</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="value-item feature-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">Score de calidad de leads</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">IA evalúa probabilidad de cierre</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Feature</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="value-item feature-card bg-gray-50 p-4 rounded-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-medium text-gray-900">Dashboard personalizable</h4>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">Widgets arrastrables para cada rol</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Feature</span>
-                                    <button class="text-blue-600 hover:text-blue-800 text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button onclick="addFeatureItem()" class="w-full mt-4 p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-gray-400 hover:text-gray-600">
-                            <i class="fas fa-plus mr-2"></i>Agregar feature
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Connections Visualization -->
-            <div class="mt-8 bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Mapeo de conexiones</h3>
-                <p class="text-sm text-gray-600 mb-4">Cada valor debe estar respaldado por diferenciales y features específicas</p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-gem text-indigo-600 text-xl"></i>
-                        </div>
-                        <div class="text-sm font-medium text-gray-900">3 Valores</div>
-                        <div class="text-xs text-gray-500">Beneficios clave</div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-star text-green-600 text-xl"></i>
-                        </div>
-                        <div class="text-sm font-medium text-gray-900">3 Diferenciales</div>
-                        <div class="text-xs text-gray-500">Ventajas únicas</div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-cogs text-red-600 text-xl"></i>
-                        </div>
-                        <div class="text-sm font-medium text-gray-900">4 Features</div>
-                        <div class="text-xs text-gray-500">Funcionalidades</div>
-                    </div>
-                </div>
-
-                <div class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <div class="flex items-start">
-                        <i class="fas fa-lightbulb text-yellow-600 mr-3 mt-1"></i>
-                        <div>
-                            <h4 class="font-medium text-gray-900 mb-1">Sugerencia del sistema</h4>
-                            <p class="text-sm text-gray-600">La feature "Transcripción automática" podría conectarse mejor con el valor "Aumentar productividad". ¿Quieres que te ayude a reorganizar?</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<body>
+  <div class="page-wrapper">
+    <!-- Breadcrumb + back -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px;">
+      <nav class="breadcrumb" id="breadcrumb">
+        <a href="index.html">Dashboard</a>
+        <span>/</span>
+        <span id="breadcrumb-project">Project</span>
+        <span>/</span>
+        <span>Strategy – Value</span>
+      </nav>
+      <button type="button" class="back-btn" id="backToProjectBtn">
+        ← Back to project
+      </button>
     </div>
 
-    <!-- Add Item Modal -->
-    <div id="addItemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-md w-full">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-gray-900" id="modalTitle">Agregar nuevo elemento</h2>
-                        <button onclick="closeAddItemModal()" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Título</label>
-                            <input type="text" id="itemTitle" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: Aumentar productividad">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
-                            <textarea id="itemDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="Contexto adicional..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-4 mt-8">
-                        <button onclick="closeAddItemModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                            Cancelar
-                        </button>
-                        <button onclick="saveItem()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                            Agregar
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span id="projectNameHeading">Strategy – Value Proposition</span>
+          <span class="subtitle">
+            Connect discovery insights into a clear, credible and differentiated promise.
+          </span>
         </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+          <span class="pill">
+            <span class="dot"></span>
+            Strategy · Value
+          </span>
+          <span class="pill-small" id="projectShortInfo">Loading project…</span>
+        </div>
+      </div>
+
+      <form id="valueForm">
+        <h3 class="section-title">1. Target segment</h3>
+        <p class="section-subtitle">
+          The segment where this promise is aimed: who they are and in what situation.
+        </p>
+        <textarea
+          id="target_segment"
+          name="target_segment"
+          placeholder="E.g. 'Post-PMF B2B SaaS teams who need to accelerate adoption without burning their sales team'."
+        ></textarea>
+
+        <h3 class="section-title">2. Core problem / central tension</h3>
+        <p class="section-subtitle">
+          What is the main pain or tension from their point of view, not from the productʼs.
+        </p>
+        <textarea
+          id="core_problem"
+          name="core_problem"
+          placeholder="Describe the before: what’s frustrating, risky, slow, expensive or politically painful for them."
+        ></textarea>
+
+        <h3 class="section-title">3. Value proposition (promise)</h3>
+        <p class="section-subtitle">
+          Simple, concrete and outcome-focused. Doesnʼt need to be pretty yet, just clear.
+        </p>
+        <textarea
+          id="value_proposition"
+          name="value_proposition"
+          placeholder="Pattern: 'We help [segment] get [result] by [how], without [painful alternative]'."
+        ></textarea>
+
+        <div class="grid grid-cols-2">
+          <div>
+            <h3 class="section-title">4. Key benefits</h3>
+            <p class="section-subtitle">
+              Functional, emotional and risk-related benefits that matter to this segment.
+            </p>
+            <textarea
+              id="key_benefits"
+              name="key_benefits"
+              placeholder="Think in bullets: speed, clarity, trust, control, status, reduced risk, etc."
+            ></textarea>
+          </div>
+
+          <div>
+            <h3 class="section-title">5. Differentiation</h3>
+            <p class="section-subtitle">
+              Why you vs. alternatives (including status quo and DIY solutions).
+            </p>
+            <textarea
+              id="differentiation"
+              name="differentiation"
+              placeholder="What is meaningfully different in how you solve the problem, not just feature checklists."
+            ></textarea>
+          </div>
+        </div>
+
+        <h3 class="section-title">6. Proof points</h3>
+        <p class="section-subtitle">
+          Signals that make the promise believable: evidence, cases, metrics, learning loops…
+        </p>
+        <textarea
+          id="proof_points"
+          name="proof_points"
+          placeholder="Early wins, client stories, hard metrics, design partners, expert backing, etc."
+        ></textarea>
+
+        <h3 class="section-title">7. Elevator pitch (v1)</h3>
+        <p class="section-subtitle">
+          First-pass story you’d use in a 30–60 second conversation.
+        </p>
+        <textarea
+          id="elevator_pitch"
+          name="elevator_pitch"
+          placeholder="Draft a simple version; youʼll polish wording later in web copy, deck, and sales scripts."
+        ></textarea>
+
+        <h3 class="section-title">8. Notes & narrative angles</h3>
+        <p class="section-subtitle">
+          Hooks, metaphors or angles that feel promising for later copy and storytelling.
+        </p>
+        <textarea
+          id="notes"
+          name="notes"
+          placeholder="Ideas that connect this story to cultural references, founder story, market narratives, etc."
+        ></textarea>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary" id="saveBtn">
+            Save value strategy
+          </button>
+        </div>
+        <div id="statusMessage" class="status-message"></div>
+      </form>
     </div>
+  </div>
 
-    <script>
-        class StrategyValorApp {
-            constructor() {
-                this.currentProject = null;
-                this.data = {
-                    valor: [],
-                    diferencial: [],
-                    features: []
-                };
-                this.currentItemType = '';
-                this.currentItemId = null;
-            }
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-            loadData() {
-                const saved = localStorage.getItem('sunstone_current_project');
-                if (saved) {
-                    this.currentProject = JSON.parse(saved);
-                    if (this.currentProject.strategy && this.currentProject.strategy.valor) {
-                        this.data = this.currentProject.strategy.valor.data || {
-                            valor: [],
-                            diferencial: [],
-                            features: []
-                        };
-                    } else {
-                        // Load default demo data for new projects
-                        this.loadDefaultData();
-                    }
-                }
-            }
+  <script>
+    // === Supabase client setup ===
+    const SUPABASE_URL = "https://reezovhnmonzaafhigjz.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM";
 
-            loadDefaultData() {
-                this.data = {
-                    valor: [
-                        {
-                            id: 'valor1',
-                            title: 'Aumentar productividad del equipo',
-                            description: 'Reducir tiempo en tareas repetitivas en un 40%',
-                            type: 'valor',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        },
-                        {
-                            id: 'valor2',
-                            title: 'Mejorar precisión de decisiones',
-                            description: 'Reducir errores humanos en procesamiento de datos',
-                            type: 'valor',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        },
-                        {
-                            id: 'valor3',
-                            title: 'Escalar operaciones sin fricción',
-                            description: 'Manejar crecimiento 10x sin aumentar headcount',
-                            type: 'valor',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        }
-                    ],
-                    diferencial: [
-                        {
-                            id: 'diff1',
-                            title: 'IA conversacional nativa',
-                            description: 'Procesamiento de lenguaje natural vs reglas predefinidas',
-                            type: 'diferencial',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        },
-                        {
-                            id: 'diff2',
-                            title: 'Integración zero-touch',
-                            description: 'Setup en minutos, no requiere IT',
-                            type: 'diferencial',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        },
-                        {
-                            id: 'diff3',
-                            title: 'Modelo predictivo propietario',
-                            description: 'Entrenado con datos específicos del sector',
-                            type: 'diferencial',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        }
-                    ],
-                    features: [
-                        {
-                            id: 'feat1',
-                            title: 'Transcripción automática de llamadas',
-                            description: 'Convierte audio a texto en tiempo real',
-                            type: 'feature',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        },
-                        {
-                            id: 'feat2',
-                            title: 'CRM bidireccional',
-                            description: 'Sincronización con Salesforce, HubSpot',
-                            type: 'feature',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        },
-                        {
-                            id: 'feat3',
-                            title: 'Dashboard analítico en tiempo real',
-                            description: 'Métricas clave y tendencias visuales',
-                            type: 'feature',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        },
-                        {
-                            id: 'feat4',
-                            title: 'Alertas inteligentes personalizadas',
-                            description: 'Notificaciones basadas en patrones de comportamiento',
-                            type: 'feature',
-                            connections: [],
-                            createdAt: new Date().toISOString()
-                        }
-                    ]
-                };
-            }
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            saveData() {
-                if (!this.currentProject) return;
+    const statusEl = document.getElementById("statusMessage");
+    const saveBtn = document.getElementById("saveBtn");
+    const projectNameHeading = document.getElementById("projectNameHeading");
+    const projectShortInfo = document.getElementById("projectShortInfo");
+    const breadcrumbProject = document.getElementById("breadcrumb-project");
+    const backToProjectBtn = document.getElementById("backToProjectBtn");
 
-                if (!this.currentProject.strategy) this.currentProject.strategy = {};
-                if (!this.currentProject.strategy.valor) {
-                    this.currentProject.strategy.valor = { completed: false, data: {} };
-                }
+    function setStatus(message, isError = false) {
+      if (!statusEl) return;
+      statusEl.textContent = message || "";
+      statusEl.classList.toggle("error", !!isError);
+    }
 
-                this.currentProject.strategy.valor.data = this.data;
+    function setSaving(isSaving) {
+      if (!saveBtn) return;
+      if (isSaving) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving…";
+      } else {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save value strategy";
+      }
+    }
 
-                persistProject(this.currentProject);
-            }
+    function getProjectIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("projectId");
+    }
 
+    async function loadProject(projectId) {
+      setStatus("Loading project…");
+      const { data, error } = await supabaseClient
+        .from("projects")
+        .select("*")
+        .eq("id", projectId)
+        .single();
 
-            openModal(modalId) {
-                document.getElementById(modalId).classList.remove('hidden');
-            }
+      if (error) {
+        console.error("Error loading project", error);
+        setStatus("Error loading project from Supabase.", true);
+        return null;
+      }
 
-            closeModal(modalId) {
-                document.getElementById(modalId).classList.add('hidden');
-            }
+      // Header info
+      projectNameHeading.textContent = data.name || "Strategy – Value Proposition";
+      projectShortInfo.textContent =
+        (data.stage ? `${data.stage} · ` : "") +
+        (data.type || "Project") +
+        (data.created_at ? ` · ${new Date(data.created_at).toLocaleDateString()}` : "");
 
-            showNotification(message, type = 'info') {
-                const notification = document.createElement('div');
-                notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
-                    type === 'success' ? 'bg-green-500 text-white' :
-                    type === 'error' ? 'bg-red-500 text-white' :
-                    'bg-blue-500 text-white'
-                }`;
-                notification.textContent = message;
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.remove();
-                }, 3000);
-            }
+      breadcrumbProject.textContent = data.name || "Project";
 
-            // Add Valor item
-            addValorItem() {
-                const title = document.getElementById('valor-title').value.trim();
-                const description = document.getElementById('valor-description').value.trim();
-                
-                if (!title) {
-                    this.showNotification('Por favor ingresa un título para el valor', 'error');
-                    return;
-                }
-                
-                const newItem = {
-                    id: Date.now().toString(),
-                    title,
-                    description,
-                    type: 'valor',
-                    connections: [],
-                    createdAt: new Date().toISOString()
-                };
-                
-                this.data.valor.push(newItem);
-                this.saveData();
-                this.renderValorItems();
-                this.closeModal('valor-modal');
-                this.clearValorForm();
-                this.showNotification('Valor agregado exitosamente', 'success');
-            }
+      // Populate form if strategy_value JSON exists
+      if (data.strategy_value && typeof data.strategy_value === "object") {
+        const sv = data.strategy_value;
+        const map = {
+          target_segment: "target_segment",
+          core_problem: "core_problem",
+          value_proposition: "value_proposition",
+          key_benefits: "key_benefits",
+          differentiation: "differentiation",
+          proof_points: "proof_points",
+          elevator_pitch: "elevator_pitch",
+          notes: "notes",
+        };
 
-            // Add Diferencial item
-            addDiferencialItem() {
-                const title = document.getElementById('diferencial-title').value.trim();
-                const description = document.getElementById('diferencial-description').value.trim();
-                
-                if (!title) {
-                    this.showNotification('Por favor ingresa un título para el diferencial', 'error');
-                    return;
-                }
-                
-                const newItem = {
-                    id: Date.now().toString(),
-                    title,
-                    description,
-                    type: 'diferencial',
-                    connections: [],
-                    createdAt: new Date().toISOString()
-                };
-                
-                this.data.diferencial.push(newItem);
-                this.saveData();
-                this.renderDiferencialItems();
-                this.closeModal('diferencial-modal');
-                this.clearDiferencialForm();
-                this.showNotification('Diferencial agregado exitosamente', 'success');
-            }
-
-            // Add Feature item
-            addFeatureItem() {
-                const title = document.getElementById('feature-title').value.trim();
-                const description = document.getElementById('feature-description').value.trim();
-                
-                if (!title) {
-                    this.showNotification('Por favor ingresa un título para la característica', 'error');
-                    return;
-                }
-                
-                const newItem = {
-                    id: Date.now().toString(),
-                    title,
-                    description,
-                    type: 'feature',
-                    connections: [],
-                    createdAt: new Date().toISOString()
-                };
-                
-                this.data.features.push(newItem);
-                this.saveData();
-                this.renderFeatureItems();
-                this.closeModal('feature-modal');
-                this.clearFeatureForm();
-                this.showNotification('Característica agregada exitosamente', 'success');
-            }
-
-            // Edit item methods
-            editValorItem(id) {
-                const item = this.data.valor.find(v => v.id === id);
-                if (!item) return;
-                
-                document.getElementById('edit-valor-title').value = item.title;
-                document.getElementById('edit-valor-description').value = item.description;
-                document.getElementById('edit-valor-id').value = item.id;
-                this.openModal('edit-valor-modal');
-            }
-
-            editDiferencialItem(id) {
-                const item = this.data.diferencial.find(d => d.id === id);
-                if (!item) return;
-                
-                document.getElementById('edit-diferencial-title').value = item.title;
-                document.getElementById('edit-diferencial-description').value = item.description;
-                document.getElementById('edit-diferencial-id').value = item.id;
-                this.openModal('edit-diferencial-modal');
-            }
-
-            editFeatureItem(id) {
-                const item = this.data.features.find(f => f.id === id);
-                if (!item) return;
-                
-                document.getElementById('edit-feature-title').value = item.title;
-                document.getElementById('edit-feature-description').value = item.description;
-                document.getElementById('edit-feature-id').value = item.id;
-                this.openModal('edit-feature-modal');
-            }
-
-            // Update item methods
-            updateValorItem() {
-                const id = document.getElementById('edit-valor-id').value;
-                const title = document.getElementById('edit-valor-title').value.trim();
-                const description = document.getElementById('edit-valor-description').value.trim();
-                
-                if (!title) {
-                    this.showNotification('Por favor ingresa un título', 'error');
-                    return;
-                }
-                
-                const itemIndex = this.data.valor.findIndex(v => v.id === id);
-                if (itemIndex !== -1) {
-                    this.data.valor[itemIndex].title = title;
-                    this.data.valor[itemIndex].description = description;
-                    this.saveData();
-                    this.renderValorItems();
-                    this.closeModal('edit-valor-modal');
-                    this.showNotification('Valor actualizado exitosamente', 'success');
-                }
-            }
-
-            updateDiferencialItem() {
-                const id = document.getElementById('edit-diferencial-id').value;
-                const title = document.getElementById('edit-diferencial-title').value.trim();
-                const description = document.getElementById('edit-diferencial-description').value.trim();
-                
-                if (!title) {
-                    this.showNotification('Por favor ingresa un título', 'error');
-                    return;
-                }
-                
-                const itemIndex = this.data.diferencial.findIndex(d => d.id === id);
-                if (itemIndex !== -1) {
-                    this.data.diferencial[itemIndex].title = title;
-                    this.data.diferencial[itemIndex].description = description;
-                    this.saveData();
-                    this.renderDiferencialItems();
-                    this.closeModal('edit-diferencial-modal');
-                    this.showNotification('Diferencial actualizado exitosamente', 'success');
-                }
-            }
-
-            updateFeatureItem() {
-                const id = document.getElementById('edit-feature-id').value;
-                const title = document.getElementById('edit-feature-title').value.trim();
-                const description = document.getElementById('edit-feature-description').value.trim();
-                
-                if (!title) {
-                    this.showNotification('Por favor ingresa un título', 'error');
-                    return;
-                }
-                
-                const itemIndex = this.data.features.findIndex(f => f.id === id);
-                if (itemIndex !== -1) {
-                    this.data.features[itemIndex].title = title;
-                    this.data.features[itemIndex].description = description;
-                    this.saveData();
-                    this.renderFeatureItems();
-                    this.closeModal('edit-feature-modal');
-                    this.showNotification('Característica actualizada exitosamente', 'success');
-                }
-            }
-
-            // Delete item methods
-            deleteValorItem(id) {
-                if (confirm('¿Estás seguro de eliminar este valor?')) {
-                    this.data.valor = this.data.valor.filter(v => v.id !== id);
-                    this.saveData();
-                    this.renderValorItems();
-                    this.showNotification('Valor eliminado', 'info');
-                }
-            }
-
-            deleteDiferencialItem(id) {
-                if (confirm('¿Estás seguro de eliminar este diferencial?')) {
-                    this.data.diferencial = this.data.diferencial.filter(d => d.id !== id);
-                    this.saveData();
-                    this.renderDiferencialItems();
-                    this.showNotification('Diferencial eliminado', 'info');
-                }
-            }
-
-            deleteFeatureItem(id) {
-                if (confirm('¿Estás seguro de eliminar esta característica?')) {
-                    this.data.features = this.data.features.filter(f => f.id !== id);
-                    this.saveData();
-                    this.renderFeatureItems();
-                    this.showNotification('Característica eliminada', 'info');
-                }
-            }
-
-            // Clear form methods
-            clearValorForm() {
-                document.getElementById('valor-title').value = '';
-                document.getElementById('valor-description').value = '';
-            }
-
-            clearDiferencialForm() {
-                document.getElementById('diferencial-title').value = '';
-                document.getElementById('diferencial-description').value = '';
-            }
-
-            clearFeatureForm() {
-                document.getElementById('feature-title').value = '';
-                document.getElementById('feature-description').value = '';
-            }
-
-            // Render methods
-            renderValorItems() {
-                const container = document.getElementById('valor-items');
-                container.innerHTML = '';
-                
-                this.data.valor.forEach(item => {
-                    const itemElement = this.createItemElement(item, 'valor');
-                    container.appendChild(itemElement);
-                });
-            }
-
-            renderDiferencialItems() {
-                const container = document.getElementById('diferencial-items');
-                container.innerHTML = '';
-                
-                this.data.diferencial.forEach(item => {
-                    const itemElement = this.createItemElement(item, 'diferencial');
-                    container.appendChild(itemElement);
-                });
-            }
-
-            renderFeatureItems() {
-                const container = document.getElementById('feature-items');
-                container.innerHTML = '';
-                
-                this.data.features.forEach(item => {
-                    const itemElement = this.createItemElement(item, 'feature');
-                    container.appendChild(itemElement);
-                });
-            }
-
-            createItemElement(item, type) {
-                const div = document.createElement('div');
-                div.className = 'bg-white p-4 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition-shadow';
-                
-                const typeColor = {
-                    valor: 'text-indigo-600',
-                    diferencial: 'text-emerald-600',
-                    feature: 'text-blue-600'
-                };
-                
-                div.innerHTML = `
-                    <div class="flex justify-between items-start mb-3">
-                        <h4 class="font-semibold text-slate-800 ${typeColor[type]}">${item.title}</h4>
-                        <div class="flex space-x-2">
-                            <button onclick="strategyValorApp.edit${type.charAt(0).toUpperCase() + type.slice(1)}Item('${item.id}')" 
-                                    class="text-slate-400 hover:text-blue-600 transition-colors">
-                                <i class="fas fa-edit text-sm"></i>
-                            </button>
-                            <button onclick="strategyValorApp.delete${type.charAt(0).toUpperCase() + type.slice(1)}Item('${item.id}')" 
-                                    class="text-slate-400 hover:text-red-600 transition-colors">
-                                <i class="fas fa-trash text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <p class="text-slate-600 text-sm leading-relaxed">${item.description}</p>
-                    <div class="mt-3 text-xs text-slate-400">
-                        Creado: ${new Date(item.createdAt).toLocaleDateString('es-ES')}
-                    </div>
-                `;
-                
-                return div;
-            }
-
-            // Show suggestions
-            showSuggestions() {
-                const suggestions = [
-                    "Considera cómo tus valores se alinean con las necesidades de tus audiencias",
-                    "Los diferenciales deben ser difíciles de replicar por los competidores",
-                    "Las características deben respaldar directamente tus valores propuestos",
-                    "Valida tus suposiciones con clientes reales",
-                    "Prioriza los diferenciales que generan mayor impacto en el mercado"
-                ];
-                
-                const container = document.getElementById('suggestions-container');
-                container.innerHTML = suggestions.map(suggestion => `
-                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-2">
-                        <i class="fas fa-lightbulb text-amber-500 mr-2"></i>
-                        <span class="text-slate-700 text-sm">${suggestion}</span>
-                    </div>
-                `).join('');
-            }
-
-            // Initialize app
-            init() {
-                this.loadData();
-                this.renderValorItems();
-                this.renderDiferencialItems();
-                this.renderFeatureItems();
-                this.showSuggestions();
-                this.setupEventListeners();
-            }
-
-            // Setup event listeners
-            setupEventListeners() {
-                // Add buttons
-                document.getElementById('add-valor-btn').addEventListener('click', () => this.openModal('valor-modal'));
-                document.getElementById('add-diferencial-btn').addEventListener('click', () => this.openModal('diferencial-modal'));
-                document.getElementById('add-feature-btn').addEventListener('click', () => this.openModal('feature-modal'));
-
-                // Modal form submissions
-                document.getElementById('valor-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.addValorItem();
-                });
-
-                document.getElementById('diferencial-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.addDiferencialItem();
-                });
-
-                document.getElementById('feature-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.addFeatureItem();
-                });
-
-                // Edit form submissions
-                document.getElementById('edit-valor-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.updateValorItem();
-                });
-
-                document.getElementById('edit-diferencial-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.updateDiferencialItem();
-                });
-
-                document.getElementById('edit-feature-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.updateFeatureItem();
-                });
-
-                // Modal close buttons
-                document.querySelectorAll('.modal-close').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const modalId = e.target.closest('.modal').id;
-                        this.closeModal(modalId);
-                    });
-                });
-
-                // Click outside modal to close
-                document.querySelectorAll('.modal').forEach(modal => {
-                    modal.addEventListener('click', (e) => {
-                        if (e.target === modal) {
-                            this.closeModal(modal.id);
-                        }
-                    });
-                });
-            }
-        }
-
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            window.strategyValorApp = new StrategyValorApp();
-            strategyValorApp.init();
+        Object.entries(map).forEach(([jsonKey, fieldId]) => {
+          const el = document.getElementById(fieldId);
+          if (el) el.value = sv[jsonKey] || "";
         });
+      }
 
-        function persistProject(project) {
-            if (!project) return;
+      setStatus("Project loaded. You can now edit the value strategy.");
+      return data;
+    }
 
-            localStorage.setItem('sunstone_current_project', JSON.stringify(project));
+    async function saveValueStrategy(projectId) {
+      setSaving(true);
+      setStatus("");
 
-            const projects = JSON.parse(localStorage.getItem('sunstone_projects') || '[]');
-            const projectIndex = projects.findIndex(p => p.id === project.id);
-            if (projectIndex !== -1) {
-                projects[projectIndex] = project;
-                localStorage.setItem('sunstone_projects', JSON.stringify(projects));
-            }
-        }
+      const payload = {
+        target_segment: document.getElementById("target_segment").value.trim(),
+        core_problem: document.getElementById("core_problem").value.trim(),
+        value_proposition: document.getElementById("value_proposition").value.trim(),
+        key_benefits: document.getElementById("key_benefits").value.trim(),
+        differentiation: document.getElementById("differentiation").value.trim(),
+        proof_points: document.getElementById("proof_points").value.trim(),
+        elevator_pitch: document.getElementById("elevator_pitch").value.trim(),
+        notes: document.getElementById("notes").value.trim(),
+        updated_at: new Date().toISOString(),
+      };
 
-    </script>
-    <script src="main.js"></script>
+      const { error } = await supabaseClient
+        .from("projects")
+        .update({ strategy_value: payload })
+        .eq("id", projectId);
+
+      setSaving(false);
+
+      if (error) {
+        console.error("Error saving value strategy", error);
+        setStatus("Error saving value strategy. Please try again.", true);
+        return;
+      }
+
+      setStatus("Value strategy saved ✔️");
+      setTimeout(() => setStatus(""), 3000);
+    }
+
+    async function init() {
+      const projectId = getProjectIdFromURL();
+      if (!projectId) {
+        setStatus("Missing projectId in URL. Go back to the dashboard and open a project from there.", true);
+        return;
+      }
+
+      // Back button
+      if (backToProjectBtn) {
+        backToProjectBtn.addEventListener("click", () => {
+          window.location.href = `project.html?projectId=${encodeURIComponent(projectId)}`;
+        });
+      }
+
+      // Make breadcrumb project clickable
+      const breadcrumbProjectLink = document.createElement("a");
+      breadcrumbProjectLink.href = `project.html?projectId=${encodeURIComponent(projectId)}`;
+      breadcrumbProjectLink.textContent = "Project";
+      if (breadcrumbProject && breadcrumbProject.parentNode) {
+        breadcrumbProject.replaceWith(breadcrumbProjectLink);
+      }
+
+      const project = await loadProject(projectId);
+      if (!project) return;
+
+      const form = document.getElementById("valueForm");
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          await saveValueStrategy(projectId);
+        });
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
 </body>
 </html>

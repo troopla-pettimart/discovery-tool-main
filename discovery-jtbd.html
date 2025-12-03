@@ -1,655 +1,663 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Discovery – Jobs To Be Done | Sunstone</title>
+  <title>Discovery – Jobs to Be Done</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Tailwind (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Font Awesome (icons) -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
-
+  <!-- Optional: external stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
   <style>
     body {
-      background: #f3f4f6;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
     }
-    .jtbd-card {
-      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
     }
-    .jtbd-card:hover {
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
-      transform: translateY(-1px);
+    .card {
+      background: radial-gradient(circle at top left, #1e293b, #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 24px 20px 28px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-title span.subtitle {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #9ca3af;
+    }
+    nav.breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+    nav.breadcrumb a {
+      color: #e5e7eb;
+      text-decoration: none;
+    }
+    nav.breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.75rem;
+      color: #9ca3af;
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: transparent;
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+    @media (min-width: 768px) {
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #9ca3af;
+      display: block;
+      margin-bottom: 4px;
+    }
+    textarea, input[type="text"] {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      resize: vertical;
+      min-height: 40px;
+    }
+    textarea::placeholder,
+    input::placeholder {
+      color: #6b7280;
+    }
+    textarea {
+      min-height: 70px;
+    }
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin: 20px 0 4px;
+      color: #e5e7eb;
+    }
+    .section-subtitle {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-primary {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: linear-gradient(to right, #4f46e5, #6366f1);
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-secondary {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: transparent;
+      color: #e5e7eb;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary[disabled],
+    .btn-secondary[disabled] {
+      opacity: 0.6;
+      cursor: wait;
+    }
+    .status-message {
+      font-size: 0.8rem;
+      margin-top: 8px;
+      color: #9ca3af;
+    }
+    .status-message.error {
+      color: #f97373;
+    }
+    .pill-small {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: #9ca3af;
+    }
+    .jobs-list {
+      margin-top: 24px;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      padding-top: 16px;
+    }
+    .job-card {
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.8);
+      padding: 12px 12px 10px;
+      margin-bottom: 10px;
+    }
+    .job-card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .job-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+    .job-meta {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+    .job-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .small-btn {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: transparent;
+      color: #e5e7eb;
+      cursor: pointer;
+    }
+    .small-btn.danger {
+      border-color: rgba(248, 113, 113, 0.7);
+      color: #fecaca;
+    }
+    .small-text {
+      font-size: 0.8rem;
+      color: #9ca3af;
     }
   </style>
 </head>
+<body>
+  <div class="page-wrapper">
+    <!-- Breadcrumb + back -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px;">
+      <nav class="breadcrumb" id="breadcrumb">
+        <a href="index.html">Dashboard</a>
+        <span>/</span>
+        <span id="breadcrumb-project">Project</span>
+        <span>/</span>
+        <span>Discovery – JTBD</span>
+      </nav>
+      <button type="button" class="back-btn" id="backToProjectBtn">
+        ← Back to project
+      </button>
+    </div>
 
-<body class="min-h-screen flex flex-col">
-  <!-- Top bar -->
-  <header class="w-full bg-white border-b border-gray-200">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="h-8 w-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
-          S
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span id="projectNameHeading">Discovery – Jobs to Be Done</span>
+          <span class="subtitle">
+            Capture the jobs, contexts and desired outcomes that shape how this product should behave.
+          </span>
         </div>
-        <div>
-          <h1 class="text-sm font-semibold text-gray-900">
-            Sunstone Discovery
-          </h1>
-          <p class="text-xs text-gray-500">
-            Módulo: Jobs To Be Done
-          </p>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+          <span class="pill">
+            <span class="dot"></span>
+            Discovery · JTBD
+          </span>
+          <span class="pill-small" id="projectShortInfo">Loading project…</span>
         </div>
       </div>
-      <div class="flex items-center gap-3 text-xs text-gray-500">
-        <button
-          onclick="window.location.href='project.html'"
-          class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 text-gray-700 text-xs font-medium hover:bg-gray-50"
-        >
-          <i class="fa-solid fa-arrow-left mr-2"></i>
-          Volver al proyecto
-        </button>
+
+      <!-- JTBD editor -->
+      <form id="jtbdForm">
+        <h3 class="section-title">New job</h3>
+        <p class="section-subtitle">
+          Think of a specific moment in the userʼs life where they “hire” your product to make progress.
+        </p>
+
+        <label for="jtbd_title">Job statement</label>
+        <input
+          type="text"
+          id="jtbd_title"
+          name="jtbd_title"
+          placeholder="When [situation], I want to [progress], so I can [outcome]."
+        />
+
+        <div class="grid grid-cols-2">
+          <div>
+            <label for="jtbd_situation">Situation / context</label>
+            <textarea
+              id="jtbd_situation"
+              name="jtbd_situation"
+              placeholder="Where and when does this happen? Who is there? What tools are already in play?"
+            ></textarea>
+          </div>
+          <div>
+            <label for="jtbd_trigger">Trigger</label>
+            <textarea
+              id="jtbd_trigger"
+              name="jtbd_trigger"
+              placeholder="What makes them realise they need to act now?"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2">
+          <div>
+            <label for="jtbd_outcome">Desired outcome / success</label>
+            <textarea
+              id="jtbd_outcome"
+              name="jtbd_outcome"
+              placeholder="How do they know it worked? What is different afterwards?"
+            ></textarea>
+          </div>
+          <div>
+            <label for="jtbd_obstacles">Obstacles & anxieties</label>
+            <textarea
+              id="jtbd_obstacles"
+              name="jtbd_obstacles"
+              placeholder="Fears, frictions, blockers and internal debates that slow them down."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2">
+          <div>
+            <label for="jtbd_alternatives">Current alternatives</label>
+            <textarea
+              id="jtbd_alternatives"
+              name="jtbd_alternatives"
+              placeholder="What do they use instead today? Spreadsheets, email, manual processes, competitors…"
+            ></textarea>
+          </div>
+          <div>
+            <label for="jtbd_emotional">Emotional layer</label>
+            <textarea
+              id="jtbd_emotional"
+              name="jtbd_emotional"
+              placeholder="What does this job mean emotionally? Status, safety, reputation, peace of mind, etc."
+            ></textarea>
+          </div>
+        </div>
+
+        <label for="jtbd_importance">Importance / priority</label>
+        <input
+          type="text"
+          id="jtbd_importance"
+          name="jtbd_importance"
+          placeholder="High / Medium / Low, or a 1–5 scale with a short explanation."
+        />
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" id="cancelEditBtn" style="display:none;">
+            Cancel edit
+          </button>
+          <button type="submit" class="btn-primary" id="saveJobBtn">
+            Add job
+          </button>
+        </div>
+        <div id="statusMessage" class="status-message"></div>
+      </form>
+
+      <!-- JTBD list -->
+      <div class="jobs-list">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <h3 class="section-title" style="margin-top:0;">Jobs list</h3>
+          <span class="small-text" id="jobsCountLabel">0 jobs</span>
+        </div>
+        <p class="section-subtitle">
+          Each card below represents a job. You can edit or delete them, and theyʼll be used later for strategy and reporting.
+        </p>
+        <div id="jobsContainer"></div>
       </div>
     </div>
-  </header>
+  </div>
 
-  <!-- Main layout -->
-  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-6 flex gap-6">
-    <!-- Sidebar: Project summary -->
-    <aside class="w-72 bg-white border border-gray-200 rounded-2xl p-4 flex flex-col h-fit">
-      <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
-        Proyecto
-      </h2>
-      <h3 id="projectName" class="text-lg font-semibold text-gray-900 mb-1">
-        <!-- filled by JS -->
-      </h3>
-      <p id="projectInfo" class="text-xs text-gray-500 mb-4">
-        <!-- filled by JS -->
-      </p>
-
-      <div class="border-t border-gray-100 my-3"></div>
-
-      <div class="space-y-1 text-xs text-gray-600">
-        <div class="flex items-center justify-between">
-          <span class="flex items-center gap-1">
-            <i class="fa-solid fa-circle-dot text-[10px] text-indigo-500"></i>
-            Estado módulo
-          </span>
-          <span id="jtbdStatus" class="inline-flex items-center px-2 py-0.5 rounded-full bg-yellow-50 text-[11px] text-yellow-800">
-            En progreso
-          </span>
-        </div>
-      </div>
-
-      <div class="mt-4">
-        <button
-          id="markCompletedBtn"
-          class="w-full inline-flex items-center justify-center px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700"
-        >
-          <i class="fa-solid fa-check mr-2"></i>
-          Marcar módulo como completado
-        </button>
-      </div>
-    </aside>
-
-    <!-- Main content -->
-    <section class="flex-1 flex flex-col gap-4">
-      <!-- JTBD Form -->
-      <div class="bg-white rounded-2xl border border-gray-200 p-4">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h2 class="text-sm font-semibold text-gray-900">
-              Definir un nuevo Job To Be Done
-            </h2>
-            <p class="text-xs text-gray-500">
-              Describe el trabajo que tu usuario intenta resolver, en qué contexto, y qué resultado persigue.
-            </p>
-          </div>
-          <div>
-            <span id="editModeBadge" class="hidden inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-[11px] text-blue-700">
-              <i class="fa-solid fa-pen mr-1"></i>
-              Editando JTBD existente
-            </span>
-          </div>
-        </div>
-
-        <form id="jtbdForm" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-          <div class="md:col-span-2">
-            <label class="block text-[11px] font-medium text-gray-700 mb-1">Job (título corto)</label>
-            <input
-              type="text"
-              id="jtbdTitle"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Ej: Organizar el pipeline de ventas semanal"
-            />
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-medium text-gray-700 mb-1">Tipo de Job</label>
-            <select
-              id="jtbdType"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="">Selecciona un tipo</option>
-              <option value="funcional">Funcional</option>
-              <option value="emocional">Emocional</option>
-              <option value="social">Social</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-medium text-gray-700 mb-1">Relevancia</label>
-            <select
-              id="jtbdRelevance"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="1">1 - Muy baja</option>
-              <option value="2">2 - Baja</option>
-              <option value="3" selected>3 - Media</option>
-              <option value="4">4 - Alta</option>
-              <option value="5">5 - Crítica</option>
-            </select>
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-[11px] font-medium text-gray-700 mb-1">Contexto</label>
-            <textarea
-              id="jtbdContext"
-              rows="2"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="¿En qué situación se encuentra la persona cuando aparece este trabajo?"
-            ></textarea>
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-[11px] font-medium text-gray-700 mb-1">Disparador</label>
-            <textarea
-              id="jtbdTrigger"
-              rows="2"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="¿Qué evento, problema o cambio hace que el trabajo se active ahora?"
-            ></textarea>
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-[11px] font-medium text-gray-700 mb-1">Resultado deseado</label>
-            <textarea
-              id="jtbdOutcome"
-              rows="2"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="¿Cómo sabe la persona que el trabajo se resolvió bien?"
-            ></textarea>
-          </div>
-
-          <div class="md:col-span-2 flex justify-between items-center pt-1">
-            <button
-              type="button"
-              id="resetFormBtn"
-              class="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
-            >
-              <i class="fa-solid fa-rotate-left mr-2"></i>
-              Limpiar formulario
-            </button>
-
-            <div class="flex gap-2">
-              <button
-                type="button"
-                id="cancelEditBtn"
-                class="hidden inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 text-xs"
-              >
-                Cancelar edición
-              </button>
-              <button
-                type="submit"
-                class="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700"
-              >
-                <i class="fa-solid fa-save mr-2"></i>
-                Guardar JTBD
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- JTBD List -->
-      <div class="bg-white rounded-2xl border border-gray-200 p-4 flex-1">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h2 class="text-sm font-semibold text-gray-900">
-              Jobs definidos
-            </h2>
-            <p class="text-xs text-gray-500">
-              Haz clic en un job para editarlo. Puedes priorizar por relevancia.
-            </p>
-          </div>
-          <div class="text-xs text-gray-500">
-            <span id="jtbdCountBadge" class="inline-flex items-center px-2 py-0.5 rounded-full bg-gray-50 text-[11px] text-gray-700">
-              0 jobs
-            </span>
-          </div>
-        </div>
-
-        <div id="jtbdList" class="space-y-3">
-          <!-- cards rendered by JS -->
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Toast notifications -->
-  <div id="toastContainer" class="fixed top-4 right-4 space-y-2 z-50"></div>
-
-  <!-- Supabase client -->
+  <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
-    // Init Supabase client (v2, CDN)
+    // === Supabase client setup ===
+    const SUPABASE_URL = "https://reezovhnmonzaafhigjz.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM";
+
     const { createClient } = supabase;
-    const supabaseClient = createClient(
-      "https://reezovhnmonzaafhigjz.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM"
-    );
-    // Expose globally in case other scripts expect `window.supabase`
-    window.supabase = supabaseClient;
-  </script>
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  <script>
-    // ---------- Simple notification helper ----------
-    function showToast(message, type = "info") {
-      const container = document.getElementById("toastContainer");
-      if (!container) return;
+    const statusEl = document.getElementById("statusMessage");
+    const projectNameHeading = document.getElementById("projectNameHeading");
+    const projectShortInfo = document.getElementById("projectShortInfo");
+    const breadcrumbProject = document.getElementById("breadcrumb-project");
+    const backToProjectBtn = document.getElementById("backToProjectBtn");
 
-      const wrapper = document.createElement("div");
-      wrapper.className =
-        "px-3 py-2 rounded-lg text-xs shadow-md flex items-center gap-2 " +
-        (type === "error"
-          ? "bg-red-50 text-red-800 border border-red-200"
-          : type === "success"
-          ? "bg-green-50 text-green-800 border border-green-200"
-          : "bg-slate-800 text-slate-50");
+    const jtbdForm = document.getElementById("jtbdForm");
+    const saveJobBtn = document.getElementById("saveJobBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const jobsContainer = document.getElementById("jobsContainer");
+    const jobsCountLabel = document.getElementById("jobsCountLabel");
 
-      const icon = document.createElement("i");
-      icon.className =
-        type === "error"
-          ? "fa-solid fa-circle-exclamation"
-          : type === "success"
-          ? "fa-solid fa-circle-check"
-          : "fa-solid fa-circle-info";
+    let currentProjectId = null;
+    let jtbdItems = [];
+    let editingIndex = null; // null = creando, número = editando
 
-      const text = document.createElement("span");
-      text.textContent = message;
-
-      wrapper.appendChild(icon);
-      wrapper.appendChild(text);
-      container.appendChild(wrapper);
-
-      setTimeout(() => {
-        wrapper.classList.add("opacity-0", "translate-y-1", "transition");
-        setTimeout(() => wrapper.remove(), 200);
-      }, 2500);
+    function setStatus(message, isError = false) {
+      if (!statusEl) return;
+      statusEl.textContent = message || "";
+      statusEl.classList.toggle("error", !!isError);
     }
 
-    // ---------- JTBD module logic ----------
-    let currentProject = null;
-    let projectData = {}; // mirrors Supabase `data` json
-    let jtbdData = [];
-    let editingIndex = -1;
-    let saveTimeoutId = null;
-
-    function debounceSave() {
-      if (saveTimeoutId) clearTimeout(saveTimeoutId);
-      saveTimeoutId = setTimeout(() => {
-        persistAll().catch((err) => console.error("Error saving:", err));
-      }, 600);
+    function setSaving(isSaving) {
+      if (!saveJobBtn) return;
+      if (isSaving) {
+        saveJobBtn.disabled = true;
+        cancelEditBtn.disabled = true;
+        saveJobBtn.textContent = editingIndex === null ? "Saving…" : "Updating…";
+      } else {
+        saveJobBtn.disabled = false;
+        cancelEditBtn.disabled = false;
+        saveJobBtn.textContent = editingIndex === null ? "Add job" : "Update job";
+      }
     }
 
-    async function persistAll() {
-      if (!currentProject) return;
+    function getProjectIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("projectId");
+    }
 
-      // Ensure discovery/jtbd structure in projectData
-      if (!projectData.discovery) projectData.discovery = {};
-      projectData.discovery.jtbd = {
-        completed: projectData.discovery.jtbd?.completed || false,
-        data: jtbdData,
+    function clearForm() {
+      jtbdForm.reset();
+      editingIndex = null;
+      saveJobBtn.textContent = "Add job";
+      cancelEditBtn.style.display = "none";
+      setStatus("");
+    }
+
+    function fillFormFromItem(item) {
+      document.getElementById("jtbd_title").value = item.title || "";
+      document.getElementById("jtbd_situation").value = item.situation || "";
+      document.getElementById("jtbd_trigger").value = item.trigger || "";
+      document.getElementById("jtbd_outcome").value = item.outcome || "";
+      document.getElementById("jtbd_obstacles").value = item.obstacles || "";
+      document.getElementById("jtbd_alternatives").value = item.alternatives || "";
+      document.getElementById("jtbd_emotional").value = item.emotional || "";
+      document.getElementById("jtbd_importance").value = item.importance || "";
+    }
+
+    function collectFormData() {
+      return {
+        title: document.getElementById("jtbd_title").value.trim(),
+        situation: document.getElementById("jtbd_situation").value.trim(),
+        trigger: document.getElementById("jtbd_trigger").value.trim(),
+        outcome: document.getElementById("jtbd_outcome").value.trim(),
+        obstacles: document.getElementById("jtbd_obstacles").value.trim(),
+        alternatives: document.getElementById("jtbd_alternatives").value.trim(),
+        emotional: document.getElementById("jtbd_emotional").value.trim(),
+        importance: document.getElementById("jtbd_importance").value.trim()
       };
-
-      // 1) Update local currentProject object
-      if (!currentProject.discovery) currentProject.discovery = {};
-      currentProject.discovery.jtbd = projectData.discovery.jtbd;
-
-      // Save to localStorage
-      localStorage.setItem("sunstone_current_project", JSON.stringify(currentProject));
-
-      // Also sync list of projects in localStorage if exists
-      const projectsStr = localStorage.getItem("sunstone_projects");
-      if (projectsStr) {
-        try {
-          const projects = JSON.parse(projectsStr);
-          const idx = projects.findIndex((p) => p.id === currentProject.id);
-          if (idx !== -1) {
-            projects[idx] = currentProject;
-            localStorage.setItem("sunstone_projects", JSON.stringify(projects));
-          }
-        } catch (e) {
-          console.warn("No se pudo actualizar la lista global de proyectos:", e);
-        }
-      }
-
-      // 2) Update Supabase (projects.data)
-      if (!window.supabase) {
-        console.warn("Supabase no está inicializado; se guarda solo en localStorage.");
-        return;
-      }
-
-      const { error } = await window.supabase
-        .from("projects")
-        .update({ data: projectData })
-        .eq("id", currentProject.id);
-
-      if (error) {
-        console.error("Error guardando en Supabase:", error);
-        showToast("No se pudo sincronizar con el backend", "error");
-      } else {
-        showToast("Cambios guardados", "success");
-      }
-
-      updateStatusBadge();
     }
 
-    function updateStatusBadge() {
-      const badge = document.getElementById("jtbdStatus");
-      const countBadge = document.getElementById("jtbdCountBadge");
-      const total = jtbdData.length;
+    function renderJobs() {
+      jobsContainer.innerHTML = "";
 
-      if (countBadge) {
-        countBadge.textContent = total === 1 ? "1 job" : `${total} jobs`;
-      }
-
-      if (!badge) return;
-
-      const isCompleted = projectData.discovery?.jtbd?.completed && total > 0;
-
-      if (isCompleted) {
-        badge.textContent = "Completado";
-        badge.className =
-          "inline-flex items-center px-2 py-0.5 rounded-full bg-green-50 text-[11px] text-green-700";
+      if (!jtbdItems.length) {
+        jobsContainer.innerHTML = '<p class="small-text">No jobs captured yet. Start by adding one above.</p>';
       } else {
-        badge.textContent = total > 0 ? "En progreso" : "Sin empezar";
-        badge.className =
-          "inline-flex items-center px-2 py-0.5 rounded-full bg-yellow-50 text-[11px] text-yellow-800";
-      }
-    }
-
-    function renderJTBDList() {
-      const container = document.getElementById("jtbdList");
-      if (!container) return;
-
-      container.innerHTML = "";
-
-      if (!jtbdData.length) {
-        const empty = document.createElement("div");
-        empty.className =
-          "flex items-center justify-center py-8 border border-dashed border-gray-200 rounded-xl bg-gray-50 text-xs text-gray-500";
-        empty.innerHTML =
-          '<i class="fa-regular fa-circle-dot mr-2"></i>Aún no definiste ningún Job. Empieza con el formulario de arriba.';
-        container.appendChild(empty);
-        updateStatusBadge();
-        return;
-      }
-
-      jtbdData
-        .slice()
-        .sort((a, b) => (b.relevance || 0) - (a.relevance || 0))
-        .forEach((item, index) => {
+        jtbdItems.forEach((job, index) => {
           const card = document.createElement("div");
-          card.className =
-            "jtbd-card border border-gray-200 rounded-xl p-3 bg-white cursor-pointer";
+          card.className = "job-card";
 
-          const typeLabel =
-            item.type === "emocional"
-              ? "Emocional"
-              : item.type === "social"
-              ? "Social"
-              : "Funcional";
+          const header = document.createElement("div");
+          header.className = "job-card-header";
 
-          const relevance = item.relevance || 3;
-          const relevanceLabel = {
-            1: "Muy baja",
-            2: "Baja",
-            3: "Media",
-            4: "Alta",
-            5: "Crítica",
-          }[relevance] || "Media";
+          const title = document.createElement("div");
+          title.className = "job-title";
+          title.textContent = job.title || `Job ${index + 1}`;
 
-          card.innerHTML = `
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <div class="flex items-center gap-2 mb-1">
-                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-semibold">
-                    ${index + 1}
-                  </span>
-                  <h3 class="text-sm font-semibold text-gray-900">${item.title || "Sin título"}</h3>
-                </div>
-                <p class="text-[11px] text-gray-500 mb-1">
-                  Tipo: <span class="font-medium text-gray-700">${typeLabel}</span> ·
-                  Relevancia: <span class="font-medium text-gray-700">${relevance} (${relevanceLabel})</span>
-                </p>
-              </div>
-              <button
-                type="button"
-                class="text-gray-400 hover:text-red-500 text-xs"
-                data-index="${index}"
-                data-role="delete-jtbd"
-                title="Eliminar Job"
-              >
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </div>
-            <div class="mt-2 text-[11px] text-gray-600">
-              <p class="mb-1"><span class="font-semibold text-gray-800">Contexto:</span> ${item.context || "–"}</p>
-              <p class="mb-1"><span class="font-semibold text-gray-800">Disparador:</span> ${item.trigger || "–"}</p>
-              <p><span class="font-semibold text-gray-800">Resultado deseado:</span> ${item.outcome || "–"}</p>
-            </div>
-          `;
+          const meta = document.createElement("div");
+          meta.className = "job-meta";
+          const importance = job.importance ? `Importance: ${job.importance}` : "Importance: –";
+          meta.textContent = importance;
 
-          // Click to edit (excluding delete button)
-          card.addEventListener("click", (e) => {
-            const isDelete = e.target.closest("[data-role='delete-jtbd']");
-            if (isDelete) return; // deletion handled separately
-            enterEditMode(index);
+          header.appendChild(title);
+          header.appendChild(meta);
+
+          const body = document.createElement("div");
+          body.className = "small-text";
+          const summaryParts = [];
+          if (job.situation) summaryParts.push(`Situation: ${job.situation}`);
+          if (job.trigger) summaryParts.push(`Trigger: ${job.trigger}`);
+          if (job.outcome) summaryParts.push(`Outcome: ${job.outcome}`);
+          if (job.alternatives) summaryParts.push(`Alternatives: ${job.alternatives}`);
+          body.textContent = summaryParts.join(" · ");
+
+          const actions = document.createElement("div");
+          actions.className = "job-actions";
+
+          const editBtn = document.createElement("button");
+          editBtn.type = "button";
+          editBtn.className = "small-btn";
+          editBtn.textContent = "Edit";
+          editBtn.addEventListener("click", () => {
+            editingIndex = index;
+            fillFormFromItem(job);
+            saveJobBtn.textContent = "Update job";
+            cancelEditBtn.style.display = "inline-flex";
+            setStatus(`Editing job #${index + 1}`);
           });
 
-          // Delete handler
-          const deleteBtn = card.querySelector("[data-role='delete-jtbd']");
-          if (deleteBtn) {
-            deleteBtn.addEventListener("click", (e) => {
-              e.stopPropagation();
-              if (confirm("¿Eliminar este Job?")) {
-                jtbdData.splice(index, 1);
-                debounceSave();
-                renderJTBDList();
-              }
-            });
-          }
+          const deleteBtn = document.createElement("button");
+          deleteBtn.type = "button";
+          deleteBtn.className = "small-btn danger";
+          deleteBtn.textContent = "Delete";
+          deleteBtn.addEventListener("click", async () => {
+            if (!confirm("Delete this job? This cannot be undone.")) return;
+            jtbdItems.splice(index, 1);
+            await persistJTBD();
+          });
 
-          container.appendChild(card);
+          actions.appendChild(editBtn);
+          actions.appendChild(deleteBtn);
+
+          card.appendChild(header);
+          card.appendChild(body);
+          card.appendChild(actions);
+
+          jobsContainer.appendChild(card);
         });
-
-      updateStatusBadge();
-    }
-
-    function enterEditMode(index) {
-      const item = jtbdData[index];
-      if (!item) return;
-
-      editingIndex = index;
-
-      document.getElementById("jtbdTitle").value = item.title || "";
-      document.getElementById("jtbdType").value = item.type || "";
-      document.getElementById("jtbdContext").value = item.context || "";
-      document.getElementById("jtbdTrigger").value = item.trigger || "";
-      document.getElementById("jtbdOutcome").value = item.outcome || "";
-      document.getElementById("jtbdRelevance").value = item.relevance || 3;
-
-      const badge = document.getElementById("editModeBadge");
-      const cancelBtn = document.getElementById("cancelEditBtn");
-      if (badge) badge.classList.remove("hidden");
-      if (cancelBtn) cancelBtn.classList.remove("hidden");
-    }
-
-    function resetForm(clearEdit = true) {
-      document.getElementById("jtbdForm").reset();
-      document.getElementById("jtbdRelevance").value = "3";
-
-      if (clearEdit) {
-        editingIndex = -1;
-        const badge = document.getElementById("editModeBadge");
-        const cancelBtn = document.getElementById("cancelEditBtn");
-        if (badge) badge.classList.add("hidden");
-        if (cancelBtn) cancelBtn.classList.add("hidden");
       }
+
+      jobsCountLabel.textContent = `${jtbdItems.length} job${jtbdItems.length === 1 ? "" : "s"}`;
     }
 
-    async function loadInitialData() {
-      // 1) Load current project from localStorage
-      const saved = localStorage.getItem("sunstone_current_project");
-      if (!saved) {
-        alert("No hay proyecto activo. Volviendo al inicio.");
-        window.location.href = "index.html";
+    async function loadProject(projectId) {
+      setStatus("Loading project…");
+      const { data, error } = await supabaseClient
+        .from("projects")
+        .select("*")
+        .eq("id", projectId)
+        .single();
+
+      if (error) {
+        console.error("Error loading project", error);
+        setStatus("Error loading project from Supabase.", true);
+        return null;
+      }
+
+      // Header info
+      projectNameHeading.textContent = data.name || "Discovery – Jobs to Be Done";
+      projectShortInfo.textContent =
+        (data.stage ? `${data.stage} · ` : "") +
+        (data.type || "Project") +
+        (data.created_at ? ` · ${new Date(data.created_at).toLocaleDateString()}` : "");
+
+      breadcrumbProject.textContent = data.name || "Project";
+
+      // JTBD items
+      if (data.jtbd && typeof data.jtbd === "object" && Array.isArray(data.jtbd.items)) {
+        jtbdItems = data.jtbd.items;
+      } else {
+        jtbdItems = [];
+      }
+
+      renderJobs();
+      setStatus("Project loaded. You can now add or edit jobs.");
+      return data;
+    }
+
+    async function persistJTBD() {
+      if (!currentProjectId) return;
+      setSaving(true);
+      setStatus("");
+
+      const payload = {
+        items: jtbdItems,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabaseClient
+        .from("projects")
+        .update({ jtbd: payload })
+        .eq("id", currentProjectId);
+
+      setSaving(false);
+
+      if (error) {
+        console.error("Error saving JTBD", error);
+        setStatus("Error saving JTBD. Please try again.", true);
         return;
       }
 
-      currentProject = JSON.parse(saved);
-
-      // Update sidebar
-      const projectNameEl = document.getElementById("projectName");
-      const projectInfoEl = document.getElementById("projectInfo");
-
-      if (projectNameEl) projectNameEl.textContent = currentProject.name || "Sin nombre";
-      if (projectInfoEl) {
-        const industry = currentProject.industry || "Industria no definida";
-        const phase = currentProject.phase || currentProject.stage || "Fase no definida";
-        projectInfoEl.textContent = `${industry} • ${phase}`;
-      }
-
-      // 2) Load Supabase data if available
-      projectData = {};
-
-      if (window.supabase && currentProject.id) {
-        const { data, error } = await window.supabase
-          .from("projects")
-          .select("data")
-          .eq("id", currentProject.id)
-          .maybeSingle();
-
-        if (error) {
-          console.warn("No se pudo cargar data desde Supabase:", error);
-        } else if (data && data.data) {
-          projectData = data.data || {};
-        }
-      }
-
-      // 3) Merge with any local discovery data
-      if (!projectData.discovery && currentProject.discovery) {
-        projectData.discovery = currentProject.discovery;
-      }
-
-      if (!projectData.discovery) projectData.discovery = {};
-
-      const jtbdBlock = projectData.discovery.jtbd || currentProject.discovery?.jtbd || {
-        completed: false,
-        data: [],
-      };
-
-      jtbdData = Array.isArray(jtbdBlock.data) ? jtbdBlock.data : [];
-
-      // Ensure structures
-      projectData.discovery.jtbd = {
-        completed: jtbdBlock.completed || false,
-        data: jtbdData,
-      };
-
-      renderJTBDList();
+      renderJobs();
+      clearForm();
+      setStatus("JTBD saved ✔️");
+      setTimeout(() => setStatus(""), 3000);
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      loadInitialData().catch((err) => console.error(err));
+    async function init() {
+      const projectId = getProjectIdFromURL();
+      if (!projectId) {
+        setStatus("Missing projectId in URL. Go back to the dashboard and open a project from there.", true);
+        return;
+      }
+      currentProjectId = projectId;
 
-      const form = document.getElementById("jtbdForm");
-      const resetBtn = document.getElementById("resetFormBtn");
-      const cancelEditBtn = document.getElementById("cancelEditBtn");
-      const markCompletedBtn = document.getElementById("markCompletedBtn");
-
-      if (form) {
-        form.addEventListener("submit", (e) => {
-          e.preventDefault();
-
-          const title = document.getElementById("jtbdTitle").value.trim();
-          const type = document.getElementById("jtbdType").value;
-          const context = document.getElementById("jtbdContext").value.trim();
-          const trigger = document.getElementById("jtbdTrigger").value.trim();
-          const outcome = document.getElementById("jtbdOutcome").value.trim();
-          const relevance = parseInt(document.getElementById("jtbdRelevance").value, 10) || 3;
-
-          if (!title) {
-            showToast("El Job necesita un título", "error");
-            return;
-          }
-
-          const item = { title, type, context, trigger, outcome, relevance };
-
-          if (editingIndex >= 0) {
-            jtbdData[editingIndex] = item;
-            showToast("Job actualizado", "success");
-          } else {
-            jtbdData.push(item);
-            showToast("Job añadido", "success");
-          }
-
-          debounceSave();
-          renderJTBDList();
-          resetForm(true);
+      // Back button
+      if (backToProjectBtn) {
+        backToProjectBtn.addEventListener("click", () => {
+          window.location.href = `project.html?projectId=${encodeURIComponent(projectId)}`;
         });
       }
 
-      if (resetBtn) {
-        resetBtn.addEventListener("click", () => resetForm(false));
+      // Make breadcrumb project clickable
+      const breadcrumbProjectLink = document.createElement("a");
+      breadcrumbProjectLink.href = `project.html?projectId=${encodeURIComponent(projectId)}`;
+      breadcrumbProjectLink.textContent = "Project";
+      if (breadcrumbProject && breadcrumbProject.parentNode) {
+        breadcrumbProject.replaceWith(breadcrumbProjectLink);
       }
 
+      const project = await loadProject(projectId);
+      if (!project) return;
+
+      // Form submit
+      if (jtbdForm) {
+        jtbdForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const job = collectFormData();
+
+          if (!job.title) {
+            setStatus("Please add at least a job statement title.", true);
+            return;
+          }
+
+          if (editingIndex === null) {
+            jtbdItems.push(job);
+          } else {
+            jtbdItems[editingIndex] = job;
+          }
+
+          await persistJTBD();
+        });
+      }
+
+      // Cancel edit
       if (cancelEditBtn) {
         cancelEditBtn.addEventListener("click", () => {
-          resetForm(true);
+          clearForm();
         });
       }
+    }
 
-      if (markCompletedBtn) {
-        markCompletedBtn.addEventListener("click", () => {
-          if (!projectData.discovery) projectData.discovery = {};
-          if (!projectData.discovery.jtbd)
-            projectData.discovery.jtbd = { completed: false, data: jtbdData };
-
-          if (!jtbdData.length) {
-            showToast("Añade al menos un Job antes de marcar como completado", "error");
-            return;
-          }
-
-          projectData.discovery.jtbd.completed = true;
-          showToast("Módulo marcado como completado", "success");
-          debounceSave();
-          updateStatusBadge();
-        });
-      }
-    });
+    document.addEventListener("DOMContentLoaded", init);
   </script>
-
-  <!-- If you need shared utilities from main.js, you can also include it here -->
-  <!-- <script src="main.js"></script> -->
 </body>
 </html>

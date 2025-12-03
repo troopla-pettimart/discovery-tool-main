@@ -1,489 +1,534 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discovery Intake - Sunstone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
-        .section-card { transition: all 0.3s ease; }
-        .section-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .collapsible-content.open { max-height: 1000px; }
-        .tag-hypothesis { background-color: #fef3c7; color: #92400e; }
-        .tag-confirmed { background-color: #d1fae5; color: #065f46; }
-        .live-notes { max-height: 400px; overflow-y: auto; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Discovery – Intake</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Ajusta el path si usas otro archivo de estilos -->
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Estilos mínimos por si algo falta en styles.css */
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+    }
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .card {
+      background: radial-gradient(circle at top left, #1e293b, #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 24px 20px 28px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-title span.subtitle {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #9ca3af;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+    nav.breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+    nav.breadcrumb a {
+      color: #e5e7eb;
+      text-decoration: none;
+    }
+    nav.breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.75rem;
+      color: #9ca3af;
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: transparent;
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+    @media (min-width: 768px) {
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #9ca3af;
+      display: block;
+      margin-bottom: 4px;
+    }
+    input[type="text"],
+    textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      resize: vertical;
+      min-height: 40px;
+    }
+    input::placeholder,
+    textarea::placeholder {
+      color: #6b7280;
+    }
+    textarea {
+      min-height: 80px;
+    }
+    .help-text {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin: 20px 0 4px;
+      color: #e5e7eb;
+    }
+    .section-subtitle {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-primary {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: linear-gradient(to right, #4f46e5, #6366f1);
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary[disabled] {
+      opacity: 0.6;
+      cursor: wait;
+    }
+    .status-message {
+      font-size: 0.8rem;
+      margin-top: 8px;
+      color: #9ca3af;
+    }
+    .status-message.error {
+      color: #f97373;
+    }
+    .pill-small {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: #9ca3af;
+    }
+  </style>
 </head>
-<body class="gradient-bg min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <i class="fas fa-gem text-2xl text-indigo-600 mr-3"></i>
-                        <span class="text-xl font-bold text-gray-900">Sunstone</span>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>Nueva sesión
-                    </button>
-                    <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
-                        <i class="fas fa-download mr-2"></i>Exportar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="flex">
-        <!-- Project Sidebar -->
-        <div class="w-64 bg-white shadow-lg min-h-screen">
-            <div class="p-6">
-                <div class="mb-6">
-                    <h3 id="projectName" class="text-lg font-semibold text-gray-900 mb-2">TechFlow Solutions</h3>
-                    <p id="projectInfo" class="text-sm text-gray-600">B2B SaaS • En Discovery</p>
-                </div>
-                <nav class="space-y-2">
-                    <a href="project.html" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 rounded-lg">
-                        <i class="fas fa-chart-pie mr-3"></i>
-                        <span class="font-medium">Overview</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-search mr-3"></i>
-                        <span>Discovery</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-chess mr-3"></i>
-                        <span>Estrategia</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-funnel-dollar mr-3"></i>
-                        <span>GTM & Funnels</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-tasks mr-3"></i>
-                        <span>Roadmap</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-file-alt mr-3"></i>
-                        <span>Reportes</span>
-                    </a>
-                </nav>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="flex-1 p-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Discovery - Intake</h1>
-                        <p class="text-gray-600">Captura inicial de información del proyecto</p>
-                    </div>
-                    <div class="flex space-x-3">
-                        <button onclick="saveFormData()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-save mr-2"></i>Guardar
-                        </button>
-                        <button onclick="completeIntake()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                            <i class="fas fa-check mr-2"></i>Completar
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Simplified Form -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Formulario de Intake</h3>
-                
-                <div class="space-y-6">
-                    <!-- Contexto & Problema -->
-                    <div class="section-card bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-medium text-gray-900 mb-3">1. Contexto & Problema</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">¿Cuál es el problema que estás resolviendo?</label>
-                                <textarea data-field="problemDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Describe el problema principal..."></textarea>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">¿Cómo descubrieron este problema?</label>
-                                <textarea data-field="problemDiscovery" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="Cuéntanos la historia..."></textarea>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Estado de la información</label>
-                                <div class="flex space-x-4">
-                                    <label class="flex items-center">
-                                        <input data-field="problemStatus" type="radio" name="problemStatus" value="hipotesis" class="text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Hipótesis</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="problemStatus" type="radio" name="problemStatus" value="confirmado" class="text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Dato confirmado</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Producto & Modelo -->
-                    <div class="section-card bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-medium text-gray-900 mb-3">2. Producto & Modelo de Negocio</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">¿Qué solución están construyendo?</label>
-                                <textarea data-field="solutionDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Describe tu producto/solución..."></textarea>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Modelo de ingresos</label>
-                                    <select data-field="revenueModel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                        <option value="">Selecciona modelo</option>
-                                        <option value="saas-monthly">SaaS mensual</option>
-                                        <option value="saas-annual">SaaS anual</option>
-                                        <option value="transaction">Por transacción</option>
-                                        <option value="per-user">Por usuario</option>
-                                        <option value="freemium">Freemium</option>
-                                        <option value="other">Otro</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Precio aproximado</label>
-                                    <input data-field="price" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: 99€/mes">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Equipo & Capacidades -->
-                    <div class="section-card bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-medium text-gray-900 mb-3">3. Equipo & Capacidades</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">¿Quiénes son los fundadores?</label>
-                                <textarea data-field="founders" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="Background y roles..."></textarea>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">¿Cuántas personas en el equipo?</label>
-                                <input data-field="teamSize" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Número de empleados">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">¿Qué capacidades tienen en el equipo?</label>
-                                <div class="grid grid-cols-2 gap-2 mt-2">
-                                    <label class="flex items-center">
-                                        <input data-field="capabilities-dev" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Desarrollo</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="capabilities-design" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Diseño</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="capabilities-sales" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Ventas</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="capabilities-marketing" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Marketing</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="capabilities-ops" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Operaciones</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="capabilities-finance" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Finanzas</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Historial de Intentos -->
-                    <div class="section-card bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-medium text-gray-900 mb-3">4. Historial de Intentos</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">¿Qué han intentado antes?</label>
-                                <textarea data-field="previousAttempts" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Soluciones previas, experimentos fallidos..."></textarea>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">¿Qué aprendieron de esos intentos?</label>
-                                <textarea data-field="lessonsLearned" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Lecciones aprendidas..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Materiales Existentes -->
-                    <div class="section-card bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-medium text-gray-900 mb-3">5. Materiales Existentes</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">¿Qué materiales tienen disponibles?</label>
-                                <div class="space-y-2">
-                                    <label class="flex items-center">
-                                        <input data-field="materials-pitch" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Pitch deck</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="materials-onepager" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">One pager</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="materials-website" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Website</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="materials-sales" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Materiales de ventas</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="materials-research" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Estudios de mercado</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input data-field="materials-data" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm">Datos de usuarios</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Enlaces relevantes</label>
-                                <textarea data-field="relevantLinks" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="Website, demos, documentos..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Live Notes Sidebar -->
-            <div class="mt-8 bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Notas en vivo</h3>
-                <p class="text-sm text-gray-600 mb-4">Captura frases y pensamientos sueltos</p>
-                
-                <div class="live-notes space-y-4 mb-4">
-                    <div class="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-                        <p class="text-sm text-gray-700">"Los equipos de ventas pierden 60% del tiempo en tareas administrativas"</p>
-                        <div class="mt-2 flex space-x-2">
-                            <button class="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded">Pain</button>
-                            <button class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded">JTBD</button>
-                        </div>
-                    </div>
-                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
-                        <p class="text-sm text-gray-700">"Necesitamos integración con Salesforce y HubSpot"</p>
-                        <div class="mt-2 flex space-x-2">
-                            <button class="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded">Feature</button>
-                        </div>
-                    </div>
-                    <div class="bg-green-50 p-3 rounded-lg border border-green-200">
-                        <p class="text-sm text-gray-700">"El ROI se ve en 3-6 meses"</p>
-                        <div class="mt-2 flex space-x-2">
-                            <button class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">Valor</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="space-y-3">
-                    <textarea id="liveNoteInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Escribe una nota rápida..."></textarea>
-                    <button onclick="addLiveNote()" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>Agregar nota
-                    </button>
-                </div>
-            </div>
-        </div>
+<body>
+  <div class="page-wrapper">
+    <!-- Breadcrumb + back -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px;">
+      <nav class="breadcrumb" id="breadcrumb">
+        <!-- Se rellena vía JS con: Dashboard / ProjectName / Discovery Intake -->
+        <a href="index.html">Dashboard</a>
+        <span>/</span>
+        <span id="breadcrumb-project">Project</span>
+        <span>/</span>
+        <span>Discovery Intake</span>
+      </nav>
+      <button type="button" class="back-btn" id="backToProjectBtn">
+        ← Back to project
+      </button>
     </div>
 
-    <script>
-        let currentProject = null;
-        let intakeData = {};
-        function persistCurrentProject() {
-            if (!currentProject) return;
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span id="projectNameHeading">Discovery Intake</span>
+          <span class="subtitle">First pass: context, goals & constraints for this project.</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+          <span class="pill">
+            <span class="dot"></span>
+            Discovery · Intake
+          </span>
+          <span class="pill-small" id="projectShortInfo">Loading project…</span>
+        </div>
+      </div>
 
-            // Save current project
-            localStorage.setItem('sunstone_current_project', JSON.stringify(currentProject));
+      <form id="intakeForm">
+        <div class="grid grid-cols-2">
+          <div>
+            <label for="company_name">Company / Product</label>
+            <input
+              type="text"
+              id="company_name"
+              name="company_name"
+              placeholder="EarthPulse, Welaw, Teramot..."
+            />
+            <p class="help-text">Name of the company, product or initiative.</p>
+          </div>
 
-            // Keep global projects list in sync
-            const projects = JSON.parse(localStorage.getItem('sunstone_projects') || '[]');
-            const projectIndex = projects.findIndex(p => p.id === currentProject.id);
-            if (projectIndex !== -1) {
-                projects[projectIndex] = currentProject;
-                localStorage.setItem('sunstone_projects', JSON.stringify(projects));
-            }
-        }
+          <div>
+            <label for="contact_person">Main contact</label>
+            <input
+              type="text"
+              id="contact_person"
+              name="contact_person"
+              placeholder="Name, role"
+            />
+            <p class="help-text">Who are you speaking with? (Name + role)</p>
+          </div>
+        </div>
 
+        <h3 class="section-title">1. Context & background</h3>
+        <p class="section-subtitle">
+          What brought them here? Whatʼs happening in the company / market that matters for this project?
+        </p>
+        <textarea
+          id="context"
+          name="context"
+          placeholder="Brief diagnostic of where they are today: company stage, product maturity, relevant history, etc."
+        ></textarea>
 
-        function loadCurrentProject() {
-            const saved = localStorage.getItem('sunstone_current_project');
-            if (saved) {
-                currentProject = JSON.parse(saved);
-                if (currentProject.discovery && currentProject.discovery.intake) {
-                    intakeData = currentProject.discovery.intake.data || {};
-                    populateForm();
-                }
-                
-                // Update project name in sidebar
-                const projectNameEl = document.getElementById('projectName');
-                const projectInfoEl = document.getElementById('projectInfo');
-                if (projectNameEl) projectNameEl.textContent = currentProject.name;
-                if (projectInfoEl) projectInfoEl.textContent = `${currentProject.modelType || 'SaaS'} • ${currentProject.status}`;
-            }
-        }
+        <h3 class="section-title">2. Primary goal</h3>
+        <p class="section-subtitle">
+          If this project is wildly successful in 3–6 months, what changes for them?
+        </p>
+        <textarea
+          id="primary_goal"
+          name="primary_goal"
+          placeholder="E.g. 'Reach product–market fit in X segment', 'Clarify value proposition before fundraising', etc."
+        ></textarea>
 
-        function populateForm() {
-            // Populate form fields with saved data
-            Object.keys(intakeData).forEach(key => {
-                const element = document.querySelector(`[data-field="${key}"]`);
-                if (element) {
-                    if (element.type === 'checkbox' || element.type === 'radio') {
-                        element.checked = intakeData[key];
-                    } else if (element.type === 'textarea') {
-                        element.value = intakeData[key];
-                    } else {
-                        element.value = intakeData[key];
-                    }
-                }
-            });
-        }
+        <h3 class="section-title">3. Secondary goals & success criteria</h3>
+        <p class="section-subtitle">
+          Other objectives, constraints or “nice to haves” that will shape the work.
+        </p>
+        <textarea
+          id="secondary_goals"
+          name="secondary_goals"
+          placeholder="KPIs, qualitative outcomes, strategic constraints, internal alignment goals, etc."
+        ></textarea>
 
-        function saveFormData() {
-            const formData = {};
-            
-            // Collect all form data
-            const inputs = document.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                if (input.dataset.field) {
-                    if (input.type === 'checkbox') {
-                        formData[input.dataset.field] = input.checked;
-                    } else if (input.type === 'radio' && input.checked) {
-                        formData[input.dataset.field] = input.value;
-                    } else {
-                        formData[input.dataset.field] = input.value;
-                    }
-                }
-            });
+        <div class="grid grid-cols-2">
+          <div>
+            <h3 class="section-title">4. Main pains / challenges</h3>
+            <p class="section-subtitle">
+              What hurts today? Where is the friction?
+            </p>
+            <textarea
+              id="main_challenges"
+              name="main_challenges"
+              placeholder="E.g. 'No clear ICP', 'Low activation', 'Scattered narrative', 'No owner for growth', etc."
+            ></textarea>
+          </div>
 
-            intakeData = { ...intakeData, ...formData };
-            
-            // Update project data
-            // Update project data
-            if (currentProject) {
-                if (!currentProject.discovery) currentProject.discovery = {};
-                if (!currentProject.discovery.intake) {
-                    currentProject.discovery.intake = { completed: false, data: {} };
-                }
+          <div>
+            <h3 class="section-title">5. Constraints</h3>
+            <p class="section-subtitle">
+              Time, budget, tech stack, internal politics, regulatory limits…
+            </p>
+            <textarea
+              id="constraints"
+              name="constraints"
+              placeholder="Deadlines, hard commitments, budget caps, red lines we canʼt cross, etc."
+            ></textarea>
+          </div>
+        </div>
 
-                currentProject.discovery.intake.data = intakeData;
+        <div class="grid grid-cols-2">
+          <div>
+            <h3 class="section-title">6. Team & stakeholders</h3>
+            <p class="section-subtitle">
+              Whoʼs involved? Who decides? Who will execute?
+            </p>
+            <textarea
+              id="team"
+              name="team"
+              placeholder="Founders, marketing, product, sales, investors… Map names, roles and influence."
+            ></textarea>
+          </div>
 
-                persistCurrentProject();
-            }
+          <div>
+            <h3 class="section-title">7. Budget & timeline</h3>
+            <p class="section-subtitle">
+              Whatʼs realistic to achieve inside this engagement?
+            </p>
+            <textarea
+              id="budget_timeline"
+              name="budget_timeline"
+              placeholder="Budget ballpark, phase durations, critical milestones (fundraise, launch, board meeting, etc.)."
+            ></textarea>
+          </div>
+        </div>
 
-            
-            window.SunstoneUtils.showNotification('Datos guardados exitosamente', 'success');
-        }
+        <h3 class="section-title">8. Previous attempts & learnings</h3>
+        <p class="section-subtitle">
+          What have they already tried? What worked, what didnʼt, and why?
+        </p>
+        <textarea
+          id="previous_attempts"
+          name="previous_attempts"
+          placeholder="Campaigns, agencies, internal initiatives, product changes, pivots, etc."
+        ></textarea>
 
-        function completeIntake() {
-            saveFormData();
-            
-            if (currentProject) {
-                if (!currentProject.discovery) currentProject.discovery = {};
-                if (!currentProject.discovery.intake) {
-                    currentProject.discovery.intake = { data: intakeData, completed: true };
-                } else {
-                    currentProject.discovery.intake.data = intakeData;
-                    currentProject.discovery.intake.completed = true;
-                }
+        <h3 class="section-title">9. Notes for later</h3>
+        <p class="section-subtitle">
+          Hypotheses, risks, things to validate in the next modules (audiences, JTBD, tensions, strategy, roadmap).
+        </p>
+        <textarea
+          id="notes"
+          name="notes"
+          placeholder="Parking lot for ideas, hunches, red flags and things you want to revisit."
+        ></textarea>
 
-                persistCurrentProject();
-            }
+        <div class="actions">
+          <button type="submit" class="btn-primary" id="saveBtn">
+            Save intake
+          </button>
+        </div>
+        <div id="statusMessage" class="status-message"></div>
+      </form>
+    </div>
+  </div>
 
-            
-            window.SunstoneUtils.showNotification('Intake completado exitosamente', 'success');
-            
-            setTimeout(() => {
-                window.location.href = 'project.html';
-            }, 1500);
-        }
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        function addLiveNote() {
-            const input = document.getElementById('liveNoteInput');
-            const noteText = input.value.trim();
-            
-            if (noteText) {
-                const notesContainer = document.querySelector('.live-notes');
-                const noteElement = document.createElement('div');
-                noteElement.className = 'bg-gray-50 p-3 rounded-lg border border-gray-200';
-                noteElement.innerHTML = `
-                    <p class="text-sm text-gray-700">${noteText}</p>
-                    <div class="mt-2 flex space-x-2">
-                        <button class="text-xs bg-red-200 text-red-800 px-2 py-1 rounded">Pain</button>
-                        <button class="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded">Feature</button>
-                        <button class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">Valor</button>
-                    </div>
-                `;
-                
-                notesContainer.appendChild(noteElement);
-                input.value = '';
-                
-                window.SunstoneUtils.showNotification('Nota agregada exitosamente', 'success');
-            }
-        }
+  <script>
+    // === Supabase client setup ===
+    const SUPABASE_URL = "https://reezovhnmonzaafhigjz.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM";
 
-        // Auto-save functionality
-        function setupAutoSave() {
-            const inputs = document.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('change', () => {
-                    saveFormData();
-                });
-                
-                if (input.type === 'textarea') {
-                    input.addEventListener('input', () => {
-                        // Debounce save for textareas
-                        clearTimeout(input.saveTimeout);
-                        input.saveTimeout = setTimeout(() => {
-                            saveFormData();
-                        }, 1000);
-                    });
-                }
-            });
-        }
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCurrentProject();
-            setupAutoSave();
+    const statusEl = document.getElementById("statusMessage");
+    const saveBtn = document.getElementById("saveBtn");
+    const projectNameHeading = document.getElementById("projectNameHeading");
+    const projectShortInfo = document.getElementById("projectShortInfo");
+    const breadcrumbProject = document.getElementById("breadcrumb-project");
+    const backToProjectBtn = document.getElementById("backToProjectBtn");
+
+    function setStatus(message, isError = false) {
+      if (!statusEl) return;
+      statusEl.textContent = message || "";
+      statusEl.classList.toggle("error", !!isError);
+    }
+
+    function setSaving(isSaving) {
+      if (!saveBtn) return;
+      if (isSaving) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving…";
+      } else {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save intake";
+      }
+    }
+
+    function getProjectIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("projectId");
+    }
+
+    async function loadProject(projectId) {
+      setStatus("Loading project…");
+      const { data, error } = await supabaseClient
+        .from("projects")
+        .select("*")
+        .eq("id", projectId)
+        .single();
+
+      if (error) {
+        console.error("Error loading project", error);
+        setStatus("Error loading project from Supabase.", true);
+        return null;
+      }
+
+      // Update UI with project info
+      projectNameHeading.textContent = data.name || "Discovery Intake";
+      projectShortInfo.textContent =
+        (data.stage ? `${data.stage} · ` : "") +
+        (data.type || "Project") +
+        (data.created_at ? ` · ${new Date(data.created_at).toLocaleDateString()}` : "");
+
+      breadcrumbProject.textContent = data.name || "Project";
+
+      // Populate form if intake JSON exists
+      if (data.intake && typeof data.intake === "object") {
+        const intake = data.intake;
+        const map = {
+          company_name: "company_name",
+          contact_person: "contact_person",
+          context: "context",
+          primary_goal: "primary_goal",
+          secondary_goals: "secondary_goals",
+          main_challenges: "main_challenges",
+          constraints: "constraints",
+          team: "team",
+          budget_timeline: "budget_timeline",
+          previous_attempts: "previous_attempts",
+          notes: "notes",
+        };
+
+        Object.entries(map).forEach(([jsonKey, fieldId]) => {
+          const el = document.getElementById(fieldId);
+          if (el) el.value = intake[jsonKey] || "";
         });
-    </script>
+      }
 
-    <!-- Instantiate Supabase client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-    window.supabase = supabase.createClient(
-        "https://reezovhnmonzaafhigjz.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM"
-    );
-    </script>
+      setStatus("Project loaded. You can now edit the intake.");
+      return data;
+    }
 
-    <!-- Main shared logic -->
-    <script src="main.js"></script>
+    async function saveIntake(projectId) {
+      setSaving(true);
+      setStatus("");
 
+      // Collect form values
+      const payload = {
+        company_name: document.getElementById("company_name").value.trim(),
+        contact_person: document.getElementById("contact_person").value.trim(),
+        context: document.getElementById("context").value.trim(),
+        primary_goal: document.getElementById("primary_goal").value.trim(),
+        secondary_goals: document.getElementById("secondary_goals").value.trim(),
+        main_challenges: document.getElementById("main_challenges").value.trim(),
+        constraints: document.getElementById("constraints").value.trim(),
+        team: document.getElementById("team").value.trim(),
+        budget_timeline: document.getElementById("budget_timeline").value.trim(),
+        previous_attempts: document.getElementById("previous_attempts").value.trim(),
+        notes: document.getElementById("notes").value.trim(),
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error } = await supabaseClient
+        .from("projects")
+        .update({ intake: payload })
+        .eq("id", projectId);
+
+      setSaving(false);
+
+      if (error) {
+        console.error("Error saving intake", error);
+        setStatus("Error saving intake. Please try again.", true);
+        return;
+      }
+
+      setStatus("Intake saved ✔️");
+      // Small UX: clear status after a few seconds
+      setTimeout(() => setStatus(""), 3000);
+    }
+
+    async function init() {
+      const projectId = getProjectIdFromURL();
+      if (!projectId) {
+        setStatus("Missing projectId in URL. Go back to the dashboard and open a project from there.", true);
+        return;
+      }
+
+      // Configure back button + breadcrumb links
+      if (backToProjectBtn) {
+        backToProjectBtn.addEventListener("click", () => {
+          window.location.href = `project.html?projectId=${encodeURIComponent(projectId)}`;
+        });
+      }
+
+      // Make breadcrumb project clickable
+      const breadcrumbProjectLink = document.createElement("a");
+      breadcrumbProjectLink.href = `project.html?projectId=${encodeURIComponent(projectId)}`;
+      breadcrumbProjectLink.textContent = "Project";
+      // Replace span content with link
+      if (breadcrumbProject && breadcrumbProject.parentNode) {
+        breadcrumbProject.replaceWith(breadcrumbProjectLink);
+      }
+
+      const project = await loadProject(projectId);
+      if (!project) return;
+
+      const form = document.getElementById("intakeForm");
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          await saveIntake(projectId);
+        });
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
 </body>
 </html>

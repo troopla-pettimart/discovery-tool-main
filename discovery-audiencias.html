@@ -1,609 +1,462 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discovery Audiencias - Sunstone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
-        .persona-card { transition: all 0.3s ease; border-left: 4px solid #4f46e5; }
-        .persona-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .decisor-badge { background-color: #dc2626; color: white; }
-        .usuario-badge { background-color: #059669; color: white; }
-        .influenciador-badge { background-color: #7c3aed; color: white; }
-        .maturity-timeline { position: relative; }
-        .maturity-stage { position: relative; padding-left: 2rem; }
-        .maturity-stage::before { content: ''; position: absolute; left: 0; top: 0.5rem; width: 12px; height: 12px; border-radius: 50%; background: #d1d5db; }
-        .maturity-stage.active::before { background: #4f46e5; }
-        .maturity-stage.completed::before { background: #10b981; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Discovery – Audiences</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Optional: external stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+    }
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .card {
+      background: radial-gradient(circle at top left, #1e293b, #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 24px 20px 28px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-title span.subtitle {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #9ca3af;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+    nav.breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+    nav.breadcrumb a {
+      color: #e5e7eb;
+      text-decoration: none;
+    }
+    nav.breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.75rem;
+      color: #9ca3af;
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: transparent;
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+    @media (min-width: 768px) {
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #9ca3af;
+      display: block;
+      margin-bottom: 4px;
+    }
+    textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      resize: vertical;
+      min-height: 80px;
+    }
+    textarea::placeholder {
+      color: #6b7280;
+    }
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin: 20px 0 4px;
+      color: #e5e7eb;
+    }
+    .section-subtitle {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-primary {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: linear-gradient(to right, #4f46e5, #6366f1);
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary[disabled] {
+      opacity: 0.6;
+      cursor: wait;
+    }
+    .status-message {
+      font-size: 0.8rem;
+      margin-top: 8px;
+      color: #9ca3af;
+    }
+    .status-message.error {
+      color: #f97373;
+    }
+    .pill-small {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: #9ca3af;
+    }
+  </style>
 </head>
-<body class="gradient-bg min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <i class="fas fa-gem text-2xl text-indigo-600 mr-3"></i>
-                        <span class="text-xl font-bold text-gray-900">Sunstone</span>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>Nueva sesión
-                    </button>
-                    <button class="text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded-lg">
-                        <i class="fas fa-download mr-2"></i>Exportar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="flex">
-        <!-- Project Sidebar -->
-        <div class="w-64 bg-white shadow-lg min-h-screen">
-            <div class="p-6">
-                <div class="mb-6">
-                    <h3 id="projectName" class="text-lg font-semibold text-gray-900 mb-2">TechFlow Solutions</h3>
-                    <p id="projectInfo" class="text-sm text-gray-600">B2B SaaS • En Discovery</p>
-                </div>
-                <nav class="space-y-2">
-                    <a href="project.html" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 rounded-lg">
-                        <i class="fas fa-chart-pie mr-3"></i>
-                        <span class="font-medium">Overview</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-search mr-3"></i>
-                        <span>Discovery</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-chess mr-3"></i>
-                        <span>Estrategia</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-funnel-dollar mr-3"></i>
-                        <span>GTM & Funnels</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-tasks mr-3"></i>
-                        <span>Roadmap</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-file-alt mr-3"></i>
-                        <span>Reportes</span>
-                    </a>
-                </nav>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="flex-1 p-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Discovery - Audiencias</h1>
-                        <p class="text-gray-600">Define buyer personas y clusters de clientes</p>
-                    </div>
-                    <div class="flex space-x-3">
-                        <button onclick="saveAudienciasData()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-save mr-2"></i>Guardar
-                        </button>
-                        <button onclick="completeAudiencias()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                            <i class="fas fa-check mr-2"></i>Completar
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Personas Grid -->
-            <div id="personasGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <!-- Personas will be loaded dynamically -->
-            </div>
-
-            <!-- Add New Persona -->
-            <div class="mb-8">
-                <div class="bg-white rounded-lg shadow-md border-2 border-dashed border-gray-300 p-6">
-                    <div class="text-center">
-                        <i class="fas fa-user-plus text-4xl text-gray-400 mb-3"></i>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">Agregar nuevo persona</h3>
-                        <p class="text-gray-600 text-sm mb-4">Define otro perfil de buyer persona importante</p>
-                        <button onclick="openNewPersonaModal()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                            <i class="fas fa-plus mr-2"></i>Nuevo persona
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Audience Clusters -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Clusters de audiencia</h3>
-                <div id="clustersGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Clusters will be loaded dynamically -->
-                </div>
-            </div>
-        </div>
+<body>
+  <div class="page-wrapper">
+    <!-- Breadcrumb + back -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px;">
+      <nav class="breadcrumb" id="breadcrumb">
+        <a href="index.html">Dashboard</a>
+        <span>/</span>
+        <span id="breadcrumb-project">Project</span>
+        <span>/</span>
+        <span>Discovery Audiences</span>
+      </nav>
+      <button type="button" class="back-btn" id="backToProjectBtn">
+        ← Back to project
+      </button>
     </div>
 
-    <!-- New Persona Modal -->
-    <div id="newPersonaModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-2xl w-full max-h-screen overflow-y-auto">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900" id="modalTitle">Nuevo Buyer Persona</h2>
-                        <button onclick="closeNewPersonaModal()" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                                <input type="text" id="personaName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: María García">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Puesto</label>
-                                <input type="text" id="personaRole" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: CEO">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
-                            <select id="personaType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                <option value="decisor">Decisor</option>
-                                <option value="usuario">Usuario</option>
-                                <option value="influenciador">Influenciador</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Dolor principal</label>
-                            <textarea id="personaPain" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="¿Cuál es su principal frustración?"></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Qué quiere lograr</label>
-                            <textarea id="personaGoal" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="¿Cuáles son sus objetivos?"></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Canales de información</label>
-                            <input type="text" id="personaChannels" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: LinkedIn, Forbes, etc.">
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Edad</label>
-                                <input type="number" id="personaAge" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="35">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Ubicación</label>
-                                <input type="text" id="personaLocation" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: Madrid">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Ingresos</label>
-                                <input type="text" id="personaIncome" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: €80K/año">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-4 mt-8">
-                        <button onclick="closeNewPersonaModal()" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                            Cancelar
-                        </button>
-                        <button id="addPersonaButton" onclick="saveNewPersona()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-                            Guardar persona
-                        </button>
-                        <button id="updatePersonaButton" onclick="updatePersona()" style="display: none;" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                            Actualizar persona
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span id="projectNameHeading">Discovery – Audiences</span>
+          <span class="subtitle">
+            Map who decides, who influences and who uses — so your narrative knows where to land.
+          </span>
         </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+          <span class="pill">
+            <span class="dot"></span>
+            Discovery · Audiences
+          </span>
+          <span class="pill-small" id="projectShortInfo">Loading project…</span>
+        </div>
+      </div>
+
+      <form id="audiencesForm">
+        <h3 class="section-title">1. Primary audience / ICP</h3>
+        <p class="section-subtitle">
+          The segment where your value proposition is most obvious — and where you want to win first.
+        </p>
+        <textarea
+          id="primary_audience"
+          name="primary_audience"
+          placeholder="Describe the core audience: type of company, use case, role, size, industry, etc."
+        ></textarea>
+
+        <h3 class="section-title">2. Secondary audiences</h3>
+        <p class="section-subtitle">
+          Segments that matter but are not the main focus (yet): adjacent industries, smaller tickets, different regions…
+        </p>
+        <textarea
+          id="secondary_audiences"
+          name="secondary_audiences"
+          placeholder="Write 2–4 secondary audiences you might serve later or in parallel."
+        ></textarea>
+
+        <div class="grid grid-cols-2">
+          <div>
+            <h3 class="section-title">3. Decision makers</h3>
+            <p class="section-subtitle">
+              Who signs, blocks or unblocks the deal?
+            </p>
+            <textarea
+              id="decision_makers"
+              name="decision_makers"
+              placeholder="Roles/titles that approve or reject: C-level, directors, committee, procurement…"
+            ></textarea>
+          </div>
+          <div>
+            <h3 class="section-title">4. Influencers & gatekeepers</h3>
+            <p class="section-subtitle">
+              People who shape the decision even if they donʼt sign.
+            </p>
+            <textarea
+              id="influencers"
+              name="influencers"
+              placeholder="Technical team, champions, advisors, internal experts, legal, security, etc."
+            ></textarea>
+          </div>
+        </div>
+
+        <h3 class="section-title">5. End users</h3>
+        <p class="section-subtitle">
+          Who lives with the product day to day? Their pains and habits will strongly shape adoption.
+        </p>
+        <textarea
+          id="end_users"
+          name="end_users"
+          placeholder="Frontline users, operators, analysts, managers… what they do and care about."
+        ></textarea>
+
+        <h3 class="section-title">6. Segmentation & prioritisation</h3>
+        <p class="section-subtitle">
+          How do you decide which accounts or personas go first?
+        </p>
+        <textarea
+          id="segments"
+          name="segments"
+          placeholder="Criteria: company size, vertical, ticket, urgency of pain, complexity, buying cycle, etc."
+        ></textarea>
+
+        <h3 class="section-title">7. Notes & political landscape</h3>
+        <p class="section-subtitle">
+          Subtle but important dynamics in the accounts: politics, alliances, blockers, champions, etc.
+        </p>
+        <textarea
+          id="notes"
+          name="notes"
+          placeholder="Things that affect how you show up in the account and who you speak with first."
+        ></textarea>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary" id="saveBtn">
+            Save audiences
+          </button>
+        </div>
+        <div id="statusMessage" class="status-message"></div>
+      </form>
     </div>
+  </div>
 
-    <script>
-        let currentProject = null;
-        let audienciasData = [];
-        let currentPersonaIndex = -1;
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        function loadCurrentProject() {
-            const saved = localStorage.getItem('sunstone_current_project');
-            if (saved) {
-                currentProject = JSON.parse(saved);
-                if (currentProject.discovery && currentProject.discovery.audiencias) {
-                    audienciasData = currentProject.discovery.audiencias.data || [];
-                    renderPersonas();
-                    renderClusters();
-                }
-                
-                // Update project name in sidebar
-                const projectNameEl = document.getElementById('projectName');
-                const projectInfoEl = document.getElementById('projectInfo');
-                if (projectNameEl) projectNameEl.textContent = currentProject.name;
-                if (projectInfoEl) projectInfoEl.textContent = `${currentProject.modelType || 'SaaS'} • ${currentProject.status}`;
-            }
-        }
+  <script>
+    // === Supabase client setup ===
+    const SUPABASE_URL = "https://reezovhnmonzaafhigjz.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM";
 
-        function persistCurrentProject() {
-            if (!currentProject) return;
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            localStorage.setItem('sunstone_current_project', JSON.stringify(currentProject));
+    const statusEl = document.getElementById("statusMessage");
+    const saveBtn = document.getElementById("saveBtn");
+    const projectNameHeading = document.getElementById("projectNameHeading");
+    const projectShortInfo = document.getElementById("projectShortInfo");
+    const breadcrumbProject = document.getElementById("breadcrumb-project");
+    const backToProjectBtn = document.getElementById("backToProjectBtn");
 
-            const projects = JSON.parse(localStorage.getItem('sunstone_projects') || '[]');
-            const projectIndex = projects.findIndex(p => p.id === currentProject.id);
-            if (projectIndex !== -1) {
-                projects[projectIndex] = currentProject;
-                localStorage.setItem('sunstone_projects', JSON.stringify(projects));
-            }
-        }
+    function setStatus(message, isError = false) {
+      if (!statusEl) return;
+      statusEl.textContent = message || "";
+      statusEl.classList.toggle("error", !!isError);
+    }
 
+    function setSaving(isSaving) {
+      if (!saveBtn) return;
+      if (isSaving) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving…";
+      } else {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save audiences";
+      }
+    }
 
-        function saveAudienciasData() {
-            if (currentProject) {
-                if (!currentProject.discovery) currentProject.discovery = {};
-                if (!currentProject.discovery.audiencias) {
-                    currentProject.discovery.audiencias = { completed: false, data: [] };
-                }
+    function getProjectIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("projectId");
+    }
 
-                currentProject.discovery.audiencias.data = audienciasData;
+    async function loadProject(projectId) {
+      setStatus("Loading project…");
+      const { data, error } = await supabaseClient
+        .from("projects")
+        .select("*")
+        .eq("id", projectId)
+        .single();
 
-                persistCurrentProject();
-            }
+      if (error) {
+        console.error("Error loading project", error);
+        setStatus("Error loading project from Supabase.", true);
+        return null;
+      }
 
-        }
+      // Update UI with project info
+      projectNameHeading.textContent = data.name || "Discovery – Audiences";
+      projectShortInfo.textContent =
+        (data.stage ? `${data.stage} · ` : "") +
+        (data.type || "Project") +
+        (data.created_at ? ` · ${new Date(data.created_at).toLocaleDateString()}` : "");
 
-        function renderPersonas() {
-            const personasGrid = document.getElementById('personasGrid');
-            personasGrid.innerHTML = '';
-            
-            audienciasData.forEach((persona, index) => {
-                const card = createPersonaCard(persona, index);
-                personasGrid.appendChild(card);
-            });
-        }
+      breadcrumbProject.textContent = data.name || "Project";
 
-        function createPersonaCard(persona, index) {
-            const card = document.createElement('div');
-            card.className = 'persona-card bg-white rounded-lg shadow-md p-6';
-            
-            let badgeClass = '';
-            let badgeText = '';
-            
-            switch(persona.type) {
-                case 'decisor':
-                    badgeClass = 'decisor-badge';
-                    badgeText = 'Decisor';
-                    break;
-                case 'usuario':
-                    badgeClass = 'usuario-badge';
-                    badgeText = 'Usuario';
-                    break;
-                case 'influenciador':
-                    badgeClass = 'influenciador-badge';
-                    badgeText = 'Influenciador';
-                    break;
-            }
-            
-            card.innerHTML = `
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900">${persona.name}</h3>
-                        <p class="text-sm text-gray-600">${persona.role}</p>
-                    </div>
-                    <span class="${badgeClass} px-3 py-1 rounded-full text-xs font-medium">${badgeText}</span>
-                </div>
-                
-                <div class="space-y-3">
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-1">Dolor principal</h4>
-                        <p class="text-sm text-gray-600">${persona.pain}</p>
-                    </div>
-                    
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-1">Qué quiere lograr</h4>
-                        <p class="text-sm text-gray-600">${persona.goal}</p>
-                    </div>
-                    
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-1">Canales de información</h4>
-                        <div class="flex flex-wrap gap-1">
-                            ${persona.channels.split(',').map(channel => 
-                                `<span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">${channel.trim()}</span>`
-                            ).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="maturity-timeline">
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Madurez</h4>
-                        <div class="space-y-2">
-                            <div class="maturity-stage ${persona.maturity === 'early' ? 'active' : ''}">
-                                <div class="text-xs text-gray-600">Early adopter</div>
-                            </div>
-                            <div class="maturity-stage ${persona.maturity === 'mainstream' ? 'active' : ''}">
-                                <div class="text-xs text-gray-600">Mainstream</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
-                    <div class="text-xs text-gray-500">${persona.age || '35'} años • ${persona.location || 'Madrid'} • ${persona.income || '€80K/año'}</div>
-                    <div class="flex space-x-2">
-                        <button onclick="editPersona(${index})" class="text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deletePersona(${index})" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            return card;
-        }
+      // Populate form if audiences JSON exists
+      if (data.audiences && typeof data.audiences === "object") {
+        const audiences = data.audiences;
+        const map = {
+          primary_audience: "primary_audience",
+          secondary_audiences: "secondary_audiences",
+          decision_makers: "decision_makers",
+          influencers: "influencers",
+          end_users: "end_users",
+          segments: "segments",
+          notes: "notes",
+        };
 
-        function renderClusters() {
-            const clustersGrid = document.getElementById('clustersGrid');
-            clustersGrid.innerHTML = '';
-            
-            // Create default clusters based on personas
-            const clusters = createClustersFromPersonas();
-            
-            clusters.forEach(cluster => {
-                const clusterCard = createClusterCard(cluster);
-                clustersGrid.appendChild(clusterCard);
-            });
-        }
-
-        function createClustersFromPersonas() {
-            const clusters = [];
-            
-            // Cluster 1: Equipos en crecimiento
-            const growthTeamPersonas = audienciasData.filter(p => 
-                p.type === 'usuario' || p.type === 'influenciador'
-            );
-            
-            if (growthTeamPersonas.length > 0) {
-                clusters.push({
-                    name: 'Cluster 1: Equipos en crecimiento',
-                    personas: growthTeamPersonas,
-                    size: '~15,000 empresas',
-                    budget: '€10K-50K'
-                });
-            }
-            
-            // Cluster 2: Empresas establecidas
-            const enterprisePersonas = audienciasData.filter(p => 
-                p.type === 'decisor' || p.role.toLowerCase().includes('vp') || p.role.toLowerCase().includes('director')
-            );
-            
-            if (enterprisePersonas.length > 0) {
-                clusters.push({
-                    name: 'Cluster 2: Empresas establecidas',
-                    personas: enterprisePersonas,
-                    size: '~5,000 empresas',
-                    budget: '€50K-200K'
-                });
-            }
-            
-            return clusters;
-        }
-
-        function createClusterCard(cluster) {
-            const card = document.createElement('div');
-            card.className = 'border border-gray-200 rounded-lg p-4';
-            
-            card.innerHTML = `
-                <h4 class="font-medium text-gray-900 mb-3">${cluster.name}</h4>
-                <div class="space-y-2">
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-600">Personas incluidas:</span>
-                        <span class="font-medium">${cluster.personas.map(p => p.name).join(', ')}</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-600">Tamaño del mercado:</span>
-                        <span class="font-medium">${cluster.size}</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-600">Presupuesto anual:</span>
-                        <span class="font-medium">${cluster.budget}</span>
-                    </div>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        function openNewPersonaModal() {
-            // Clear form
-            document.getElementById('personaName').value = '';
-            document.getElementById('personaRole').value = '';
-            document.getElementById('personaType').selectedIndex = 0;
-            document.getElementById('personaPain').value = '';
-            document.getElementById('personaGoal').value = '';
-            document.getElementById('personaChannels').value = '';
-            document.getElementById('personaAge').value = '';
-            document.getElementById('personaLocation').value = '';
-            document.getElementById('personaIncome').value = '';
-            
-            // Hide update button, show add button
-            document.getElementById('addPersonaButton').style.display = 'block';
-            document.getElementById('updatePersonaButton').style.display = 'none';
-            
-            currentPersonaIndex = -1;
-            document.getElementById('modalTitle').textContent = 'Nuevo Buyer Persona';
-            
-            document.getElementById('newPersonaModal').classList.remove('hidden');
-        }
-
-        function editPersona(index) {
-            const persona = audienciasData[index];
-            
-            document.getElementById('personaName').value = persona.name;
-            document.getElementById('personaRole').value = persona.role;
-            document.getElementById('personaType').value = persona.type;
-            document.getElementById('personaPain').value = persona.pain;
-            document.getElementById('personaGoal').value = persona.goal;
-            document.getElementById('personaChannels').value = persona.channels;
-            document.getElementById('personaAge').value = persona.age;
-            document.getElementById('personaLocation').value = persona.location;
-            document.getElementById('personaIncome').value = persona.income;
-            
-            // Show update button, hide add button
-            document.getElementById('addPersonaButton').style.display = 'none';
-            document.getElementById('updatePersonaButton').style.display = 'block';
-            
-            currentPersonaIndex = index;
-            document.getElementById('modalTitle').textContent = 'Editar Buyer Persona';
-            
-            document.getElementById('newPersonaModal').classList.remove('hidden');
-        }
-
-        function closeNewPersonaModal() {
-            document.getElementById('newPersonaModal').classList.add('hidden');
-        }
-
-        function saveNewPersona() {
-            const name = document.getElementById('personaName').value;
-            const role = document.getElementById('personaRole').value;
-            const type = document.getElementById('personaType').value;
-            const pain = document.getElementById('personaPain').value;
-            const goal = document.getElementById('personaGoal').value;
-            const channels = document.getElementById('personaChannels').value;
-            const age = document.getElementById('personaAge').value;
-            const location = document.getElementById('personaLocation').value;
-            const income = document.getElementById('personaIncome').value;
-
-            if (name && role && pain && goal) {
-                const newPersona = {
-                    name,
-                    role,
-                    type,
-                    pain,
-                    goal,
-                    channels,
-                    age,
-                    location,
-                    income,
-                    maturity: 'early' // Default maturity
-                };
-                
-                audienciasData.push(newPersona);
-                saveAudienciasData();
-                renderPersonas();
-                renderClusters();
-                closeNewPersonaModal();
-                window.SunstoneUtils.showNotification('Buyer persona agregado exitosamente', 'success');
-            } else {
-                window.SunstoneUtils.showNotification('Por favor completa los campos requeridos', 'error');
-            }
-        }
-
-        function updatePersona() {
-            if (currentPersonaIndex === -1) return;
-            
-            const name = document.getElementById('personaName').value;
-            const role = document.getElementById('personaRole').value;
-            const type = document.getElementById('personaType').value;
-            const pain = document.getElementById('personaPain').value;
-            const goal = document.getElementById('personaGoal').value;
-            const channels = document.getElementById('personaChannels').value;
-            const age = document.getElementById('personaAge').value;
-            const location = document.getElementById('personaLocation').value;
-            const income = document.getElementById('personaIncome').value;
-
-            if (name && role && pain && goal) {
-                audienciasData[currentPersonaIndex] = {
-                    ...audienciasData[currentPersonaIndex],
-                    name,
-                    role,
-                    type,
-                    pain,
-                    goal,
-                    channels,
-                    age,
-                    location,
-                    income
-                };
-                
-                saveAudienciasData();
-                renderPersonas();
-                renderClusters();
-                closeNewPersonaModal();
-                window.SunstoneUtils.showNotification('Buyer persona actualizado exitosamente', 'success');
-            } else {
-                window.SunstoneUtils.showNotification('Por favor completa los campos requeridos', 'error');
-            }
-        }
-
-        function deletePersona(index) {
-            if (confirm('¿Estás seguro de que quieres eliminar este buyer persona?')) {
-                audienciasData.splice(index, 1);
-                saveAudienciasData();
-                renderPersonas();
-                renderClusters();
-                window.SunstoneUtils.showNotification('Buyer persona eliminado exitosamente', 'success');
-            }
-        }
-
-        function completeAudiencias() {
-            if (audienciasData.length < 3) {
-                window.SunstoneUtils.showNotification('Por favor agrega al menos 3 buyer personas antes de completar', 'error');
-                return;
-            }
-            
-            if (currentProject) {
-                if (!currentProject.discovery) currentProject.discovery = {};
-                if (!currentProject.discovery.audiencias) {
-                    currentProject.discovery.audiencias = { data: audienciasData, completed: true };
-                } else {
-                    currentProject.discovery.audiencias.data = audienciasData;
-                    currentProject.discovery.audiencias.completed = true;
-                }
-
-                persistCurrentProject();
-            }
-
-            
-            window.SunstoneUtils.showNotification('Audiencias completadas exitosamente', 'success');
-            
-            setTimeout(() => {
-                window.location.href = 'project.html';
-            }, 1500);
-        }
-
-        function saveAudienciasData() {
-            // Data is already saved when adding/updating personas
-            window.SunstoneUtils.showNotification('Datos guardados exitosamente', 'success');
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCurrentProject();
+        Object.entries(map).forEach(([jsonKey, fieldId]) => {
+          const el = document.getElementById(fieldId);
+          if (el) el.value = audiences[jsonKey] || "";
         });
-    </script>
+      }
 
-        <!-- Instantiate Supabase client -->
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <script>
-        window.supabase = supabase.createClient(
-            "https://reezovhnmonzaafhigjz.supabase.co",
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZXpvdmhubW9uemFhZmhpZ2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NTQ5ODUsImV4cCI6MjA4MDEzMDk4NX0.J2qSIoj9-bGgrPtHN3oowAGQ2yw_c3GymMH9-ljTsnM"
-        );
-        </script>
+      setStatus("Project loaded. You can now edit the audiences map.");
+      return data;
+    }
 
-        <!-- Main shared logic -->
-        <script src="main.js"></script>
+    async function saveAudiences(projectId) {
+      setSaving(true);
+      setStatus("");
 
+      const payload = {
+        primary_audience: document.getElementById("primary_audience").value.trim(),
+        secondary_audiences: document.getElementById("secondary_audiences").value.trim(),
+        decision_makers: document.getElementById("decision_makers").value.trim(),
+        influencers: document.getElementById("influencers").value.trim(),
+        end_users: document.getElementById("end_users").value.trim(),
+        segments: document.getElementById("segments").value.trim(),
+        notes: document.getElementById("notes").value.trim(),
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error } = await supabaseClient
+        .from("projects")
+        .update({ audiences: payload })
+        .eq("id", projectId);
+
+      setSaving(false);
+
+      if (error) {
+        console.error("Error saving audiences", error);
+        setStatus("Error saving audiences. Please try again.", true);
+        return;
+      }
+
+      setStatus("Audiences saved ✔️");
+      setTimeout(() => setStatus(""), 3000);
+    }
+
+    async function init() {
+      const projectId = getProjectIdFromURL();
+      if (!projectId) {
+        setStatus("Missing projectId in URL. Go back to the dashboard and open a project from there.", true);
+        return;
+      }
+
+      // Back button
+      if (backToProjectBtn) {
+        backToProjectBtn.addEventListener("click", () => {
+          window.location.href = `project.html?projectId=${encodeURIComponent(projectId)}`;
+        });
+      }
+
+      // Make breadcrumb project clickable
+      const breadcrumbProjectLink = document.createElement("a");
+      breadcrumbProjectLink.href = `project.html?projectId=${encodeURIComponent(projectId)}`;
+      breadcrumbProjectLink.textContent = "Project";
+      if (breadcrumbProject && breadcrumbProject.parentNode) {
+        breadcrumbProject.replaceWith(breadcrumbProjectLink);
+      }
+
+      const project = await loadProject(projectId);
+      if (!project) return;
+
+      const form = document.getElementById("audiencesForm");
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          await saveAudiences(projectId);
+        });
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
 </body>
 </html>
