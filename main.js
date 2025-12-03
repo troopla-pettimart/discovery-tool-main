@@ -158,7 +158,7 @@ class SunstoneApp {
 
         // Go straight to project page
         setTimeout(() => {
-            window.location.href = 'project.html';
+            window.location.href = `project.html?projectId=${encodeURIComponent(projectData.id)}`;
         }, 600);
     }
 
@@ -267,7 +267,7 @@ class SunstoneApp {
         this.showNotification(`Abriendo proyecto: ${project.name}`, 'info');
 
         setTimeout(() => {
-            window.location.href = 'project.html';
+            window.location.href = `project.html?projectId=${encodeURIComponent(projectData.id)}`;
         }, 400);
     }
 

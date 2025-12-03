@@ -553,24 +553,24 @@
     }
 
     async function init() {
-      const projectId = getProjectIdFromURL();
-      if (!projectId) {
-        setStatus("Missing projectId in URL. Go back to the dashboard and open a project from there.", true);
-        projectNameEl.textContent = "No project selected";
-        return;
-      }
-      currentProjectId = projectId;
-
-      // Back to dashboard
+      // Back to dashboard always works, even if there's no projectId
       if (backToDashboardBtn) {
         backToDashboardBtn.addEventListener("click", () => {
           window.location.href = "index.html";
         });
       }
 
-      // Breadcrumb project as text (ya se muestra, y cada módulo tiene navegación)
+      const projectId = getProjectIdFromURL();
+      if (!projectId) {
+        setStatus("Missing projectId in URL. Go back to the dashboard and open a project from there.", true);
+        projectNameEl.textContent = "No project selected";
+        return;
+      }
+
+      currentProjectId = projectId;
       await loadProject(projectId);
     }
+
 
     document.addEventListener("DOMContentLoaded", init);
   </script>
